@@ -12,6 +12,10 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float angularSpeed = 120f;  // 转向速度
     [SerializeField] private float acceleration = 8f;    // 加速度
     [SerializeField] private Transform[] patrolPoints;    // 巡逻路径点
+    [SerializeField] private Animator animator;
+    
+
+
 
     private NavMeshAgent agent;
     private Transform player;
@@ -62,6 +66,8 @@ public class EnemyAI : MonoBehaviour
         if (IsPlayerInSight() || IsPlayerInDetectionRadius())
         {
             currentState = AIState.Chase;
+            animator.SetBool("Walk", false);
+            animator.SetBool("Run", true);
             agent.speed = chaseSpeed;
         }
     }
@@ -91,6 +97,8 @@ public class EnemyAI : MonoBehaviour
             else
             {
                 currentState = AIState.Patrol;
+                animator.SetBool("Walk", true);
+                animator.SetBool("Run", false);
                 agent.speed = patrolSpeed;
                 SetNextPatrolPoint();
             }
