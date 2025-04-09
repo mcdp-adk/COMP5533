@@ -111,6 +111,14 @@ public class EnemyAI : MonoBehaviour
         // 等待攻击动画播放完成
         yield return new WaitForSeconds(attackDelay);
 
+        // 攻击动画结束后恢复到追逐状态
+        currentState = AIState.Chase;
+        animator.CrossFade("Running", 0.1f);
+    }
+
+    // 攻击命中判定
+    public void EnemyAttackHit()
+    {
         // 攻击判定
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackDistance, playerLayer);
         foreach (var hitCollider in hitColliders)
