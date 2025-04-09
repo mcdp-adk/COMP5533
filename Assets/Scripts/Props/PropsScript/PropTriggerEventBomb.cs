@@ -10,6 +10,7 @@ public class PropTriggerEventThrow : MonoBehaviour
     [Header("Throw Settings")]
     public float baseThrowForce = 10f;  // 基础抛出力
     public Vector3 throwDirection = new Vector3(0.5f, 1f, 0f); // 斜向前上方抛出方向
+    public float randomTorqueRange = 5f; // 随机旋转力范围
 
     private Rigidbody rb;
 
@@ -38,7 +39,17 @@ public class PropTriggerEventThrow : MonoBehaviour
             // 施加力，使物体沿斜向前上方抛出
             rb.AddForce(throwDirection.normalized * finalThrowForce, ForceMode.Impulse);
 
-            Debug.Log($"物体被扔出！力度: {finalThrowForce}");
+            // 生成随机的旋转力
+            Vector3 randomTorque = new Vector3(
+                Random.Range(-randomTorqueRange, randomTorqueRange),
+                Random.Range(-randomTorqueRange, randomTorqueRange),
+                Random.Range(-randomTorqueRange, randomTorqueRange)
+            );
+
+            // 施加旋转力
+            rb.AddTorque(randomTorque, ForceMode.Impulse);
+
+            Debug.Log($"物体被扔出并随机旋转！力度: {finalThrowForce}，旋转力: {randomTorque}");
         }
     }
 }
