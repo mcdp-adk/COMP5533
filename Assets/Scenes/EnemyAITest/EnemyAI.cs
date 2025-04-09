@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using System.Linq;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -13,13 +14,16 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float angularSpeed = 120f;  // 转向速度
     [SerializeField] private float acceleration = 8f;    // 加速度
     [SerializeField] private float attackDistance = 1f;  // 攻击距离
-    [SerializeField] private Transform[] patrolPoints;    // 巡逻路径点
+    [SerializeField] public Transform[] patrolPoints;    // 巡逻路径点
     [SerializeField] private Animator animator;
     [SerializeField] private float attackDelay = 0.5f; // 攻击延迟时间
     [SerializeField] private LayerMask playerLayer; // 玩家层
+    //[SerializeField] private AudioSource walkAudioSource; // 走路音效
+    [SerializeField] private AudioSource attackAudioSource; // 攻击音效
 
     private NavMeshAgent agent;
-    private Transform player;
+    private Transform[] players;
+    private Transform targetPlayer;
     private Vector3 lastKnownPosition;
     private bool isChasing;
     private int currentPatrolIndex;
@@ -31,7 +35,7 @@ public class EnemyAI : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+       
         currentPatrolIndex = 0;
         agent.speed = patrolSpeed;
         agent.angularSpeed = angularSpeed;
@@ -41,6 +45,9 @@ public class EnemyAI : MonoBehaviour
 
     void Update()
     {
+        players = GameObject.FindGameObjectsWithTag("Player").Select(go => go.transform).ToArray();
+        targetPlayer = GetClosestPlayer();
+
         switch (currentState)
         {
             case AIState.Patrol:
@@ -58,6 +65,24 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    private Transform GetClosestPlayer()
+    {
+        Transform closestPlayer = null;
+        float closestDistance = Mathf.Infinity;
+
+        foreach (var player in players)
+        {
+            float distance = Vector3.Distance(transform.position, player.position);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestPlayer = player;
+            }
+        }
+
+        return closestPlayer;
+    }
+
     // 巡逻逻辑
     private void PatrolBehavior()
     {
@@ -72,20 +97,31 @@ public class EnemyAI : MonoBehaviour
             currentState = AIState.Chase;
             animator.CrossFade("Running", 0.1f);
             agent.speed = chaseSpeed;
+            //PlayWalkSound();
         }
     }
 
     // 追逐逻辑
     private void ChaseBehavior()
     {
-        agent.SetDestination(player.position);
-        lastKnownPosition = player.position;
+        if (targetPlayer == null)
+        {
+            currentState = AIState.Patrol;
+            animator.CrossFade("Walking", 0.1f);
+            agent.speed = patrolSpeed;
+            SetNextPatrolPoint();
+            return;
+        }
 
-        if (Vector3.Distance(transform.position, player.position) < attackDistance)
+        agent.SetDestination(targetPlayer.position);
+        lastKnownPosition = targetPlayer.position;
+
+        if (Vector3.Distance(transform.position, targetPlayer.position) < attackDistance)
         {
             currentState = AIState.Attack;
             animator.CrossFade("Standing Melee Attack Downward", 0.1f);
             StartCoroutine(PerformAttack());
+            PlayAttackSound();
         }
         else if (!IsPlayerInSight() && !IsPlayerInDetectionRadius())
         {
@@ -97,10 +133,11 @@ public class EnemyAI : MonoBehaviour
     // 攻击逻辑
     private void AttackBehavior()
     {
-        if (Vector3.Distance(transform.position, player.position) > attackDistance)
+        if (Vector3.Distance(transform.position, targetPlayer.position) > attackDistance)
         {
             currentState = AIState.Chase;
             animator.CrossFade("Running", 0.1f);
+            //PlayWalkSound();
             return;
         }
     }
@@ -114,6 +151,7 @@ public class EnemyAI : MonoBehaviour
         // 攻击动画结束后恢复到追逐状态
         currentState = AIState.Chase;
         animator.CrossFade("Running", 0.1f);
+        //PlayWalkSound();
     }
 
     // 攻击命中判定
@@ -125,8 +163,12 @@ public class EnemyAI : MonoBehaviour
         {
             if (hitCollider.CompareTag("Player"))
             {
-                // 删除玩家对象
-                Destroy(hitCollider.gameObject);
+                // 调用玩家的死亡事件
+                PlayerController playerController = hitCollider.GetComponent<PlayerController>();
+                if (playerController != null)
+                {
+                    playerController.Die();
+                }
             }
         }
     }
@@ -146,6 +188,7 @@ public class EnemyAI : MonoBehaviour
                 animator.CrossFade("Walking", 0.1f);
                 agent.speed = patrolSpeed;
                 SetNextPatrolPoint();
+                //PlayWalkSound();
             }
         }
     }
@@ -153,7 +196,9 @@ public class EnemyAI : MonoBehaviour
     // 扇形视野检测
     private bool IsPlayerInSight()
     {
-        Vector3 directionToPlayer = player.position - transform.position;
+        if (targetPlayer == null) return false;
+
+        Vector3 directionToPlayer = targetPlayer.position - transform.position;
         float angle = Vector3.Angle(directionToPlayer, transform.forward);
         float distance = directionToPlayer.magnitude;
 
@@ -175,7 +220,9 @@ public class EnemyAI : MonoBehaviour
     // 四周检测半径
     private bool IsPlayerInDetectionRadius()
     {
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        if (targetPlayer == null) return false;
+
+        float distanceToPlayer = Vector3.Distance(transform.position, targetPlayer.position);
         return distanceToPlayer < detectionRadius;
     }
 
@@ -185,7 +232,24 @@ public class EnemyAI : MonoBehaviour
         if (patrolPoints.Length > 0)
         {
             agent.SetDestination(patrolPoints[currentPatrolIndex].position);
+            //PlayWalkSound();
         }
+    }
+
+    // 播放走路音效
+    /*private void PlayWalkSound()
+    {
+        if (!walkAudioSource.isPlaying)
+        {
+            walkAudioSource.Play();
+        }
+    }
+    */
+
+    // 播放攻击音效
+    private void PlayAttackSound()
+    {
+        attackAudioSource.Play();
     }
 
     // 可视化扇形视野（调试用）

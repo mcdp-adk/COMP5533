@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+using System;
 
 public class PlayerController : MonoBehaviour
 {
@@ -6,6 +8,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private Transform cameraTransform; // 2.5D视角摄像机
     private CharacterController controller;
+
+    // 定义玩家死亡事件
+    public static event Action OnPlayerDeath;
+
+    private bool isDead = false; // 标志位
 
     void Start()
     {
@@ -16,6 +23,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (isDead) return; // 如果玩家已死亡，停止更新
+
         // WASD输入控制移动
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
@@ -27,5 +36,17 @@ public class PlayerController : MonoBehaviour
         move *= moveSpeed * Time.deltaTime;
 
         controller.Move(move);
+    }
+
+    // 玩家死亡处理方法
+    public void Die()
+    {
+        if (isDead) return; // 如果玩家已死亡，直接返回
+
+        isDead = true; // 设置标志位
+        // 触发玩家死亡事件
+        OnPlayerDeath?.Invoke();
+        // 销毁玩家对象
+        Destroy(gameObject);
     }
 }
