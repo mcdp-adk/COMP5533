@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -11,11 +12,11 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float detectionRadius = 5f; // 四周检测半径
     [SerializeField] private float angularSpeed = 120f;  // 转向速度
     [SerializeField] private float acceleration = 8f;    // 加速度
+    [SerializeField] private float attackDistance = 1f;  // 攻击距离
     [SerializeField] private Transform[] patrolPoints;    // 巡逻路径点
     [SerializeField] private Animator animator;
-    
-
-
+    [SerializeField] private float attackDelay = 0.5f; // 攻击延迟时间
+    [SerializeField] private LayerMask playerLayer; // 玩家层
 
     private NavMeshAgent agent;
     private Transform player;
@@ -24,7 +25,7 @@ public class EnemyAI : MonoBehaviour
     private int currentPatrolIndex;
 
     // AI状态枚举
-    private enum AIState { Patrol, Chase, Investigate }
+    private enum AIState { Patrol, Chase, Investigate, Attack }
     private AIState currentState = AIState.Patrol;
 
     void Start()
@@ -51,6 +52,9 @@ public class EnemyAI : MonoBehaviour
             case AIState.Investigate:
                 InvestigateBehavior();
                 break;
+            case AIState.Attack:
+                AttackBehavior();
+                break;
         }
     }
 
@@ -66,8 +70,7 @@ public class EnemyAI : MonoBehaviour
         if (IsPlayerInSight() || IsPlayerInDetectionRadius())
         {
             currentState = AIState.Chase;
-            animator.SetBool("Walk", false);
-            animator.SetBool("Run", true);
+            animator.CrossFade("Running", 0.1f);
             agent.speed = chaseSpeed;
         }
     }
@@ -78,10 +81,45 @@ public class EnemyAI : MonoBehaviour
         agent.SetDestination(player.position);
         lastKnownPosition = player.position;
 
-        if (!IsPlayerInSight() && !IsPlayerInDetectionRadius())
+        if (Vector3.Distance(transform.position, player.position) < attackDistance)
+        {
+            currentState = AIState.Attack;
+            animator.CrossFade("Standing Melee Attack Downward", 0.1f);
+            StartCoroutine(PerformAttack());
+        }
+        else if (!IsPlayerInSight() && !IsPlayerInDetectionRadius())
         {
             currentState = AIState.Investigate;
             agent.SetDestination(lastKnownPosition);
+        }
+    }
+
+    // 攻击逻辑
+    private void AttackBehavior()
+    {
+        if (Vector3.Distance(transform.position, player.position) > attackDistance)
+        {
+            currentState = AIState.Chase;
+            animator.CrossFade("Running", 0.1f);
+            return;
+        }
+    }
+
+    // 执行攻击判定的协程
+    private IEnumerator PerformAttack()
+    {
+        // 等待攻击动画播放完成
+        yield return new WaitForSeconds(attackDelay);
+
+        // 攻击判定
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackDistance, playerLayer);
+        foreach (var hitCollider in hitColliders)
+        {
+            if (hitCollider.CompareTag("Player"))
+            {
+                // 删除玩家对象
+                Destroy(hitCollider.gameObject);
+            }
         }
     }
 
@@ -97,8 +135,7 @@ public class EnemyAI : MonoBehaviour
             else
             {
                 currentState = AIState.Patrol;
-                animator.SetBool("Walk", true);
-                animator.SetBool("Run", false);
+                animator.CrossFade("Walking", 0.1f);
                 agent.speed = patrolSpeed;
                 SetNextPatrolPoint();
             }
@@ -151,5 +188,7 @@ public class EnemyAI : MonoBehaviour
         Gizmos.DrawWireSphere(lastKnownPosition, 0.5f);
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, attackDistance); // 可视化攻击范围
     }
 }

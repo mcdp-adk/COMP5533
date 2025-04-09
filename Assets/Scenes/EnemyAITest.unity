@@ -964,7 +964,7 @@ GameObject:
   - component: {fileID: 702452021}
   - component: {fileID: 702452020}
   - component: {fileID: 702452019}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: player
   m_TagString: Player
   m_Icon: {fileID: 0}
