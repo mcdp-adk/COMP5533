@@ -19,14 +19,17 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float attackDelay = 0.5f; // 攻击延迟时间
     [SerializeField] private LayerMask playerLayer; // 玩家层
     [SerializeField] private AudioSource attackAudioSource; // 攻击音效
+    [SerializeField] private MusicManager musicManager;
     public float health = 100f; // 敌人生命值
 
     private NavMeshAgent agent;
     private Transform[] players;
     private Transform targetPlayer;
     private Vector3 lastKnownPosition;
-    private bool isChasing;
     private int currentPatrolIndex;
+
+    // 用于跟踪是否有敌人处于追击或攻击状态的静态变量
+    private static int chasingEnemiesCount = 0;
 
     // AI状态枚举
     private enum AIState { Patrol, Chase, Investigate, Attack, Dead }
@@ -34,6 +37,11 @@ public class EnemyAI : MonoBehaviour
 
     void Start()
     {
+        musicManager = FindObjectOfType<MusicManager>();
+        if (musicManager == null)
+        {
+            Debug.LogError("MusicManager 未找到！");
+        }
         agent = GetComponent<NavMeshAgent>();
         currentPatrolIndex = 0;
         agent.speed = patrolSpeed;
@@ -51,6 +59,8 @@ public class EnemyAI : MonoBehaviour
 
         players = GameObject.FindGameObjectsWithTag("Player").Select(go => go.transform).ToArray();
         targetPlayer = GetClosestPlayer();
+
+        AIState previousState = currentState;
 
         switch (currentState)
         {
@@ -70,6 +80,21 @@ public class EnemyAI : MonoBehaviour
                 DeadBehavior();
                 break;
         }
+
+        // 更新 chasingEnemiesCount
+        if ((previousState == AIState.Chase || previousState == AIState.Attack) &&
+            (currentState != AIState.Chase && currentState != AIState.Attack))
+        {
+            chasingEnemiesCount--;
+        }
+        else if ((previousState != AIState.Chase && previousState != AIState.Attack) &&
+                 (currentState == AIState.Chase || currentState == AIState.Attack))
+        {
+            chasingEnemiesCount++;
+        }
+
+        // 更新 MusicManager 中的 isChasing 变量
+        musicManager.isChasing = chasingEnemiesCount > 0;
     }
 
     private Transform GetClosestPlayer()

@@ -312,7 +312,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   explosionEffectPrefab: {fileID: 2180942408231431528, guid: d8ac56ff692d64f43952ca1885aa0df0, type: 3}
   explosionDuration: 3
-  explosionRange: 20
+  explosionRange: 8
   explosionDamage: 100
   targetTags:
   - enemy
