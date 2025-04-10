@@ -103,7 +103,12 @@ public class PlayerController : MonoBehaviour
 
         // 处理攻击和投掷输入
         if (attackAction.WasPressedThisFrame()) currentPropAction?.ActivateButtonPressed();
-        if (attackAction.WasReleasedThisFrame()) currentPropAction?.ActivateButtonRelease();
+        if (attackAction.WasReleasedThisFrame())
+        {
+            currentPropAction?.ActivateButtonRelease();
+            currentProp = null; // 清空当前道具引用
+            currentPropAction = null; // 清空道具脚本引用
+        }
         if (dropAction.WasPressedThisFrame())
         {
             currentPropAction?.DropFunction();
