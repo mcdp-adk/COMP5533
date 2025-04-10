@@ -92,6 +92,10 @@ public class EnemyAI : MonoBehaviour
         {
             chasingEnemiesCount++;
         }
+        else if(chasingEnemiesCount < 0)
+            {
+            chasingEnemiesCount = 0;
+        }
 
         // 更新 MusicManager 中的 isChasing 变量
         musicManager.isChasing = chasingEnemiesCount > 0;
@@ -272,6 +276,7 @@ public class EnemyAI : MonoBehaviour
     // 死亡逻辑
     private void DeadBehavior()
     {
+        chasingEnemiesCount--;
         agent.isStopped = true;
         animator.SetBool("Dying", true);
         Destroy(gameObject, 4f);
