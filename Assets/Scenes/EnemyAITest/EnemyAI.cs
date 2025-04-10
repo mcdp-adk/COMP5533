@@ -18,7 +18,6 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private float attackDelay = 0.5f; // 攻击延迟时间
     [SerializeField] private LayerMask playerLayer; // 玩家层
-    //[SerializeField] private AudioSource walkAudioSource; // 走路音效
     [SerializeField] private AudioSource attackAudioSource; // 攻击音效
     [SerializeField] public int health = 100; // 敌人生命值
 
@@ -94,7 +93,13 @@ public class EnemyAI : MonoBehaviour
     // 巡逻逻辑
     private void PatrolBehavior()
     {
-        if (agent.remainingDistance < 0.5f)
+        if (patrolPoints.Length <= 1)
+        {
+            Debug.LogWarning("巡逻点数量不足，无法进行巡逻");
+            return;
+        }
+
+        if (agent.remainingDistance < 0.5f && !agent.pathPending)
         {
             currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
             SetNextPatrolPoint();
@@ -105,7 +110,6 @@ public class EnemyAI : MonoBehaviour
             currentState = AIState.Chase;
             animator.CrossFade("Running", 0.1f);
             agent.speed = chaseSpeed;
-            //PlayWalkSound();
         }
     }
 
@@ -145,7 +149,6 @@ public class EnemyAI : MonoBehaviour
         {
             currentState = AIState.Chase;
             animator.CrossFade("Running", 0.1f);
-            //PlayWalkSound();
             return;
         }
     }
@@ -153,25 +156,19 @@ public class EnemyAI : MonoBehaviour
     // 执行攻击判定的协程
     private IEnumerator PerformAttack()
     {
-        // 等待攻击动画播放完成
         yield return new WaitForSeconds(attackDelay);
-
-        // 攻击动画结束后恢复到追逐状态
         currentState = AIState.Chase;
         animator.CrossFade("Running", 0.1f);
-        //PlayWalkSound();
     }
 
     // 攻击命中判定
     public void EnemyAttackHit()
     {
-        // 攻击判定
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackDistance, playerLayer);
         foreach (var hitCollider in hitColliders)
         {
             if (hitCollider.CompareTag("Player"))
             {
-                // 调用玩家的死亡事件
                 PlayerController playerController = hitCollider.GetComponent<PlayerController>();
                 if (playerController != null)
                 {
@@ -184,7 +181,7 @@ public class EnemyAI : MonoBehaviour
     // 调查最后位置逻辑
     private void InvestigateBehavior()
     {
-        if (agent.remainingDistance < 0.5f)
+        if (agent.remainingDistance < 0.5f && !agent.pathPending)
         {
             if (IsPlayerInSight() || IsPlayerInDetectionRadius())
             {
@@ -196,7 +193,6 @@ public class EnemyAI : MonoBehaviour
                 animator.CrossFade("Walking", 0.1f);
                 agent.speed = patrolSpeed;
                 SetNextPatrolPoint();
-                //PlayWalkSound();
             }
         }
     }
@@ -212,7 +208,6 @@ public class EnemyAI : MonoBehaviour
 
         if (angle < sightAngle / 2 && distance < sightDistance)
         {
-            // 射线检测障碍物遮挡
             RaycastHit hit;
             if (Physics.Raycast(transform.position, directionToPlayer, out hit, sightDistance))
             {
@@ -240,19 +235,8 @@ public class EnemyAI : MonoBehaviour
         if (patrolPoints.Length > 0)
         {
             agent.SetDestination(patrolPoints[currentPatrolIndex].position);
-            //PlayWalkSound();
         }
     }
-
-    // 播放走路音效
-    /*private void PlayWalkSound()
-    {
-        if (!walkAudioSource.isPlaying)
-        {
-            walkAudioSource.Play();
-        }
-    }
-    */
 
     // 播放攻击音效
     private void PlayAttackSound()
@@ -263,13 +247,9 @@ public class EnemyAI : MonoBehaviour
     // 死亡逻辑
     private void DeadBehavior()
     {
-        // 停止所有移动和攻击
         agent.isStopped = true;
-        // 播放死亡动画
-        animator.SetBool("Dying", true);
-        //animator.CrossFade("Dying", 0.1f);
-        // 删除敌人个体
-        Destroy(gameObject, 4f); // 延迟2秒删除，以便播放死亡动画
+        animator.CrossFade("Dying", 0.1f);
+        Destroy(gameObject, 2f);
     }
 
     // 可视化扇形视野（调试用）
@@ -281,6 +261,6 @@ public class EnemyAI : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, attackDistance); // 可视化攻击范围
+        Gizmos.DrawWireSphere(transform.position, attackDistance);
     }
 }
