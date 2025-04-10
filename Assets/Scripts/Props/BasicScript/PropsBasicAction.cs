@@ -16,13 +16,14 @@ public class PropsBasicAction : MonoBehaviour
     [SerializeField] private float weight = 1.0f;
     [SerializeField] private float value = 1.0f;
     [SerializeField] private float minReActiveTime = 0.5f;  // 最小重置时间
+    [SerializeField] private float maxReActiveTime = 5f;  // 最长激活时间
     [SerializeField] private float maxActiveDurationTime = 3f;  // 最长蓄力时间
 
     [Header("Parameters")]
     [SerializeField] private LayerMask whatIsTriggerLayer; // 设置触发图层
     [SerializeField] private Collider activeCheckCollider; // 外部传入的碰撞器
-    private UnityEvent<float> onTriggeredAction; // 允许传入按键持续时间
-    private UnityEvent endTriggeredAction; // 允许传入按键持续时间
+    [SerializeField] private UnityEvent<float> onTriggeredAction; // 允许传入按键持续时间
+    [SerializeField] private UnityEvent endTriggeredAction; // 允许传入按键持续时间
 
     [Header("BindWithCharacter")]
     private Transform bindTargetPoint;
@@ -33,8 +34,8 @@ public class PropsBasicAction : MonoBehaviour
     private float buttonPressStartTime; // 记录按键按下的时间戳
     private bool isButtonPressed = false; // 记录按钮是否被按下
 
-    [Header("StateCheckPoint")]
-    //public bool markDisableActive = false;
+    public delegate void DestroyedHandler(GameObject destroyedObject);
+    public event DestroyedHandler OnDestroyed;
 
     [Header("Statement")]
     [SerializeField] private bool isBlocked = false;
@@ -153,10 +154,13 @@ public class PropsBasicAction : MonoBehaviour
                 if (isTouchTriggerLayer)
                 {
                     endTriggeredAction?.Invoke();  // 触发既定脚本
+                    isActived = false;
                 }
-
-                isActived = false;
             }
+            else if (Time.time - activeStartTime > maxReActiveTime)  // 碰到指定图层退出
+            {
+                isActived = false;
+            }    
 
             isEnableGrivaty = true;  // 禁用重力
         }
@@ -253,6 +257,14 @@ public class PropsBasicAction : MonoBehaviour
     public float GetWeight()
     {
         return weight;
+    }
+    #endregion
+
+    #region
+    public void OnDestroy()
+    {
+        Debug.Log("检测到了物体被销毁。");
+        OnDestroyed?.Invoke(gameObject); // 触发事件
     }
     #endregion
 }

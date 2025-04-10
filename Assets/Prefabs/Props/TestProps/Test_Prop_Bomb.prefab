@@ -122,6 +122,7 @@ GameObject:
   - component: {fileID: 3822834129546910188}
   - component: {fileID: 8711698233604956763}
   - component: {fileID: 5963868490040910854}
+  - component: {fileID: 7162865603213951717}
   m_Layer: 11
   m_Name: Test_Prop_Bomb
   m_TagString: Untagged
@@ -162,11 +163,42 @@ MonoBehaviour:
   weight: 1
   value: 1
   minReActiveTime: 0.5
+  maxReActiveTime: 5
   maxActiveDurationTime: 3
   whatIsTriggerLayer:
     serializedVersion: 2
     m_Bits: 1024
   activeCheckCollider: {fileID: 3822834129546910188}
+  onTriggeredAction:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8711698233604956763}
+        m_TargetAssemblyTypeName: PropTriggerEventThrow, Assembly-CSharp
+        m_MethodName: ThrowOut
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  endTriggeredAction:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5963868490040910854}
+        m_TargetAssemblyTypeName: PropEndActiveEventBomb, Assembly-CSharp
+        m_MethodName: BombExplosion
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   isBlocked: 0
   isActived: 0
   isBound: 0
@@ -249,3 +281,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   explosionEffectPrefab: {fileID: 2180942408231431528, guid: d8ac56ff692d64f43952ca1885aa0df0, type: 3}
   explosionDuration: 3
+  explosionRange: 5
+  explosionDamage: 100
+  targetTags: []
+--- !u!114 &7162865603213951717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9051312900075423998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 534cc721f76495243b62b909a675eec1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isNeedDestroedSelf: 0
