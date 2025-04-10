@@ -68,12 +68,12 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (currentProp != null) return; // 如果当前已有道具，直接返回
-        
+
         if (((1 << other.gameObject.layer) & whatIsProps) != 0)
         {
             currentProp = other.gameObject; // 记录当前道具
             currentPropAction = currentProp.GetComponent<PropsBasicAction>(); // 获取道具脚本引用
-            currentProp.GetComponent<PropsBasicAction>().PickUpFunction(this.transform.Find("PropPosition").transform);
+            currentPropAction.PickUpFunction(this.transform.Find("PropPosition").transform);
         }
     }
 
