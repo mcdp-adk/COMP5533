@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private float rotationSpeed = 10f;
-    [SerializeField] private int playerIndex = 0; // 玩家索引，用于多人游戏
+    // [SerializeField] private int playerIndex = 0; // 玩家索引，用于多人游戏
 
     #region Unity Callbacks
 
@@ -48,11 +48,6 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Public Methods
-
-    public void SetPlayerIndex(int index)
-    {
-        playerIndex = index;
-    }
 
     #endregion
 
