@@ -18,6 +18,7 @@ public class MiniMap : MonoBehaviour
         // 按下 M 键时显示小地图
         if (Input.GetKeyDown(KeyCode.M))
         {
+            //Debug.Log("M");
             miniMap.SetActive(true);
         }
 
