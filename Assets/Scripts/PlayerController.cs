@@ -1,24 +1,25 @@
-using OpenCover.Framework.Model;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections;
 using System;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
+    // 组件引用
     private Transform cameraTransform;
     private Vector2 moveInput;
     private Animator animator;
     private CharacterController controller;
+
+    // 玩家属性
     private GameObject currentProp; // 当前持有的道具
+    private bool isDead = false;
 
     [SerializeField] private Vector3 cameraOffset = new(20f, 16f, -20f); // 仅供测试：摄像机偏移量
 
     public static event Action OnPlayerDeath;   // 定义玩家死亡事件
-    private bool isDead = false;
-
+    
     [Header("Player Settings")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float gravity = -9.81f;
@@ -44,6 +45,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         if (isDead) return; // 如果玩家已死亡，停止更新
+
         // 处理玩家输入
         HandleMovement();
         ApplyGravity();

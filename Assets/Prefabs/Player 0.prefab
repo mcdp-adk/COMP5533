@@ -132,7 +132,9 @@ MonoBehaviour:
   moveSpeed: 5
   gravity: -9.81
   rotationSpeed: 10
-  playerIndex: 0
+  whatIsProps:
+    serializedVersion: 2
+    m_Bits: 2048
 --- !u!136 &3587357373258711141
 CapsuleCollider:
   m_ObjectHideFlags: 0
