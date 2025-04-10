@@ -17,14 +17,18 @@ public class PlayerController : MonoBehaviour
     private InputAction attackAction;
     private InputAction dropAction;
     private Vector2 moveInput;
+    private bool isPropEquiped = false; // 记录是否已经装备了道具
 
+    // 持有道具
     private GameObject currentProp; // 当前持有的道具
     private PropsBasicAction currentPropAction; // 当前道具的脚本引用
+
+    // 处理死亡
+    public static event Action OnPlayerDeath;   // 定义玩家死亡事件
     private bool isDead = false;
 
+    [Header("Test Settings")]
     [SerializeField] private Vector3 cameraOffset = new(20f, 16f, -20f); // 仅供测试：摄像机偏移量
-
-    public static event Action OnPlayerDeath;   // 定义玩家死亡事件
 
     [Header("Player Settings")]
     [SerializeField] private float moveSpeed = 5f;
@@ -102,13 +106,25 @@ public class PlayerController : MonoBehaviour
         moveInput = moveAction.ReadValue<Vector2>();
 
         // 处理攻击和投掷输入
-        if (attackAction.WasPressedThisFrame()) currentPropAction?.ActivateButtonPressed();
+        if (attackAction.WasPressedThisFrame()) 
+        {
+            // 记录攻击开始时是否持有物体
+            isPropEquiped = (currentProp != null);
+            currentPropAction?.ActivateButtonPressed();
+        }
+        
         if (attackAction.WasReleasedThisFrame())
         {
-            currentPropAction?.ActivateButtonRelease();
-            currentProp = null; // 清空当前道具引用
-            currentPropAction = null; // 清空道具脚本引用
+            // 只有当攻击开始于持有物体时才执行释放逻辑
+            if (isPropEquiped)
+            {
+                currentPropAction?.ActivateButtonRelease();
+                currentProp = null; // 清空当前道具引用
+                currentPropAction = null; // 清空道具脚本引用
+            }
+            isPropEquiped = false; // 重置标志
         }
+        
         if (dropAction.WasPressedThisFrame())
         {
             currentPropAction?.DropFunction();
@@ -116,7 +132,6 @@ public class PlayerController : MonoBehaviour
             currentPropAction = null; // 清空道具脚本引用
         }
     }
-
     private void HandleMovement()
     {
         if (moveInput.magnitude <= 0.1f || cameraTransform == null) return;
