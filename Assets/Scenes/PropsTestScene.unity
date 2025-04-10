@@ -1822,6 +1822,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
+    - target: {fileID: 4741641405294083091, guid: 23dde3eea9440b74689ab6b0934111cf, type: 3}
+      propertyPath: componentCollidersBox.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4741641405294083091, guid: 23dde3eea9440b74689ab6b0934111cf, type: 3}
+      propertyPath: componentCollidersBox.Array.data[0]
+      value: 
+      objectReference: {fileID: 7767498185084601384}
     - target: {fileID: 6636084786892711412, guid: 23dde3eea9440b74689ab6b0934111cf, type: 3}
       propertyPath: m_Name
       value: Test_Prop_Treasure
@@ -1875,6 +1883,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 23dde3eea9440b74689ab6b0934111cf, type: 3}
+--- !u!64 &7767498185084601384 stripped
+MeshCollider:
+  m_CorrespondingSourceObject: {fileID: 4287599231081058572, guid: 23dde3eea9440b74689ab6b0934111cf, type: 3}
+  m_PrefabInstance: {fileID: 7767498185084601383}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8620749390880700312
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1931,6 +1944,14 @@ PrefabInstance:
       propertyPath: whatIsTriggerLayer.m_Bits
       value: 1024
       objectReference: {fileID: 0}
+    - target: {fileID: 3642151732287100131, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
+      propertyPath: componentCollidersBox.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3642151732287100131, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
+      propertyPath: componentCollidersBox.Array.data[0]
+      value: 
+      objectReference: {fileID: 8620749390880700313}
     - target: {fileID: 3642151732287100131, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
       propertyPath: onTriggeredAction.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -1992,6 +2013,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
+--- !u!64 &8620749390880700313 stripped
+MeshCollider:
+  m_CorrespondingSourceObject: {fileID: 3089097232319672889, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
+  m_PrefabInstance: {fileID: 8620749390880700312}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

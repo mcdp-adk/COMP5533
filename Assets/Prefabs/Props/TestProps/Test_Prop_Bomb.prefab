@@ -158,6 +158,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7569e776d8f6ce41ad113f5f5f60cb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  componentCollidersBox:
+  - {fileID: 3089097232319672889}
   isEnableGrivaty: 1
   isTouchTriggerLayer: 0
   weight: 1

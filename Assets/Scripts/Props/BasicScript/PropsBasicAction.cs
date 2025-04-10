@@ -6,6 +6,7 @@ using UnityEngine.Events;
 public class PropsBasicAction : MonoBehaviour
 {
     [Header("Reference")]
+    [SerializeField] private List<Collider> componentCollidersBox; // 储存需要启用或禁用的碰撞箱
     private Rigidbody rb;
 
     [Header("Situation")]
@@ -139,6 +140,16 @@ public class PropsBasicAction : MonoBehaviour
 
     private void StatementEffectHandler()
     {
+        if (lastState != currentState)
+        {
+            if (lastState == PropState.Held)
+            {
+                SwitchCollidersState(true);  // 禁用碰撞箱
+            }
+        }
+
+        lastState = currentState;  // 保存状态用于更改状态时触发
+
         if (currentState == PropState.Default)
         {
             isEnableGrivaty = true;  // 禁用重力
@@ -173,12 +184,29 @@ public class PropsBasicAction : MonoBehaviour
                 return;
             }
 
+            SwitchCollidersState(false);  // 禁用碰撞箱
+
             transform.position = bindTargetPoint.position;
             transform.rotation = bindTargetPoint.rotation;
             isEnableGrivaty = false;  // 禁用重力
         }
     }
     #endregion
+
+    #region Component Function
+
+    #endregion
+    /// <summary>
+    /// 开启或关闭碰撞箱避免错误
+    /// </summary>
+    private void SwitchCollidersState(bool target)
+    {
+        // 禁用所有碰撞箱
+        foreach (var collider in componentCollidersBox)
+        {
+            collider.enabled = target;
+        }
+    }
 
     #region ActiveButton
     /// <summary>
@@ -248,7 +276,7 @@ public class PropsBasicAction : MonoBehaviour
     }
     #endregion
 
-    #region
+    #region Public Get Value
     public float GetValue()
     {
         return value;
@@ -260,7 +288,7 @@ public class PropsBasicAction : MonoBehaviour
     }
     #endregion
 
-    #region
+    #region Destroy Event
     public void OnDestroy()
     {
         Debug.Log("检测到了物体被销毁。");
