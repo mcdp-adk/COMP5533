@@ -8,18 +8,24 @@ public class PlayerController : MonoBehaviour
 {
     // 组件引用
     private Transform cameraTransform;
-    private Vector2 moveInput;
     private Animator animator;
+    private PlayerInput playerInput;
     private CharacterController controller;
 
-    // 玩家属性
+    // 玩家输入
+    private InputAction moveAction;
+    private InputAction attackAction;
+    private InputAction dropAction;
+    private Vector2 moveInput;
+
     private GameObject currentProp; // 当前持有的道具
+    private PropsBasicAction currentPropAction; // 当前道具的脚本引用
     private bool isDead = false;
 
     [SerializeField] private Vector3 cameraOffset = new(20f, 16f, -20f); // 仅供测试：摄像机偏移量
 
     public static event Action OnPlayerDeath;   // 定义玩家死亡事件
-    
+
     [Header("Player Settings")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float gravity = -9.81f;
@@ -34,7 +40,12 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        playerInput = GetComponent<PlayerInput>();
         controller = GetComponent<CharacterController>();
+
+        moveAction = playerInput.actions["Move"];
+        attackAction = playerInput.actions["Attact"];
+        dropAction = playerInput.actions["Drop"];
     }
 
     private void Start()
@@ -46,7 +57,7 @@ public class PlayerController : MonoBehaviour
     {
         if (isDead) return; // 如果玩家已死亡，停止更新
 
-        // 处理玩家输入
+        HandleInputs();
         HandleMovement();
         ApplyGravity();
         UpdateAnimator();
@@ -56,20 +67,14 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (currentProp != null) return; // 如果当前已有道具，直接返回
+        
         if (((1 << other.gameObject.layer) & whatIsProps) != 0)
         {
             currentProp = other.gameObject; // 记录当前道具
+            currentPropAction = currentProp.GetComponent<PropsBasicAction>(); // 获取道具脚本引用
             currentProp.GetComponent<PropsBasicAction>().PickUpFunction(this.transform.Find("PropPosition").transform);
         }
-    }
-
-    #endregion
-
-    #region Player Input Callbacks
-
-    private void OnMove(InputValue value)
-    {
-        moveInput = value.Get<Vector2>();
     }
 
     #endregion
@@ -90,6 +95,22 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Private Methods
+
+    private void HandleInputs()
+    {
+        // 获取输入值
+        moveInput = moveAction.ReadValue<Vector2>();
+
+        // 处理攻击和投掷输入
+        if (attackAction.WasPressedThisFrame()) currentPropAction?.ActivateButtonPressed();
+        if (attackAction.WasReleasedThisFrame()) currentPropAction?.ActivateButtonRelease();
+        if (dropAction.WasPressedThisFrame())
+        {
+            currentPropAction?.DropFunction();
+            currentProp = null; // 清空当前道具引用
+            currentPropAction = null; // 清空道具脚本引用
+        }
+    }
 
     private void HandleMovement()
     {
