@@ -40,14 +40,14 @@ public class PropEndActiveEventBomb : MonoBehaviour
             // 检查对象是否匹配任意一个目标标签
             foreach (string tag in targetTags)
             {
-                Debug.LogWarning("检测到了物体：" + hitCollider);
+                
                 if (hitCollider.CompareTag(tag))
                 {
-                    Debug.LogWarning("检测到了tag" + tag);
+                    
                     // 获取EnemyAI组件并修改health属性
                     EnemyAI enemyAI = hitCollider.GetComponent<EnemyAI>();
                     enemyAI.health -= explosionDamage;
-                    Debug.Log($"对带有标签 {tag} 的对象 {hitCollider.gameObject.name} 造成 {explosionDamage} 点伤害，剩余生命值：{enemyAI.health}");
+                    //Debug.Log($"对带有标签 {tag} 的对象 {hitCollider.gameObject.name} 造成 {explosionDamage} 点伤害，剩余生命值：{enemyAI.health}");
                     break; // 防止重复处理同一个对象
                 }
             }
