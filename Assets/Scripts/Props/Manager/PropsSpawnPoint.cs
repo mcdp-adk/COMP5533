@@ -5,32 +5,32 @@ using UnityEngine;
 public class PropsSpawnPoint : MonoBehaviour
 {
     [Header("Reference")]
-    // ÓÃÓÚÉèÖÃÔ¤ÖÆÎïÌå
+    // ç”¨äºè®¾ç½®é¢„åˆ¶ç‰©ä½“
     [SerializeField] private GameObject prefab;
 
     [Header("Parm")]
-    // µ±Ç°ÊµÀı»¯µÄÎïÌå
+    // å½“å‰å®ä¾‹åŒ–çš„ç‰©ä½“
     private GameObject currentInstance;
 
-    // Start is called beforeµÚÒ»´ÎÔËĞĞÊ±»áÖ´ĞĞ
+    // Start is called beforeç¬¬ä¸€æ¬¡è¿è¡Œæ—¶ä¼šæ‰§è¡Œ
     void Start()
     {
-        SpawnObject(); // ÔÚ¿ªÊ¼Ê±Éú³ÉÒ»¸öÎïÌå
+        SpawnObject(); // åœ¨å¼€å§‹æ—¶ç”Ÿæˆä¸€ä¸ªç‰©ä½“
     }
 
-    // ÓÃÓÚ¼ì²éÎïÌåÊÇ·ñ±»Ïú»Ù
+    // ç”¨äºæ£€æŸ¥ç‰©ä½“æ˜¯å¦è¢«é”€æ¯
     void Update()
     {
-        if (currentInstance == null) // Èç¹ûµ±Ç°ÊµÀıµÄÎïÌåÒÑ¾­Ïú»Ù
+        if (currentInstance == null) // å¦‚æœå½“å‰å®ä¾‹çš„ç‰©ä½“å·²ç»é”€æ¯
         {
-            SpawnObject(); // ÖØĞÂÉú³ÉÒ»¸öÎïÌå
+            SpawnObject(); // é‡æ–°ç”Ÿæˆä¸€ä¸ªç‰©ä½“
         }
     }
 
-    // Éú³ÉÎïÌåµÄ·½·¨
+    // ç”Ÿæˆç‰©ä½“çš„æ–¹æ³•
     void SpawnObject()
     {
-        if (prefab != null) // ¼ì²éprefabÊÇ·ñÒÑÉèÖÃ
+        if (prefab != null) // æ£€æŸ¥prefabæ˜¯å¦å·²è®¾ç½®
         {
             currentInstance = Instantiate(prefab, transform.position, transform.rotation);
         }

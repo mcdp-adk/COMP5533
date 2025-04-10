@@ -5,18 +5,18 @@ using UnityEngine;
 public class PropsSpawnManager : MonoBehaviour
 {
     [Header("Reference")]
-    // ÓÃÓÚÉèÖÃÔ¤ÖÆÎïÌå
+    // ç”¨äºè®¾ç½®é¢„åˆ¶ç‰©ä½“
     [SerializeField] private GameObject prefab;
-    // ÉèÖÃÖ¸¶¨µÄLayerÍ¼²ã
+    // è®¾ç½®æŒ‡å®šçš„Layerå›¾å±‚
     [SerializeField] private LayerMask targetLayer;
-    // ÉèÖÃ·¶Î§
+    // è®¾ç½®èŒƒå›´
     [SerializeField] private List<Bounds> spawnRanges;
-    // ÉèÖÃPrefabµÄ×î´óÊıÁ¿
+    // è®¾ç½®Prefabçš„æœ€å¤§æ•°é‡
     [SerializeField] private int maxCount;
-    // ÉèÖÃPrefabÖ®¼äÒÔ¼°ÓëÆäËûÇ½ÌåµÄ×îĞ¡¾àÀë
+    // è®¾ç½®Prefabä¹‹é—´ä»¥åŠä¸å…¶ä»–å¢™ä½“çš„æœ€å°è·ç¦»
     [SerializeField] private float minDistance;
 
-    // µ±Ç°Éú³ÉµÄPrefabÁĞ±í
+    // å½“å‰ç”Ÿæˆçš„Prefabåˆ—è¡¨
     private List<GameObject> spawnedPrefabs = new List<GameObject>();
 
     void Start()
@@ -26,10 +26,10 @@ public class PropsSpawnManager : MonoBehaviour
 
     void Update()
     {
-        // ¼ì²éÒÑÉú³ÉÎïÌåÊÇ·ñ±»Ïú»Ù
+        // æ£€æŸ¥å·²ç”Ÿæˆç‰©ä½“æ˜¯å¦è¢«é”€æ¯
         spawnedPrefabs.RemoveAll(prefab => prefab == null);
 
-        // Èç¹ûÊıÁ¿²»×ã£¬ÖØĞÂÉú³É
+        // å¦‚æœæ•°é‡ä¸è¶³ï¼Œé‡æ–°ç”Ÿæˆ
         if (spawnedPrefabs.Count < maxCount)
         {
             StartCoroutine(SpawnPrefabs());
@@ -38,11 +38,11 @@ public class PropsSpawnManager : MonoBehaviour
 
     IEnumerator SpawnPrefabs()
     {
-        // °´ÊıÁ¿ĞèÇóÉú³É
+        // æŒ‰æ•°é‡éœ€æ±‚ç”Ÿæˆ
         while (spawnedPrefabs.Count < maxCount)
         {
             bool spawned = TrySpawnPrefab();
-            if (!spawned) break; // Èç¹ûÎŞ·¨Éú³ÉĞÂµÄPrefab£¬ÍË³öÑ­»·
+            if (!spawned) break; // å¦‚æœæ— æ³•ç”Ÿæˆæ–°çš„Prefabï¼Œé€€å‡ºå¾ªç¯
             yield return null;
         }
     }
@@ -77,6 +77,6 @@ public class PropsSpawnManager : MonoBehaviour
                 return true;
             }
         }
-        return false; // Ã»ÕÒµ½ÓĞĞ§Î»ÖÃ
+        return false; // æ²¡æ‰¾åˆ°æœ‰æ•ˆä½ç½®
     }
 }

@@ -6,46 +6,46 @@ using UnityEngine;
 public class PropsSpawnPointManager : MonoBehaviour
 {
     [Header("Spawn Settings")]
-    [SerializeField] private List<Transform> spawnPoints = new List<Transform>(); // ¿ÉÉú³ÉµÀ¾ßµÄµãÎ»ÁĞ±í
-    [SerializeField] private GameObject[] propPrefabs; // ¿ÉÉú³ÉµÄÔ¤ÖÆ¼şµÀ¾ßÊı×é
-    [SerializeField] private int maxTotalProps = 2; // ¿ØÖÆµÀ¾ßµÄ×ÜÉú³ÉÊıÁ¿
-    [SerializeField] private float spawnWaitingTime = 0.3f; // ¿ØÖÆµÀ¾ßµÄ×ÜÉú³ÉÊıÁ¿
+    [SerializeField] private List<Transform> spawnPoints = new List<Transform>(); // å¯ç”Ÿæˆé“å…·çš„ç‚¹ä½åˆ—è¡¨
+    [SerializeField] private GameObject[] propPrefabs; // å¯ç”Ÿæˆçš„é¢„åˆ¶ä»¶é“å…·æ•°ç»„
+    [SerializeField] private int maxTotalProps = 2; // æ§åˆ¶é“å…·çš„æ€»ç”Ÿæˆæ•°é‡
+    [SerializeField] private float spawnWaitingTime = 0.3f; // æ§åˆ¶é“å…·çš„æ€»ç”Ÿæˆæ•°é‡
 
-    private int currentTotalProps = 0; // µ±Ç°µØÍ¼ÖĞµÄµÀ¾ßÊıÁ¿
+    private int currentTotalProps = 0; // å½“å‰åœ°å›¾ä¸­çš„é“å…·æ•°é‡
 
     private class SpawnPointStatus
     {
-        public Transform point; // µãÎ»µÄTransform
-        public GameObject generatedProp; // Éú³ÉµÄµÀ¾ßÒıÓÃ
-        public bool IsPropDestroyed => generatedProp == null; // ÅĞ¶ÏµÀ¾ßÊÇ·ñÏú»Ù
+        public Transform point; // ç‚¹ä½çš„Transform
+        public GameObject generatedProp; // ç”Ÿæˆçš„é“å…·å¼•ç”¨
+        public bool IsPropDestroyed => generatedProp == null; // åˆ¤æ–­é“å…·æ˜¯å¦é”€æ¯
     }
 
-    private List<SpawnPointStatus> spawnPointStatuses = new List<SpawnPointStatus>(); // µãÎ»×´Ì¬ÁĞ±í
+    private List<SpawnPointStatus> spawnPointStatuses = new List<SpawnPointStatus>(); // ç‚¹ä½çŠ¶æ€åˆ—è¡¨
 
     void Start()
     {
-        // ³õÊ¼»¯Éú³ÉµãÎ»µÄ×´Ì¬
+        // åˆå§‹åŒ–ç”Ÿæˆç‚¹ä½çš„çŠ¶æ€
         foreach (var spawnPoint in spawnPoints)
         {
             spawnPointStatuses.Add(new SpawnPointStatus { point = spawnPoint, generatedProp = null });
         }
 
-        SpawnProps(); // ¿ªÊ¼Ê±Éú³ÉµÀ¾ß
-        currentTotalProps = spawnPointStatuses.Count(status => status.generatedProp != null); // ³õÊ¼»¯µ±Ç°µÀ¾ßÊıÁ¿
+        SpawnProps(); // å¼€å§‹æ—¶ç”Ÿæˆé“å…·
+        currentTotalProps = spawnPointStatuses.Count(status => status.generatedProp != null); // åˆå§‹åŒ–å½“å‰é“å…·æ•°é‡
     }
 
     /// <summary>
-    /// ÔÚ¿ÕÏĞµÄµãÎ»Éú³ÉµÀ¾ß
+    /// åœ¨ç©ºé—²çš„ç‚¹ä½ç”Ÿæˆé“å…·
     /// </summary>
     private void SpawnProps()
     {
         if (!this || !gameObject.activeInHierarchy)
         {
-            Debug.LogWarning("³¢ÊÔÉú³ÉµÀ¾ßÊ±£¬µ±Ç°¶ÔÏóÎŞĞ§£¬Í£Ö¹Éú³É£¡");
+            Debug.LogWarning("å°è¯•ç”Ÿæˆé“å…·æ—¶ï¼Œå½“å‰å¯¹è±¡æ— æ•ˆï¼Œåœæ­¢ç”Ÿæˆï¼");
             return;
         }
 
-        // ½«µãÎ»×´Ì¬ÁĞ±íËæ»ú»¯
+        // å°†ç‚¹ä½çŠ¶æ€åˆ—è¡¨éšæœºåŒ–
         List<SpawnPointStatus> shuffledSpawnPoints = new List<SpawnPointStatus>(spawnPointStatuses);
         for (int i = 0; i < shuffledSpawnPoints.Count; i++)
         {
@@ -57,43 +57,43 @@ public class PropsSpawnPointManager : MonoBehaviour
 
         foreach (var status in shuffledSpawnPoints)
         {
-            // Èç¹ûµ±Ç°µÀ¾ßÊıÁ¿ÒÑ´ïµ½×î´óÏŞÖÆ£¬Í£Ö¹Éú³É
+            // å¦‚æœå½“å‰é“å…·æ•°é‡å·²è¾¾åˆ°æœ€å¤§é™åˆ¶ï¼Œåœæ­¢ç”Ÿæˆ
             if (currentTotalProps >= maxTotalProps)
             {
-                Debug.Log("µÀ¾ßÊıÁ¿ÒÑ´ïµ½×î´óÏŞÖÆ£¬Í£Ö¹Éú³É£¡");
+                Debug.Log("é“å…·æ•°é‡å·²è¾¾åˆ°æœ€å¤§é™åˆ¶ï¼Œåœæ­¢ç”Ÿæˆï¼");
                 return;
             }
 
-            // ½öÔÚ¿ÕÏĞ»òµÀ¾ß±»Ïú»ÙµÄµãÎ»Éú³ÉĞÂµÄµÀ¾ß
+            // ä»…åœ¨ç©ºé—²æˆ–é“å…·è¢«é”€æ¯çš„ç‚¹ä½ç”Ÿæˆæ–°çš„é“å…·
             if (status.IsPropDestroyed)
             {
                 int randomIndex = Random.Range(0, propPrefabs.Length);
                 GameObject prop = Instantiate(propPrefabs[randomIndex], status.point.position, Quaternion.identity);
 
-                // °ó¶¨Ïú»ÙÊÂ¼ş¼àÌı
+                // ç»‘å®šé”€æ¯äº‹ä»¶ç›‘å¬
                 var propAction = prop.GetComponent<PropsBasicAction>();
                 if (propAction != null)
                 {
-                    propAction.OnDestroyed += HandlePropDestroyed; // ×¢²áÏú»ÙÊÂ¼ş
+                    propAction.OnDestroyed += HandlePropDestroyed; // æ³¨å†Œé”€æ¯äº‹ä»¶
                 }
 
-                // ¸üĞÂµãÎ»×´Ì¬
+                // æ›´æ–°ç‚¹ä½çŠ¶æ€
                 status.generatedProp = prop;
-                currentTotalProps++; // Ôö¼Óµ±Ç°µÀ¾ßÊıÁ¿
+                currentTotalProps++; // å¢åŠ å½“å‰é“å…·æ•°é‡
             }
         }
     }
 
 
     /// <summary>
-    /// ´¦ÀíµÀ¾ßÏú»ÙÊÂ¼ş
+    /// å¤„ç†é“å…·é”€æ¯äº‹ä»¶
     /// </summary>
     private void HandlePropDestroyed(GameObject prop)
     {
-        Debug.Log($"µÀ¾ß {prop.name} ÒÑÏú»Ù¡£");
+        Debug.Log($"é“å…· {prop.name} å·²é”€æ¯ã€‚");
         if (!this || !gameObject.activeInHierarchy)
         {
-            Debug.LogWarning("ÓÎÏ·¶ÔÏóÒÑÎŞĞ§£¬Í£Ö¹Éú³ÉÂß¼­£¡");
+            Debug.LogWarning("æ¸¸æˆå¯¹è±¡å·²æ— æ•ˆï¼Œåœæ­¢ç”Ÿæˆé€»è¾‘ï¼");
             return;
         }
 
@@ -101,20 +101,20 @@ public class PropsSpawnPointManager : MonoBehaviour
         {
             if (status.generatedProp == prop)
             {
-                status.generatedProp = null; // ¸üĞÂµãÎ»×´Ì¬ÎªÎ´Éú³ÉµÀ¾ß
-                currentTotalProps--; // ¼õÉÙµ±Ç°µÀ¾ßÊıÁ¿
-                break; // ÕÒµ½¶ÔÓ¦µãÎ»ºóÍ£Ö¹±éÀú
+                status.generatedProp = null; // æ›´æ–°ç‚¹ä½çŠ¶æ€ä¸ºæœªç”Ÿæˆé“å…·
+                currentTotalProps--; // å‡å°‘å½“å‰é“å…·æ•°é‡
+                break; // æ‰¾åˆ°å¯¹åº”ç‚¹ä½ååœæ­¢éå†
             }
         }
 
-        // Ê¹ÓÃÑÓ³Ùµ÷ÓÃÉú³ÉÂß¼­£¬±ÜÃâÔÚOnDestroyÖĞÖ±½ÓÉú³É
-        Invoke(nameof(SpawnProps), spawnWaitingTime); // ÑÓ³Ù0.1Ãëµ÷ÓÃSpawnProps
+        // ä½¿ç”¨å»¶è¿Ÿè°ƒç”¨ç”Ÿæˆé€»è¾‘ï¼Œé¿å…åœ¨OnDestroyä¸­ç›´æ¥ç”Ÿæˆ
+        Invoke(nameof(SpawnProps), spawnWaitingTime); // å»¶è¿Ÿ0.1ç§’è°ƒç”¨SpawnProps
     }
 
 
     void OnDisable()
     {
-        // È¡ÏûËùÓĞ¹ÒÆğµÄÉú³Éµ÷ÓÃ
+        // å–æ¶ˆæ‰€æœ‰æŒ‚èµ·çš„ç”Ÿæˆè°ƒç”¨
         CancelInvoke(nameof(SpawnProps));
     }
 

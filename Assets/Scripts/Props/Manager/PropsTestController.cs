@@ -17,7 +17,7 @@ public class PropsTestController : MonoBehaviour
     {
         if (isNeedDestroedSelf)
         {
-            Destroy(gameObject); // 销毁挂载的对象
+            Destroy(gameObject); // 閿�姣佹寕杞界殑瀵硅薄
         }
     }
 }

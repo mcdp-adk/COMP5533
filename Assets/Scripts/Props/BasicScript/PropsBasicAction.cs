@@ -15,15 +15,15 @@ public class PropsBasicAction : MonoBehaviour
     [Header("Setting")]
     [SerializeField] private float weight = 1.0f;
     [SerializeField] private float value = 1.0f;
-    [SerializeField] private float minReActiveTime = 0.5f;  // ×îĞ¡ÖØÖÃÊ±¼ä
-    [SerializeField] private float maxReActiveTime = 5f;  // ×î³¤¼¤»îÊ±¼ä
-    [SerializeField] private float maxActiveDurationTime = 3f;  // ×î³¤ĞîÁ¦Ê±¼ä
+    [SerializeField] private float minReActiveTime = 0.5f;  // æœ€å°é‡ç½®æ—¶é—´
+    [SerializeField] private float maxReActiveTime = 5f;  // æœ€é•¿æ¿€æ´»æ—¶é—´
+    [SerializeField] private float maxActiveDurationTime = 3f;  // æœ€é•¿è“„åŠ›æ—¶é—´
 
     [Header("Parameters")]
-    [SerializeField] private LayerMask whatIsTriggerLayer; // ÉèÖÃ´¥·¢Í¼²ã
-    [SerializeField] private Collider activeCheckCollider; // Íâ²¿´«ÈëµÄÅö×²Æ÷
-    [SerializeField] private UnityEvent<float> onTriggeredAction; // ÔÊĞí´«Èë°´¼ü³ÖĞøÊ±¼ä
-    [SerializeField] private UnityEvent endTriggeredAction; // ÔÊĞí´«Èë°´¼ü³ÖĞøÊ±¼ä
+    [SerializeField] private LayerMask whatIsTriggerLayer; // è®¾ç½®è§¦å‘å›¾å±‚
+    [SerializeField] private Collider activeCheckCollider; // å¤–éƒ¨ä¼ å…¥çš„ç¢°æ’å™¨
+    [SerializeField] private UnityEvent<float> onTriggeredAction; // å…è®¸ä¼ å…¥æŒ‰é”®æŒç»­æ—¶é—´
+    [SerializeField] private UnityEvent endTriggeredAction; // å…è®¸ä¼ å…¥æŒ‰é”®æŒç»­æ—¶é—´
 
     [Header("BindWithCharacter")]
     private Transform bindTargetPoint;
@@ -31,8 +31,8 @@ public class PropsBasicAction : MonoBehaviour
     [Header("ActiveFunction")]
     private float pressDurationTime = 0;
     private float activeStartTime = 0;
-    private float buttonPressStartTime; // ¼ÇÂ¼°´¼ü°´ÏÂµÄÊ±¼ä´Á
-    private bool isButtonPressed = false; // ¼ÇÂ¼°´Å¥ÊÇ·ñ±»°´ÏÂ
+    private float buttonPressStartTime; // è®°å½•æŒ‰é”®æŒ‰ä¸‹çš„æ—¶é—´æˆ³
+    private bool isButtonPressed = false; // è®°å½•æŒ‰é’®æ˜¯å¦è¢«æŒ‰ä¸‹
 
     public delegate void DestroyedHandler(GameObject destroyedObject);
     public event DestroyedHandler OnDestroyed;
@@ -41,15 +41,15 @@ public class PropsBasicAction : MonoBehaviour
     [SerializeField] private bool isBlocked = false;
     [SerializeField] private bool isActived = false;
     [SerializeField] private bool isBound = false;
-    [SerializeField] private PropState currentState = PropState.Default; // ÎïÌåµÄµ±Ç°×´Ì¬
-    [SerializeField] private PropState lastState = PropState.Default;  // ÎïÌåµÄÇ°ÖÃ×´Ì¬
+    [SerializeField] private PropState currentState = PropState.Default; // ç‰©ä½“çš„å½“å‰çŠ¶æ€
+    [SerializeField] private PropState lastState = PropState.Default;  // ç‰©ä½“çš„å‰ç½®çŠ¶æ€
 
     private enum PropState
     {
-        Default, // Ä¬ÈÏ×´Ì¬
-        Held,    // ±»³ÖÓĞ×´Ì¬
-        Activated, // ±»¼¤»î×´Ì¬
-        Block    // ±»Ëø¶¨×´Ì¬
+        Default, // é»˜è®¤çŠ¶æ€
+        Held,    // è¢«æŒæœ‰çŠ¶æ€
+        Activated, // è¢«æ¿€æ´»çŠ¶æ€
+        Block    // è¢«é”å®šçŠ¶æ€
     }
 
     void Start()
@@ -66,24 +66,24 @@ public class PropsBasicAction : MonoBehaviour
 
     #region Runtime Working
     /// <summary>
-    /// ´¦Àí°ó¶¨Ä¿±êµãµÄÂß¼­
+    /// å¤„ç†ç»‘å®šç›®æ ‡ç‚¹çš„é€»è¾‘
     /// </summary>
     /// 
     private void OnTriggerEnter(Collider other)
     {
-        if (((1 << other.gameObject.layer) & whatIsTriggerLayer) != 0)  // ¼ì²éÊÇ·ñÊôÓÚÖ¸¶¨Í¼²ã
+        if (((1 << other.gameObject.layer) & whatIsTriggerLayer) != 0)  // æ£€æŸ¥æ˜¯å¦å±äºæŒ‡å®šå›¾å±‚
         {
-            isTouchTriggerLayer = true;  // ÉèÖÃ±êÖ¾
-            Debug.Log("ÎïÌåÅöµ½ÁËÖ¸¶¨Í¼²ã: " + whatIsTriggerLayer);
+            isTouchTriggerLayer = true;  // è®¾ç½®æ ‡å¿—
+            Debug.Log("ç‰©ä½“ç¢°åˆ°äº†æŒ‡å®šå›¾å±‚: " + whatIsTriggerLayer);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (((1 << other.gameObject.layer) & whatIsTriggerLayer) != 0)  // ¼ì²éÊÇ·ñÊôÓÚÖ¸¶¨Í¼²ã
+        if (((1 << other.gameObject.layer) & whatIsTriggerLayer) != 0)  // æ£€æŸ¥æ˜¯å¦å±äºæŒ‡å®šå›¾å±‚
         {
-            isTouchTriggerLayer = false;  // ÉèÖÃ±êÖ¾
-            Debug.Log("ÎïÌåÀë¿ªÁËÖ¸¶¨Í¼²ã: " + whatIsTriggerLayer);
+            isTouchTriggerLayer = false;  // è®¾ç½®æ ‡å¿—
+            Debug.Log("ç‰©ä½“ç¦»å¼€äº†æŒ‡å®šå›¾å±‚: " + whatIsTriggerLayer);
         }
     }
     #endregion
@@ -98,8 +98,8 @@ public class PropsBasicAction : MonoBehaviour
         else
         {
             rb.useGravity = false;
-            rb.velocity = Vector3.zero; // ·ÀÖ¹ÎïÌåÔÚÊ°È¡Ê±ÓĞ²ĞÁôËÙ¶È
-            rb.angularVelocity = Vector3.zero; // Çå³ıĞı×ªËÙ¶È
+            rb.velocity = Vector3.zero; // é˜²æ­¢ç‰©ä½“åœ¨æ‹¾å–æ—¶æœ‰æ®‹ç•™é€Ÿåº¦
+            rb.angularVelocity = Vector3.zero; // æ¸…é™¤æ—‹è½¬é€Ÿåº¦
         }
     }
     #endregion
@@ -109,27 +109,27 @@ public class PropsBasicAction : MonoBehaviour
     {
         if (isBlocked)
         {
-            currentState = PropState.Block; // ÇĞ»»µ½¡°±»¼¤»î¡±×´Ì¬
+            currentState = PropState.Block; // åˆ‡æ¢åˆ°â€œè¢«æ¿€æ´»â€çŠ¶æ€
         }
         else if (isActived)
         {
             if (currentState != PropState.Activated)
             {
-                onTriggeredAction?.Invoke(pressDurationTime);  // ´¥·¢¼È¶¨½Å±¾
+                onTriggeredAction?.Invoke(pressDurationTime);  // è§¦å‘æ—¢å®šè„šæœ¬
                 activeStartTime = Time.time;
-                pressDurationTime = 0;  // ÖØÖÃÊ±¼ä
+                pressDurationTime = 0;  // é‡ç½®æ—¶é—´
             }
 
-            if (isBound)  // ´¦Àí°ó¶¨Ëø¶¨
+            if (isBound)  // å¤„ç†ç»‘å®šé”å®š
             {
                 DropFunction();
             }
 
-            currentState = PropState.Activated; // ÇĞ»»µ½¡°±»¼¤»î¡±×´Ì¬
+            currentState = PropState.Activated; // åˆ‡æ¢åˆ°â€œè¢«æ¿€æ´»â€çŠ¶æ€
         }
         else if (isBound)
         {
-            currentState = PropState.Held; // ÇĞ»»µ½¡°±»³ÖÓĞ¡±×´Ì¬
+            currentState = PropState.Held; // åˆ‡æ¢åˆ°â€œè¢«æŒæœ‰â€çŠ¶æ€
         }
         else
         {
@@ -141,89 +141,89 @@ public class PropsBasicAction : MonoBehaviour
     {
         if (currentState == PropState.Default)
         {
-            isEnableGrivaty = true;  // ½ûÓÃÖØÁ¦
+            isEnableGrivaty = true;  // ç¦ç”¨é‡åŠ›
         }
         else if (currentState == PropState.Block)
         {
-            isEnableGrivaty = false;  // ½ûÓÃÖØÁ¦
+            isEnableGrivaty = false;  // ç¦ç”¨é‡åŠ›
         }
         else if (currentState == PropState.Activated)
         {
-            if (Time.time - activeStartTime > minReActiveTime)  // Åöµ½Ö¸¶¨Í¼²ãÍË³ö
+            if (Time.time - activeStartTime > minReActiveTime)  // ç¢°åˆ°æŒ‡å®šå›¾å±‚é€€å‡º
             {
                 if (isTouchTriggerLayer)
                 {
-                    endTriggeredAction?.Invoke();  // ´¥·¢¼È¶¨½Å±¾
+                    endTriggeredAction?.Invoke();  // è§¦å‘æ—¢å®šè„šæœ¬
                     isActived = false;
                 }
             }
-            else if (Time.time - activeStartTime > maxReActiveTime)  // Åöµ½Ö¸¶¨Í¼²ãÍË³ö
+            else if (Time.time - activeStartTime > maxReActiveTime)  // ç¢°åˆ°æŒ‡å®šå›¾å±‚é€€å‡º
             {
                 isActived = false;
             }    
 
-            isEnableGrivaty = true;  // ½ûÓÃÖØÁ¦
+            isEnableGrivaty = true;  // ç¦ç”¨é‡åŠ›
         }
         else if (currentState == PropState.Held)
         {
-            if (bindTargetPoint == null)  // ±ÜÃâ³öÏÖ¿ÕÎïÌå´íÎó
+            if (bindTargetPoint == null)  // é¿å…å‡ºç°ç©ºç‰©ä½“é”™è¯¯
             {
                 DropFunction();
-                currentState = PropState.Default; // ÇĞ»»µ½Ä¬ÈÏ×´Ì¬
+                currentState = PropState.Default; // åˆ‡æ¢åˆ°é»˜è®¤çŠ¶æ€
                 return;
             }
 
             transform.position = bindTargetPoint.position;
             transform.rotation = bindTargetPoint.rotation;
-            isEnableGrivaty = false;  // ½ûÓÃÖØÁ¦
+            isEnableGrivaty = false;  // ç¦ç”¨é‡åŠ›
         }
     }
     #endregion
 
     #region ActiveButton
     /// <summary>
-    /// µ±°´¼ü±»°´ÏÂÊ±µ÷ÓÃ
+    /// å½“æŒ‰é”®è¢«æŒ‰ä¸‹æ—¶è°ƒç”¨
     /// </summary>
     public void ActivateButtonPressed()
     {
-        buttonPressStartTime = Time.time; // ¼ÇÂ¼µ±Ç°Ê±¼ä
+        buttonPressStartTime = Time.time; // è®°å½•å½“å‰æ—¶é—´
         isButtonPressed = true;
     }
 
     /// <summary>
-    /// µ±°´¼üËÉ¿ª»ò°´ÏÂÊ±¼ä¹ı³¤ºóµ÷ÓÃ
+    /// å½“æŒ‰é”®æ¾å¼€æˆ–æŒ‰ä¸‹æ—¶é—´è¿‡é•¿åè°ƒç”¨
     /// </summary>
     public void ActivateButtonRelease()
     {
         if (isButtonPressed)
         {
-            float pressDuration = Time.time - buttonPressStartTime; // ¼ÆËã°´×¡Ê±¼ä
-            Debug.Log("¼¤»î°´¼ü°´ÏÂµÄÊ±¼äÊÇ£º" + pressDuration);
+            float pressDuration = Time.time - buttonPressStartTime; // è®¡ç®—æŒ‰ä½æ—¶é—´
+            Debug.Log("æ¿€æ´»æŒ‰é”®æŒ‰ä¸‹çš„æ—¶é—´æ˜¯ï¼š" + pressDuration);
 
-            if (pressDuration > maxActiveDurationTime)  // ÏŞÖÆ×î´óÊ±¼ä
+            if (pressDuration > maxActiveDurationTime)  // é™åˆ¶æœ€å¤§æ—¶é—´
             {
                 pressDuration = maxActiveDurationTime;
             }
 
             isButtonPressed = false;
-            ActivateButtonTriggered(pressDuration); // ´¥·¢ÊÂ¼ş²¢´«Èë³ÖĞøÊ±¼ä
+            ActivateButtonTriggered(pressDuration); // è§¦å‘äº‹ä»¶å¹¶ä¼ å…¥æŒç»­æ—¶é—´
         }
     }
 
     /// <summary>
-    /// ´¥·¢°ó¶¨µÄ UnityEvent£¬²¢´«Èë°´Å¥°´ÏÂÊ±¼ä
+    /// è§¦å‘ç»‘å®šçš„ UnityEventï¼Œå¹¶ä¼ å…¥æŒ‰é’®æŒ‰ä¸‹æ—¶é—´
     /// </summary>
     private void ActivateButtonTriggered(float pressDuration)
     {
         pressDurationTime = pressDuration;
-        //currentState = PropState.Activated; // ÇĞ»»µ½¡°±»¼¤»î¡±×´Ì¬
+        //currentState = PropState.Activated; // åˆ‡æ¢åˆ°â€œè¢«æ¿€æ´»â€çŠ¶æ€
         isActived = true;
     }
     #endregion
 
     #region PickUp & Drop
     /// <summary>
-    /// °ó¶¨Ä¿±ê Transform
+    /// ç»‘å®šç›®æ ‡ Transform
     /// </summary>
     public void PickUpFunction(Transform target)
     {
@@ -232,19 +232,19 @@ public class PropsBasicAction : MonoBehaviour
             bindTargetPoint = target;
             isBound = true;
             //isEnableGrivaty = false;
-            //currentState = PropState.Held; // ÇĞ»»µ½¡°±»³ÖÓĞ¡±×´Ì¬
+            //currentState = PropState.Held; // åˆ‡æ¢åˆ°â€œè¢«æŒæœ‰â€çŠ¶æ€
         }
     }
 
     /// <summary>
-    /// ½â°óÄ¿±ê Transform
+    /// è§£ç»‘ç›®æ ‡ Transform
     /// </summary>
     public void DropFunction()
     {
         isBound = false;
         //isEnableGrivaty = true;
         bindTargetPoint = null;
-        //currentState = PropState.Default; // ÇĞ»»»Ø¡°Ä¬ÈÏ¡±×´Ì¬
+        //currentState = PropState.Default; // åˆ‡æ¢å›â€œé»˜è®¤â€çŠ¶æ€
     }
     #endregion
 
@@ -263,8 +263,8 @@ public class PropsBasicAction : MonoBehaviour
     #region
     public void OnDestroy()
     {
-        Debug.Log("¼ì²âµ½ÁËÎïÌå±»Ïú»Ù¡£");
-        OnDestroyed?.Invoke(gameObject); // ´¥·¢ÊÂ¼ş
+        Debug.Log("æ£€æµ‹åˆ°äº†ç‰©ä½“è¢«é”€æ¯ã€‚");
+        OnDestroyed?.Invoke(gameObject); // è§¦å‘äº‹ä»¶
     }
     #endregion
 }

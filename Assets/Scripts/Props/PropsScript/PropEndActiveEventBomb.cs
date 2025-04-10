@@ -6,50 +6,50 @@ using UnityEngine.Events;
 public class PropEndActiveEventBomb : MonoBehaviour
 {
     [Header("Explosion Settings")]
-    [SerializeField] private GameObject explosionEffectPrefab; // ±¬Õ¨Ğ§¹ûµÄÔ¤ÖÆÌå
-    [SerializeField] private float explosionDuration = 3f;    // ±¬Õ¨Ğ§¹û³ÖĞøÊ±¼ä
-    [SerializeField] private float explosionRange = 5f;  // ±¬Õ¨·¶Î§
-    [SerializeField] private float explosionDamage = 100f;  // ±¬Õ¨·¶Î§
-    [SerializeField] private string[] targetTags; // ±¬Õ¨·¶Î§ÄÚÄ¿±ê¶ÔÏóµÄ±êÇ©Êı×é
+    [SerializeField] private GameObject explosionEffectPrefab; // çˆ†ç‚¸æ•ˆæœçš„é¢„åˆ¶ä½“
+    [SerializeField] private float explosionDuration = 3f;    // çˆ†ç‚¸æ•ˆæœæŒç»­æ—¶é—´
+    [SerializeField] private float explosionRange = 5f;  // çˆ†ç‚¸èŒƒå›´
+    [SerializeField] private float explosionDamage = 100f;  // çˆ†ç‚¸èŒƒå›´
+    [SerializeField] private string[] targetTags; // çˆ†ç‚¸èŒƒå›´å†…ç›®æ ‡å¯¹è±¡çš„æ ‡ç­¾æ•°ç»„
 
     /// <summary>
-    /// ±¬Õ¨´¥·¢º¯Êı
+    /// çˆ†ç‚¸è§¦å‘å‡½æ•°
     /// </summary>
     public void BombExplosion()
     {
-        Debug.Log("½øÈë±¬Õ¨Ğ§¹û£¬¼ì²âÔ¤ÖÆ¼şµÄ½á¹ûÎª£º" + (explosionEffectPrefab != null));
-        // ÏÔÊ¾±¬Õ¨Ğ§¹û
+        Debug.Log("è¿›å…¥çˆ†ç‚¸æ•ˆæœï¼Œæ£€æµ‹é¢„åˆ¶ä»¶çš„ç»“æœä¸ºï¼š" + (explosionEffectPrefab != null));
+        // æ˜¾ç¤ºçˆ†ç‚¸æ•ˆæœ
         if (explosionEffectPrefab != null)
         {
             GameObject explosionEffect = Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
-            Destroy(explosionEffect, explosionDuration); // ÔÚ±¬Õ¨Ğ§¹û³ÖĞøÊ±¼äºóÏú»Ù
-            Debug.Log("±¬Õ¨Ğ§¹û½áÊø£¡");
+            Destroy(explosionEffect, explosionDuration); // åœ¨çˆ†ç‚¸æ•ˆæœæŒç»­æ—¶é—´åé”€æ¯
+            Debug.Log("çˆ†ç‚¸æ•ˆæœç»“æŸï¼");
         }
         else
         {
-            Debug.LogWarning("±¬Õ¨Ğ§¹ûÔ¤ÖÆÌåÎ´ÉèÖÃ£¡");
+            Debug.LogWarning("çˆ†ç‚¸æ•ˆæœé¢„åˆ¶ä½“æœªè®¾ç½®ï¼");
         }
 
-        // ¼ì²â±¬Õ¨·¶Î§ÄÚµÄÄ¿±ê¶ÔÏó²¢Ö±½ÓÏú»Ù·ûºÏ±êÇ©µÄ¶ÔÏó
+        // æ£€æµ‹çˆ†ç‚¸èŒƒå›´å†…çš„ç›®æ ‡å¯¹è±¡å¹¶ç›´æ¥é”€æ¯ç¬¦åˆæ ‡ç­¾çš„å¯¹è±¡
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, explosionRange);
         foreach (Collider hitCollider in hitColliders)
         {
-            // ¼ì²é¶ÔÏóÊÇ·ñÆ¥ÅäÈÎÒâÒ»¸öÄ¿±ê±êÇ©
+            // æ£€æŸ¥å¯¹è±¡æ˜¯å¦åŒ¹é…ä»»æ„ä¸€ä¸ªç›®æ ‡æ ‡ç­¾
             foreach (string tag in targetTags)
             {
                 if (hitCollider.CompareTag(tag))
                 {
-                    // Ïú»Ù·ûºÏ±êÇ©µÄ¶ÔÏó
-                    Debug.Log($"Ïú»Ù´øÓĞ±êÇ© {tag} µÄ¶ÔÏó: {hitCollider.gameObject.name}");
-                    Destroy(hitCollider.gameObject); // Ö±½ÓÏú»Ù¶ÔÏó
-                    break; // ·ÀÖ¹ÖØ¸´´¦ÀíÍ¬Ò»¸ö¶ÔÏó
+                    // é”€æ¯ç¬¦åˆæ ‡ç­¾çš„å¯¹è±¡
+                    Debug.Log($"é”€æ¯å¸¦æœ‰æ ‡ç­¾ {tag} çš„å¯¹è±¡: {hitCollider.gameObject.name}");
+                    Destroy(hitCollider.gameObject); // ç›´æ¥é”€æ¯å¯¹è±¡
+                    break; // é˜²æ­¢é‡å¤å¤„ç†åŒä¸€ä¸ªå¯¹è±¡
                 }
             }
         }
 
 
-        Debug.Log("É¾³ı×ÔÉí");
-        // É¾³ı×ÔÉíÎïÌå
+        Debug.Log("åˆ é™¤è‡ªèº«");
+        // åˆ é™¤è‡ªèº«ç‰©ä½“
         Destroy(gameObject);
     }
 }

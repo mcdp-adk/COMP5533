@@ -5,44 +5,44 @@ using UnityEngine;
 public class BombEffectTest : MonoBehaviour
 {
     [Header("Explosion Settings")]
-    public float maxScale = 5f;           // Ô²Çò×î´ó´óĞ¡
-    public float growthDuration = 2f;    // ·Å´ó¹ı³Ì³ÖĞøÊ±¼ä
-    public float disappearDelay = 0.5f;  // Ô²ÇòÔÚ×î´ó´óĞ¡Í£ÁôÊ±¼äºóÏûÊ§
+    public float maxScale = 5f;           // åœ†çƒæœ€å¤§å¤§å°
+    public float growthDuration = 2f;    // æ”¾å¤§è¿‡ç¨‹æŒç»­æ—¶é—´
+    public float disappearDelay = 0.5f;  // åœ†çƒåœ¨æœ€å¤§å¤§å°åœç•™æ—¶é—´åæ¶ˆå¤±
 
-    public GameObject explosionParticles; // ±¬Õ¨Ğ§¹ûµÄÁ£×ÓÏµÍ³Ô¤ÖÆÌå
+    public GameObject explosionParticles; // çˆ†ç‚¸æ•ˆæœçš„ç²’å­ç³»ç»Ÿé¢„åˆ¶ä½“
 
     void Start()
     {
-        // ¿ªÊ¼·Å´óÔ²Çò
+        // å¼€å§‹æ”¾å¤§åœ†çƒ
         StartCoroutine(GrowAndExplode());
     }
 
     private IEnumerator GrowAndExplode()
     {
         float elapsedTime = 0f;
-        Vector3 initialScale = transform.localScale; // Ô²ÇòµÄ³õÊ¼´óĞ¡
+        Vector3 initialScale = transform.localScale; // åœ†çƒçš„åˆå§‹å¤§å°
 
-        // Ô²ÇòÖğ½¥·Å´ó
+        // åœ†çƒé€æ¸æ”¾å¤§
         while (elapsedTime < growthDuration)
         {
             transform.localScale = Vector3.Lerp(initialScale, Vector3.one * maxScale, elapsedTime / growthDuration);
-            elapsedTime += Time.deltaTime; // ¸üĞÂÊ±¼ä
-            yield return null; // µÈ´ıÏÂÒ»Ö¡
+            elapsedTime += Time.deltaTime; // æ›´æ–°æ—¶é—´
+            yield return null; // ç­‰å¾…ä¸‹ä¸€å¸§
         }
 
-        // È·±£Ô²Çò´ïµ½×î´ó´óĞ¡
+        // ç¡®ä¿åœ†çƒè¾¾åˆ°æœ€å¤§å¤§å°
         transform.localScale = Vector3.one * maxScale;
 
-        // Í£ÁôÒ»¶ÎÊ±¼ä
+        // åœç•™ä¸€æ®µæ—¶é—´
         yield return new WaitForSeconds(disappearDelay);
 
-        // ÏÔÊ¾±¬Õ¨Ğ§¹û
+        // æ˜¾ç¤ºçˆ†ç‚¸æ•ˆæœ
         if (explosionParticles != null)
         {
             Instantiate(explosionParticles, transform.position, Quaternion.identity);
         }
 
-        // Ïú»ÙÔ²Çò
+        // é”€æ¯åœ†çƒ
         Destroy(gameObject);
     }
 }

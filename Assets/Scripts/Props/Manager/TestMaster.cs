@@ -5,18 +5,18 @@ using UnityEngine;
 public class TestMaster : MonoBehaviour
 {
     [Header("References")]
-    public PropsBasicAction propsAction; // °ó¶¨ `PropsBasicAction` ×é¼ş
+    public PropsBasicAction propsAction; // ç»‘å®š `PropsBasicAction` ç»„ä»¶
     public Transform targetBindObj;
 
     void Start()
     {
         if (propsAction == null)
         {
-            Debug.LogError("PropsBasicAction Î´¸³Öµ£¬ÇëÔÚ Inspector ÖĞ°ó¶¨¶ÔÏó£¡");
+            Debug.LogError("PropsBasicAction æœªèµ‹å€¼ï¼Œè¯·åœ¨ Inspector ä¸­ç»‘å®šå¯¹è±¡ï¼");
         }
         else
         {
-            Debug.Log("¿ªÊ¼²âÊÔÅ×³ö½Å±¾¡£");
+            Debug.Log("å¼€å§‹æµ‹è¯•æŠ›å‡ºè„šæœ¬ã€‚");
         }
     }
 
@@ -31,23 +31,23 @@ public class TestMaster : MonoBehaviour
     {
         if (propsAction != null)
         {
-            // µ±Êó±ê×ó¼ü°´ÏÂÊ±£¬µ÷ÓÃ ActivateButtonPressed
+            // å½“é¼ æ ‡å·¦é”®æŒ‰ä¸‹æ—¶ï¼Œè°ƒç”¨ ActivateButtonPressed
             if (Input.GetMouseButtonDown(0))
             {
                 propsAction.ActivateButtonPressed();
-                Debug.Log("Êó±ê×ó¼ü°´ÏÂ£ºµ÷ÓÃ ActivateButtonPressed()");
+                Debug.Log("é¼ æ ‡å·¦é”®æŒ‰ä¸‹ï¼šè°ƒç”¨ ActivateButtonPressed()");
             }
 
-            // µ±Êó±ê×ó¼üËÉ¿ªÊ±£¬µ÷ÓÃ ActivateButtonRelease
+            // å½“é¼ æ ‡å·¦é”®æ¾å¼€æ—¶ï¼Œè°ƒç”¨ ActivateButtonRelease
             if (Input.GetMouseButtonUp(0))
             {
                 propsAction.ActivateButtonRelease();
-                Debug.Log("Êó±ê×ó¼üËÉ¿ª£ºµ÷ÓÃ ActivateButtonRelease()");
+                Debug.Log("é¼ æ ‡å·¦é”®æ¾å¼€ï¼šè°ƒç”¨ ActivateButtonRelease()");
             }
         }
         else
         {
-            Debug.LogWarning("PropsBasicAction Î´°ó¶¨£¬ÇëÔÚ Inspector ÖĞÖ¸¶¨¶ÔÏó£¡");
+            Debug.LogWarning("PropsBasicAction æœªç»‘å®šï¼Œè¯·åœ¨ Inspector ä¸­æŒ‡å®šå¯¹è±¡ï¼");
         }
     }
 
@@ -55,17 +55,17 @@ public class TestMaster : MonoBehaviour
     {
         if (targetBindObj != null)
         {
-            // µ±Êó±ê×ó¼ü°´ÏÂÊ±£¬µ÷ÓÃ ActivateButtonPressed
+            // å½“é¼ æ ‡å·¦é”®æŒ‰ä¸‹æ—¶ï¼Œè°ƒç”¨ ActivateButtonPressed
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 propsAction.PickUpFunction(targetBindObj);
-                Debug.Log("Êó±ê×ó¼ü°´ÏÂ£ºµ÷ÓÃ ActivateButtonPressed()");
+                Debug.Log("é¼ æ ‡å·¦é”®æŒ‰ä¸‹ï¼šè°ƒç”¨ ActivateButtonPressed()");
             }
 
             if (Input.GetKeyDown(KeyCode.W))
             {
                 propsAction.DropFunction();
-                Debug.Log("Êó±ê×ó¼ü°´ÏÂ£ºµ÷ÓÃ ActivateButtonPressed()");
+                Debug.Log("é¼ æ ‡å·¦é”®æŒ‰ä¸‹ï¼šè°ƒç”¨ ActivateButtonPressed()");
             }
         }
     }

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// ÎïÌå±»ÈÓ³öµÄÂß¼­
+/// ç‰©ä½“è¢«æ‰”å‡ºçš„é€»è¾‘
 /// </summary>
 public class PropTriggerEventThrow : MonoBehaviour
 {
     [Header("Throw Settings")]
-    public float baseThrowForce = 10f;  // »ù´¡Å×³öÁ¦
-    public Vector3 throwDirection = new Vector3(0.5f, 1f, 0f); // Ğ±ÏòÇ°ÉÏ·½Å×³ö·½Ïò
-    public float randomTorqueRange = 5f; // Ëæ»úĞı×ªÁ¦·¶Î§
+    public float baseThrowForce = 10f;  // åŸºç¡€æŠ›å‡ºåŠ›
+    public Vector3 throwDirection = new Vector3(0.5f, 1f, 0f); // æ–œå‘å‰ä¸Šæ–¹æŠ›å‡ºæ–¹å‘
+    public float randomTorqueRange = 5f; // éšæœºæ—‹è½¬åŠ›èŒƒå›´
 
     private Rigidbody rb;
 
@@ -20,36 +20,36 @@ public class PropTriggerEventThrow : MonoBehaviour
 
         if (rb == null)
         {
-            Debug.LogWarning("Ã»ÓĞÕÒµ½ Rigidbody ×é¼ş£¬ÎïÌåÎŞ·¨±»ÈÓ³ö£¡");
+            Debug.LogWarning("æ²¡æœ‰æ‰¾åˆ° Rigidbody ç»„ä»¶ï¼Œç‰©ä½“æ— æ³•è¢«æ‰”å‡ºï¼");
         }
     }
 
     /// <summary>
-    /// ÎïÌå±»ÈÓ³ö£¬forceWeight Ó°ÏìÅ×³öµÄÇ¿¶È
+    /// ç‰©ä½“è¢«æ‰”å‡ºï¼ŒforceWeight å½±å“æŠ›å‡ºçš„å¼ºåº¦
     /// </summary>
-    /// <param name="forceWeight">Å×³öÁ¦¶ÈÈ¨ÖØ£¬Ó°Ïì¾àÀëÔ¶½ü</param>
+    /// <param name="forceWeight">æŠ›å‡ºåŠ›åº¦æƒé‡ï¼Œå½±å“è·ç¦»è¿œè¿‘</param>
     public void ThrowOut(float forceWeight)
     {
-        Debug.Log($"º¯Êı±»µ÷ÓÃ£¡Á¦¶È: {forceWeight}");
+        Debug.Log($"å‡½æ•°è¢«è°ƒç”¨ï¼åŠ›åº¦: {forceWeight}");
 
         if (rb != null)
         {
             float finalThrowForce = baseThrowForce * forceWeight;
 
-            // Ê©¼ÓÁ¦£¬Ê¹ÎïÌåÑØĞ±ÏòÇ°ÉÏ·½Å×³ö
+            // æ–½åŠ åŠ›ï¼Œä½¿ç‰©ä½“æ²¿æ–œå‘å‰ä¸Šæ–¹æŠ›å‡º
             rb.AddForce(throwDirection.normalized * finalThrowForce, ForceMode.Impulse);
 
-            // Éú³ÉËæ»úµÄĞı×ªÁ¦
+            // ç”Ÿæˆéšæœºçš„æ—‹è½¬åŠ›
             Vector3 randomTorque = new Vector3(
                 Random.Range(-randomTorqueRange, randomTorqueRange),
                 Random.Range(-randomTorqueRange, randomTorqueRange),
                 Random.Range(-randomTorqueRange, randomTorqueRange)
             );
 
-            // Ê©¼ÓĞı×ªÁ¦
+            // æ–½åŠ æ—‹è½¬åŠ›
             rb.AddTorque(randomTorque, ForceMode.Impulse);
 
-            Debug.Log($"ÎïÌå±»ÈÓ³ö²¢Ëæ»úĞı×ª£¡Á¦¶È: {finalThrowForce}£¬Ğı×ªÁ¦: {randomTorque}");
+            Debug.Log($"ç‰©ä½“è¢«æ‰”å‡ºå¹¶éšæœºæ—‹è½¬ï¼åŠ›åº¦: {finalThrowForce}ï¼Œæ—‹è½¬åŠ›: {randomTorque}");
         }
     }
 }
