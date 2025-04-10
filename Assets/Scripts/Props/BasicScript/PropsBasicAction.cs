@@ -23,6 +23,7 @@ public class PropsBasicAction : MonoBehaviour
     [Header("Parameters")]
     [SerializeField] private LayerMask whatIsTriggerLayer; // 设置触发图层
     [SerializeField] private Collider activeCheckCollider; // 外部传入的碰撞器
+    [SerializeField] private UnityEvent<float> duringTriggeredAction; // 允许传入按键持续时间
     [SerializeField] private UnityEvent<float> onTriggeredAction; // 允许传入按键持续时间
     [SerializeField] private UnityEvent endTriggeredAction; // 允许传入按键持续时间
 
@@ -30,7 +31,8 @@ public class PropsBasicAction : MonoBehaviour
     private Transform bindTargetPoint;
 
     [Header("ActiveFunction")]
-    private float pressDurationTime = 0;
+    private float pressDurationTimeMidterm = 0;  // 按下按键持续时间
+    private float pressDurationTimeClosing = 0;
     private float activeStartTime = 0;
     private float buttonPressStartTime; // 记录按键按下的时间戳
     private bool isButtonPressed = false; // 记录按钮是否被按下
@@ -69,7 +71,6 @@ public class PropsBasicAction : MonoBehaviour
     /// <summary>
     /// 处理绑定目标点的逻辑
     /// </summary>
-    /// 
     private void OnTriggerEnter(Collider other)
     {
         if (((1 << other.gameObject.layer) & whatIsTriggerLayer) != 0)  // 检查是否属于指定图层
@@ -86,6 +87,18 @@ public class PropsBasicAction : MonoBehaviour
             isTouchTriggerLayer = false;  // 设置标志
             Debug.Log("物体离开了指定图层: " + whatIsTriggerLayer);
         }
+    }
+
+    private void RunTimeEvent()
+    {
+        pressDurationTimeMidterm = Time.time - buttonPressStartTime; // 计算按住时间
+
+        if (pressDurationTimeMidterm > maxActiveDurationTime)  // 限制最大时间
+        {
+            pressDurationTimeMidterm = maxActiveDurationTime;
+        }
+
+        duringTriggeredAction?.Invoke(pressDurationTimeMidterm);  // 触发既定脚本
     }
     #endregion
 
@@ -116,9 +129,9 @@ public class PropsBasicAction : MonoBehaviour
         {
             if (currentState != PropState.Activated)
             {
-                onTriggeredAction?.Invoke(pressDurationTime);  // 触发既定脚本
+                onTriggeredAction?.Invoke(pressDurationTimeClosing);  // 触发既定脚本
                 activeStartTime = Time.time;
-                pressDurationTime = 0;  // 重置时间
+                pressDurationTimeClosing = 0;  // 重置时间
             }
 
             if (isBound)  // 处理绑定锁定
@@ -186,6 +199,11 @@ public class PropsBasicAction : MonoBehaviour
 
             SwitchCollidersState(false);  // 禁用碰撞箱
 
+            if (isButtonPressed)  // 处理按键按下后的运行逻辑
+            {
+                RunTimeEvent();
+            }
+
             transform.position = bindTargetPoint.position;
             transform.rotation = bindTargetPoint.rotation;
             isEnableGrivaty = false;  // 禁用重力
@@ -194,8 +212,6 @@ public class PropsBasicAction : MonoBehaviour
     #endregion
 
     #region Component Function
-
-    #endregion
     /// <summary>
     /// 开启或关闭碰撞箱避免错误
     /// </summary>
@@ -207,6 +223,7 @@ public class PropsBasicAction : MonoBehaviour
             collider.enabled = target;
         }
     }
+    #endregion
 
     #region ActiveButton
     /// <summary>
@@ -214,7 +231,8 @@ public class PropsBasicAction : MonoBehaviour
     /// </summary>
     public void ActivateButtonPressed()
     {
-        buttonPressStartTime = Time.time; // 记录当前时间
+        buttonPressStartTime = Time.time;  // 记录当前时间
+        pressDurationTimeMidterm = 0f;
         isButtonPressed = true;
     }
 
@@ -225,16 +243,17 @@ public class PropsBasicAction : MonoBehaviour
     {
         if (isButtonPressed)
         {
-            float pressDuration = Time.time - buttonPressStartTime; // 计算按住时间
-            Debug.Log("激活按键按下的时间是：" + pressDuration);
+            pressDurationTimeMidterm = Time.time - buttonPressStartTime; // 计算按住时间
+            Debug.Log("激活按键按下的时间是：" + pressDurationTimeMidterm);
 
-            if (pressDuration > maxActiveDurationTime)  // 限制最大时间
+            if (pressDurationTimeMidterm > maxActiveDurationTime)  // 限制最大时间
             {
-                pressDuration = maxActiveDurationTime;
+                pressDurationTimeMidterm = maxActiveDurationTime;
             }
 
             isButtonPressed = false;
-            ActivateButtonTriggered(pressDuration); // 触发事件并传入持续时间
+            ActivateButtonTriggered(pressDurationTimeMidterm); // 触发事件并传入持续时间
+            pressDurationTimeMidterm = 0f;
         }
     }
 
@@ -243,7 +262,7 @@ public class PropsBasicAction : MonoBehaviour
     /// </summary>
     private void ActivateButtonTriggered(float pressDuration)
     {
-        pressDurationTime = pressDuration;
+        pressDurationTimeClosing = pressDuration;
         //currentState = PropState.Activated; // 切换到“被激活”状态
         isActived = true;
     }
