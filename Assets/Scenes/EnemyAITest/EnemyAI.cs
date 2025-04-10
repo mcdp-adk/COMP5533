@@ -82,13 +82,13 @@ public class EnemyAI : MonoBehaviour
         }
 
         // ¸üÐÂ chasingEnemiesCount
-        if ((previousState == AIState.Chase || previousState == AIState.Attack) &&
-            (currentState != AIState.Chase && currentState != AIState.Attack))
+        if ((previousState == AIState.Chase || previousState == AIState.Attack || previousState == AIState.Investigate) &&
+            (currentState != AIState.Chase && currentState != AIState.Attack && currentState != AIState.Investigate))
         {
             chasingEnemiesCount--;
         }
-        else if ((previousState != AIState.Chase && previousState != AIState.Attack) &&
-                 (currentState == AIState.Chase || currentState == AIState.Attack))
+        else if ((previousState != AIState.Chase && previousState != AIState.Attack && previousState != AIState.Investigate) &&
+                 (currentState == AIState.Chase || currentState == AIState.Attack || currentState == AIState.Investigate))
         {
             chasingEnemiesCount++;
         }
