@@ -1,3 +1,4 @@
+using OpenCover.Framework.Model;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,11 +11,18 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     private CharacterController controller;
 
+    private GameObject currentProp; // 当前持有的道具
+
+    [SerializeField] private Vector3 cameraOffset = new(20f, 16f, -20f); // 测试摄像机 - 偏移量
+
     [Header("Player Settings")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private float rotationSpeed = 10f;
     // [SerializeField] private int playerIndex = 0; // 玩家索引，用于多人游戏
+
+    [Header("Props Settings")]
+    [SerializeField] private LayerMask whatIsProps; // 设置地面图层
 
     #region Unity Callbacks
 
@@ -34,6 +42,17 @@ public class PlayerController : MonoBehaviour
         HandleMovement();
         ApplyGravity();
         UpdateAnimator();
+
+        CameraFollowPlayer();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (((1 << other.gameObject.layer) & whatIsProps) != 0)
+        {
+            currentProp = other.gameObject; // 记录当前道具
+            currentProp.GetComponent<PropsBasicAction>().PickUpFunction(this.transform.Find("PropPosition").transform);
+        }
     }
 
     #endregion
@@ -97,6 +116,18 @@ public class PlayerController : MonoBehaviour
     private void UpdateAnimator()
     {
         animator.SetFloat("moveSpeed", moveInput.magnitude);
+    }
+
+    /// <summary>
+    /// 仅供测试：使摄像机跟随玩家
+    /// </summary>
+    private void CameraFollowPlayer()
+    {
+        if (cameraTransform != null && controller.isGrounded)
+        {
+            Vector3 targetPosition = transform.position + cameraOffset;
+            cameraTransform.position = Vector3.Lerp(cameraTransform.position, targetPosition, Time.deltaTime * 2f);
+        }
     }
 
     #endregion

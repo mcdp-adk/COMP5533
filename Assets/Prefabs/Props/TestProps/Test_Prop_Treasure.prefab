@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4131791164046342629}
   - component: {fileID: 8589557501299998670}
   - component: {fileID: 4287599231081058572}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: egypt-amphora-simple
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -119,7 +119,7 @@ GameObject:
   - component: {fileID: 499006506565494216}
   - component: {fileID: 4741641405294083091}
   - component: {fileID: 4486965030818417481}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Test_Prop_Treasure
   m_TagString: Untagged
   m_Icon: {fileID: 0}
