@@ -8,9 +8,10 @@ using UnityEngine;
 public class PropTriggerEventThrow : MonoBehaviour
 {
     [Header("Throw Settings")]
-    public float baseThrowForce = 10f;  // 基础抛出力
-    public Vector3 throwDirection = new Vector3(0.5f, 1f, 0f); // 斜向前上方抛出方向
-    public float randomTorqueRange = 5f; // 随机旋转力范围
+    [SerializeField] private float baseThrowForce = 10f;  // 基础抛出力
+    [SerializeField] private float randomTorqueRange = 5f; // 随机旋转力范围
+    [SerializeField] private float throwDirectionRatioUp = 4f; // 斜向前上方抛出方向
+    [SerializeField] private float throwDirectionRatioForward = 3f; // 斜向前上方抛出方向
 
     private Rigidbody rb;
 
@@ -36,8 +37,11 @@ public class PropTriggerEventThrow : MonoBehaviour
         {
             float finalThrowForce = baseThrowForce * forceWeight;
 
+            // 计算动态的抛出方向（前上方向）
+            Vector3 dynamicThrowDirection = (transform.forward * throwDirectionRatioForward + transform.up * throwDirectionRatioUp).normalized;
+
             // 施加力，使物体沿斜向前上方抛出
-            rb.AddForce(throwDirection.normalized * finalThrowForce, ForceMode.Impulse);
+            rb.AddForce(dynamicThrowDirection * finalThrowForce, ForceMode.Impulse);
 
             // 生成随机的旋转力
             Vector3 randomTorque = new Vector3(

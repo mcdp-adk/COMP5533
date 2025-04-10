@@ -62,7 +62,7 @@ public class TestMaster : MonoBehaviour
                 Debug.Log("鼠标左键按下：调用 ActivateButtonPressed()");
             }
 
-            if (Input.GetKeyDown(KeyCode.W))
+            if (Input.GetKeyDown(KeyCode.E))
             {
                 propsAction.DropFunction();
                 Debug.Log("鼠标左键按下：调用 ActivateButtonPressed()");
