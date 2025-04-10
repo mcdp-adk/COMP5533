@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
+using System;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(CharacterController))]
@@ -9,6 +11,10 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     private Animator animator;
     private CharacterController controller;
+    // 定义玩家死亡事件
+    public static event Action OnPlayerDeath;
+
+    private bool isDead = false; // 标志位
 
     [Header("Player Settings")]
     [SerializeField] private float moveSpeed = 5f;
@@ -31,6 +37,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (isDead) return; // 如果玩家已死亡，停止更新
+        // 处理玩家输入
         HandleMovement();
         ApplyGravity();
         UpdateAnimator();
@@ -52,6 +60,16 @@ public class PlayerController : MonoBehaviour
     public void SetPlayerIndex(int index)
     {
         playerIndex = index;
+    }
+    public void Die()
+    {
+        if (isDead) return; // 如果玩家已死亡，直接返回
+
+        isDead = true; // 设置标志位
+        // 触发玩家死亡事件
+        OnPlayerDeath?.Invoke();
+        // 销毁玩家对象
+        Destroy(gameObject);
     }
 
     #endregion
