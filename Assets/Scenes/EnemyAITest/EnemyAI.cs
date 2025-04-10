@@ -19,7 +19,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float attackDelay = 0.5f; // 攻击延迟时间
     [SerializeField] private LayerMask playerLayer; // 玩家层
     [SerializeField] private AudioSource attackAudioSource; // 攻击音效
-    [SerializeField] public int health = 100; // 敌人生命值
+    public float health = 100f; // 敌人生命值
 
     private NavMeshAgent agent;
     private Transform[] players;
@@ -248,8 +248,8 @@ public class EnemyAI : MonoBehaviour
     private void DeadBehavior()
     {
         agent.isStopped = true;
-        animator.CrossFade("Dying", 0.1f);
-        Destroy(gameObject, 2f);
+        animator.SetBool("Dying", true);
+        Destroy(gameObject, 4f);
     }
 
     // 可视化扇形视野（调试用）
