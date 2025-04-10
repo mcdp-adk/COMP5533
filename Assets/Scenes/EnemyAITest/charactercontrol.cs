@@ -51,17 +51,11 @@ public class CharactersControl : MonoBehaviour
         // 生成AI敌人
         for (int i = 0; i < numberOfEnemies; i++)
         {
-            // 随机选择一个生成点
-            Transform spawnPoint = enemySpawnPoints[Random.Range(0, enemySpawnPoints.Length)];
-            GameObject enemy = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
-
-            // 获取EnemyAI组件并设置巡逻点
-            EnemyAI enemyAI = enemy.GetComponent<EnemyAI>();
-            if (enemyAI != null)
-            {
-                enemyAI.patrolPoints = ShufflePatrolPoints(patrolPoints);
-            }
+            SpawnEnemy();
         }
+
+        // 开始检测敌人数量
+        StartCoroutine(CheckEnemyCount());
     }
 
     // 生成玩家
@@ -74,6 +68,21 @@ public class CharactersControl : MonoBehaviour
         {
             virtualCamera.Follow = player.transform;
             virtualCamera.LookAt = player.transform;
+        }
+    }
+
+    // 生成敌人
+    private void SpawnEnemy()
+    {
+        // 随机选择一个生成点
+        Transform spawnPoint = enemySpawnPoints[Random.Range(0, enemySpawnPoints.Length)];
+        GameObject enemy = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
+
+        // 获取EnemyAI组件并设置巡逻点
+        EnemyAI enemyAI = enemy.GetComponent<EnemyAI>();
+        if (enemyAI != null)
+        {
+            enemyAI.patrolPoints = ShufflePatrolPoints(patrolPoints);
         }
     }
 
@@ -102,5 +111,24 @@ public class CharactersControl : MonoBehaviour
             shuffledPoints[randomIndex] = temp;
         }
         return shuffledPoints;
+    }
+
+    // 检测敌人数量并在数量低于设定数量时重新生成敌人
+    private IEnumerator CheckEnemyCount()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(5f);
+
+            int currentEnemyCount = GameObject.FindGameObjectsWithTag("enemy").Length;
+            if (currentEnemyCount < numberOfEnemies)
+            {
+                int enemiesToSpawn = numberOfEnemies - currentEnemyCount;
+                for (int i = 0; i < enemiesToSpawn; i++)
+                {
+                    SpawnEnemy();
+                }
+            }
+        }
     }
 }

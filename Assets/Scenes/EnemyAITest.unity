@@ -2119,7 +2119,7 @@ MonoBehaviour:
   - {fileID: 845962688}
   - {fileID: 573276659}
   - {fileID: 1150076401}
-  numberOfEnemies: 5
+  numberOfEnemies: 4
   patrolPoints:
   - {fileID: 145578931}
   - {fileID: 803097246}

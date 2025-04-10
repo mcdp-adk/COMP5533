@@ -20,6 +20,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private LayerMask playerLayer; // 玩家层
     //[SerializeField] private AudioSource walkAudioSource; // 走路音效
     [SerializeField] private AudioSource attackAudioSource; // 攻击音效
+    [SerializeField] public int health = 100; // 敌人生命值
 
     private NavMeshAgent agent;
     private Transform[] players;
@@ -29,13 +30,12 @@ public class EnemyAI : MonoBehaviour
     private int currentPatrolIndex;
 
     // AI状态枚举
-    private enum AIState { Patrol, Chase, Investigate, Attack }
+    private enum AIState { Patrol, Chase, Investigate, Attack, Dead }
     private AIState currentState = AIState.Patrol;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-       
         currentPatrolIndex = 0;
         agent.speed = patrolSpeed;
         agent.angularSpeed = angularSpeed;
@@ -45,6 +45,11 @@ public class EnemyAI : MonoBehaviour
 
     void Update()
     {
+        if (health <= 0)
+        {
+            currentState = AIState.Dead;
+        }
+
         players = GameObject.FindGameObjectsWithTag("Player").Select(go => go.transform).ToArray();
         targetPlayer = GetClosestPlayer();
 
@@ -61,6 +66,9 @@ public class EnemyAI : MonoBehaviour
                 break;
             case AIState.Attack:
                 AttackBehavior();
+                break;
+            case AIState.Dead:
+                DeadBehavior();
                 break;
         }
     }
@@ -250,6 +258,18 @@ public class EnemyAI : MonoBehaviour
     private void PlayAttackSound()
     {
         attackAudioSource.Play();
+    }
+
+    // 死亡逻辑
+    private void DeadBehavior()
+    {
+        // 停止所有移动和攻击
+        agent.isStopped = true;
+        // 播放死亡动画
+        animator.SetBool("Dying", true);
+        //animator.CrossFade("Dying", 0.1f);
+        // 删除敌人个体
+        Destroy(gameObject, 4f); // 延迟2秒删除，以便播放死亡动画
     }
 
     // 可视化扇形视野（调试用）
