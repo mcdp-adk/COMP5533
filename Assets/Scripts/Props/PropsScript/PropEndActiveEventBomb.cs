@@ -7,12 +7,11 @@ public class PropEndActiveEventBomb : MonoBehaviour
 {
     [Header("Explosion Settings")]
     [SerializeField] private GameObject explosionEffectPrefab; // 爆炸效果的预制体
+    [SerializeField] private GameObject explosionSoundPrefab; // 爆炸音效的预制体
     [SerializeField] private float explosionDuration = 3f;    // 爆炸效果持续时间
     [SerializeField] private float explosionRange = 5f;  // 爆炸范围
     [SerializeField] private float explosionDamage = 100f;  // 爆炸伤害
     [SerializeField] private string[] targetTags;// 爆炸范围内目标对象的标签数组
-
-   
 
     /// <summary>
     /// 爆炸触发函数
@@ -21,6 +20,31 @@ public class PropEndActiveEventBomb : MonoBehaviour
     {
 
         Debug.Log("进入爆炸效果，检测预制件的结果为：" + (explosionEffectPrefab != null));
+
+        // 播放爆炸音效
+        if (explosionSoundPrefab != null)
+        {
+            // 实例化音效预制体
+            GameObject soundObject = Instantiate(explosionSoundPrefab, transform.position, Quaternion.identity);
+
+            // 获取音效预制体上的 AudioSource 组件并播放声音
+            AudioSource audioSource = soundObject.GetComponent<AudioSource>();
+            if (audioSource != null)
+            {
+                audioSource.Play();
+                Destroy(soundObject, audioSource.clip.length); // 在声音播放完成后销毁音效对象
+                Debug.Log("开始播放爆炸声音！");
+            }
+            else
+            {
+                Debug.LogWarning("爆炸音效预制体上没有找到 AudioSource 组件！");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("爆炸音效预制体未设置！");
+        }
+
         // 显示爆炸效果
         if (explosionEffectPrefab != null)
         {

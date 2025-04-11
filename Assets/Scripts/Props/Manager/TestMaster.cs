@@ -7,6 +7,7 @@ public class TestMaster : MonoBehaviour
     [Header("References")]
     public PropsBasicAction propsAction; // 绑定 `PropsBasicAction` 组件
     public Transform targetBindObj;
+    public bool isNeedTesting = true;
 
     void Start()
     {
@@ -23,8 +24,11 @@ public class TestMaster : MonoBehaviour
 
     void Update()
     {
-        ThrowOutTest();
-        BindTest();
+        if (isNeedTesting)
+        {
+            ThrowOutTest();
+            BindTest();
+        }
     }
 
     private void ThrowOutTest()
@@ -47,7 +51,8 @@ public class TestMaster : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("PropsBasicAction 未绑定，请在 Inspector 中指定对象！");
+            isNeedTesting = false;
+            Debug.LogWarning("PropsBasicAction 未绑定，请在 Inspector 中指定对象！或目标物体已经消失，脚本运行已被关闭。");
         }
     }
 

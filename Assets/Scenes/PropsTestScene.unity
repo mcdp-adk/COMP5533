@@ -1208,11 +1208,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 181228451}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1255583464 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9051312900075423998, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
-  m_PrefabInstance: {fileID: 8620749390880700312}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1314745544
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1306,6 +1301,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   propsAction: {fileID: 1849843601}
   targetBindObj: {fileID: 655699596}
+  isNeedTesting: 1
 --- !u!4 &1328795065
 Transform:
   m_ObjectHideFlags: 0
@@ -1524,7 +1520,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5963868490040910854, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
   m_PrefabInstance: {fileID: 8620749390880700312}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1255583464}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 03b61121619ae6a4e865e315f78a8efc, type: 3}
@@ -1535,7 +1531,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8711698233604956763, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
   m_PrefabInstance: {fileID: 8620749390880700312}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1255583464}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 711dc9c1a41a59c4c91f99cd16ddc2fa, type: 3}
@@ -1546,32 +1542,28 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3642151732287100131, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
   m_PrefabInstance: {fileID: 8620749390880700312}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1255583464}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f7569e776d8f6ce41ad113f5f5f60cb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1849843605
+--- !u!114 &1999581316 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 4486965030818417481, guid: 23dde3eea9440b74689ab6b0934111cf, type: 3}
+  m_PrefabInstance: {fileID: 7767498185084601383}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1255583464}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7889e5fd8541d8940b9b8dd2c0008e33, type: 3}
+  m_Script: {fileID: 11500000, guid: 18106cd6061424a4190a5f1b47dee100, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseThrowForce: 10
-  throwDirectionRatioUp: 4
-  throwDirectionRatioForward: 3
-  resolution: 30
-  gravity: -9.8
-  rayColor: {r: 1, g: 0, b: 0, a: 1}
-  StartLineWidth: 0.05
-  EndLineWidth: 0.00001
+--- !u!82 &1999581320 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 2682532109156396339, guid: 23dde3eea9440b74689ab6b0934111cf, type: 3}
+  m_PrefabInstance: {fileID: 7767498185084601383}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2025613319
 GameObject:
   m_ObjectHideFlags: 0
@@ -1847,6 +1839,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
+    - target: {fileID: 4486965030818417481, guid: 23dde3eea9440b74689ab6b0934111cf, type: 3}
+      propertyPath: treasureSound
+      value: 
+      objectReference: {fileID: 1999581320}
     - target: {fileID: 4741641405294083091, guid: 23dde3eea9440b74689ab6b0934111cf, type: 3}
       propertyPath: componentCollidersBox.Array.size
       value: 1
@@ -1855,6 +1851,38 @@ PrefabInstance:
       propertyPath: componentCollidersBox.Array.data[0]
       value: 
       objectReference: {fileID: 7767498185084601384}
+    - target: {fileID: 4741641405294083091, guid: 23dde3eea9440b74689ab6b0934111cf, type: 3}
+      propertyPath: onTriggeredAction.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4741641405294083091, guid: 23dde3eea9440b74689ab6b0934111cf, type: 3}
+      propertyPath: endTriggeredAction.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4741641405294083091, guid: 23dde3eea9440b74689ab6b0934111cf, type: 3}
+      propertyPath: onTriggeredAction.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4741641405294083091, guid: 23dde3eea9440b74689ab6b0934111cf, type: 3}
+      propertyPath: onTriggeredAction.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1999581316}
+    - target: {fileID: 4741641405294083091, guid: 23dde3eea9440b74689ab6b0934111cf, type: 3}
+      propertyPath: onTriggeredAction.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4741641405294083091, guid: 23dde3eea9440b74689ab6b0934111cf, type: 3}
+      propertyPath: onTriggeredAction.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TreasureInSafeHouse
+      objectReference: {fileID: 0}
+    - target: {fileID: 4741641405294083091, guid: 23dde3eea9440b74689ab6b0934111cf, type: 3}
+      propertyPath: onTriggeredAction.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PropEndActiveEventTreasure, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4741641405294083091, guid: 23dde3eea9440b74689ab6b0934111cf, type: 3}
+      propertyPath: onTriggeredAction.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 6636084786892711412, guid: 23dde3eea9440b74689ab6b0934111cf, type: 3}
       propertyPath: m_Name
       value: Test_Prop_Treasure
@@ -1961,6 +1989,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3642151732287100131, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
       propertyPath: maxActiveDurationTime
       value: 10
@@ -2004,7 +2036,7 @@ PrefabInstance:
     - target: {fileID: 3642151732287100131, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
       propertyPath: onTriggeredAction.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1849843605}
+      objectReference: {fileID: 0}
     - target: {fileID: 3642151732287100131, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
       propertyPath: endTriggeredAction.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -2020,7 +2052,7 @@ PrefabInstance:
     - target: {fileID: 3642151732287100131, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
       propertyPath: duringTriggeredAction.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1849843605}
+      objectReference: {fileID: 0}
     - target: {fileID: 3642151732287100131, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
       propertyPath: endTriggeredAction.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 1
@@ -2084,10 +2116,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 9051312900075423998, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
-      insertIndex: 6
-      addedObject: {fileID: 1849843605}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
 --- !u!64 &8620749390880700313 stripped
 MeshCollider:
