@@ -23960,7 +23960,7 @@ GameObject:
   - component: {fileID: 6997842193544282911}
   - component: {fileID: 6830571856187618846}
   m_Layer: 0
-  m_Name: explosionMobile_stylized_large_originalFire
+  m_Name: BombExplosionEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
