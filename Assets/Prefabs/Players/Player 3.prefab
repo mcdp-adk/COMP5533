@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4501992955277037996}
   - component: {fileID: 5537684405558648390}
   - component: {fileID: 1425561528934251340}
+  - component: {fileID: 341930837877725264}
   - component: {fileID: 6573234624395644447}
   m_Layer: 3
   m_Name: Player 3
@@ -115,6 +116,27 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.95, z: 0}
+--- !u!65 &341930837877725264
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 284376878135224591}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.5, y: 1.8, z: 0.5}
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!114 &6573234624395644447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,11 +149,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f75c8b73b742204f818aee0caff9173, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraOffset: {x: 20, y: 16, z: -20}
-  moveSpeed: 5
-  gravity: -9.81
-  rotationSpeed: 10
-  whatIsProps:
+  _moveSpeed: 5
+  _gravity: -9.81
+  _rotationSpeed: 10
+  _whatIsProps:
     serializedVersion: 2
     m_Bits: 2048
 --- !u!1 &312236787592653259
