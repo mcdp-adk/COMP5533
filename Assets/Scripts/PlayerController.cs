@@ -106,13 +106,13 @@ public class PlayerController : MonoBehaviour
         moveInput = moveAction.ReadValue<Vector2>();
 
         // 处理攻击和投掷输入
-        if (attackAction.WasPressedThisFrame()) 
+        if (attackAction.WasPressedThisFrame())
         {
             // 记录攻击开始时是否持有物体
             isPropEquiped = (currentProp != null);
             currentPropAction?.ActivateButtonPressed();
         }
-        
+
         if (attackAction.WasReleasedThisFrame())
         {
             // 只有当攻击开始于持有物体时才执行释放逻辑
@@ -124,7 +124,7 @@ public class PlayerController : MonoBehaviour
             }
             isPropEquiped = false; // 重置标志
         }
-        
+
         if (dropAction.WasPressedThisFrame())
         {
             currentPropAction?.DropFunction();

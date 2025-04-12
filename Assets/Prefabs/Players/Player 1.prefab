@@ -13,9 +13,8 @@ GameObject:
   - component: {fileID: 5537684405558648390}
   - component: {fileID: 1425561528934251340}
   - component: {fileID: 6573234624395644447}
-  - component: {fileID: 3587357373258711141}
   m_Layer: 3
-  m_Name: Player 0
+  m_Name: Player 1
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -135,29 +134,6 @@ MonoBehaviour:
   whatIsProps:
     serializedVersion: 2
     m_Bits: 2048
---- !u!136 &3587357373258711141
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 284376878135224591}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &312236787592653259
 GameObject:
   m_ObjectHideFlags: 0
@@ -904,7 +880,7 @@ GameObject:
   - component: {fileID: 6955681141450445678}
   - component: {fileID: 217133035277046146}
   m_Layer: 3
-  m_Name: man-explorer_Rig
+  m_Name: man-cowboy_Rig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -945,7 +921,6 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4ccee18ae0e023b498b7ba43f7c628b1, type: 2}
   - {fileID: 2100000, guid: 03ddc7e460b33402eb7640fab3881ac9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -971,7 +946,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 4300000, guid: 39ed694861200f64ba284b59544602b7, type: 3}
+  m_Mesh: {fileID: 4300000, guid: c37c613df0196cd4ca37aa4f08489ab2, type: 3}
   m_Bones:
   - {fileID: 7536444695249213842}
   - {fileID: 3480811036700024593}
