@@ -9,7 +9,7 @@ public class PropTriggerEventThrow : MonoBehaviour
 {
     [Header("Throw Settings")]
     [SerializeField] private float baseThrowForce = 10f;  // 基础抛出力
-    [SerializeField] private float randomTorqueRange = 5f; // 随机旋转力范围
+    [SerializeField] private float randomTorqueRange = 15f; // 随机旋转力范围
     [SerializeField] private float throwDirectionRatioUp = 4f; // 斜向前上方抛出方向
     [SerializeField] private float throwDirectionRatioForward = 3f; // 斜向前上方抛出方向
 

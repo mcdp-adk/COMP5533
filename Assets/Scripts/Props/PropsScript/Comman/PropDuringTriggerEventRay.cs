@@ -25,6 +25,7 @@ public class PropDuringTriggerEventRay : MonoBehaviour
     {
         // 动态创建 LineRenderer 组件
         lineRenderer = gameObject.AddComponent<LineRenderer>();
+        Debug.Log("LineRenderer created: " + (lineRenderer != null) + " in Obj " + gameObject);
 
         // 配置 LineRenderer 的基本属性
         lineRenderer.startWidth = StartLineWidth;

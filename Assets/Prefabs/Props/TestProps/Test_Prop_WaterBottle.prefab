@@ -68,9 +68,9 @@ MonoBehaviour:
   duringTriggeredAction:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7499463554208677675}
-        m_TargetAssemblyTypeName: PropTriggerEventThrow, Assembly-CSharp
-        m_MethodName: ThrowOut
+      - m_Target: {fileID: 5940291455405144494}
+        m_TargetAssemblyTypeName: PropDuringTriggerEventRay, Assembly-CSharp
+        m_MethodName: DrawTrajectory
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -200,7 +200,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseThrowForce: 10
-  randomTorqueRange: 5
+  randomTorqueRange: 15
   throwDirectionRatioUp: 4
   throwDirectionRatioForward: 3
 --- !u!114 &5940291455405144494
