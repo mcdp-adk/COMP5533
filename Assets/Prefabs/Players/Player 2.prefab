@@ -149,12 +149,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f75c8b73b742204f818aee0caff9173, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 5
-  _gravity: -9.81
+  _runSpeed: 5
+  _crouchSpeed: 2
   _rotationSpeed: 10
+  _gravity: -9.81
+  _maxHealth: 100
+  _meleeCooldown: 1.5
+  _meleeDamage: 100
+  _meleeRange: 1.5
+  _whatIsEnemy:
+    serializedVersion: 2
+    m_Bits: 64
   _whatIsProps:
     serializedVersion: 2
     m_Bits: 2048
+  _propPosition: {fileID: 2620389334997420801}
 --- !u!1 &312236787592653259
 GameObject:
   m_ObjectHideFlags: 0

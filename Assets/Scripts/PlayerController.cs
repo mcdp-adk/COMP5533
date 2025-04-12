@@ -25,26 +25,31 @@ public class PlayerController : MonoBehaviour, ICharacter
     private InputAction _meleeAction;
     private Vector2 _moveInput;
 
-    // 持有道具
-    private GameObject _currentProp; // 当前持有的道具
-    private PropsBasicAction _currentPropAction; // 当前道具的脚本引用
-    private bool _isPropEquiped = false; // 记录是否已经装备了道具
-
-
     [Header("Player Settings")]
-    private float _moveSpeed;
     [SerializeField] private float _runSpeed = 5f;
     [SerializeField] private float _crouchSpeed = 2f;
     [SerializeField] private float _rotationSpeed = 10f;
     [SerializeField] private float _gravity = -9.81f;
     [SerializeField] private int _maxHealth = 100;
-
-    private bool _isCrouching = false;
+    private float _moveSpeed; // 当前移动速度
     private int _health;
     private bool _isDead = false;
+    private bool _isCrouching = false;
+
+    [Header("Melee Settings")]
+    [SerializeField] private float _meleeCooldown = 1.5f; // 近战攻击冷却时间(秒)
+    [SerializeField] private int _meleeDamage = 100; // 近战攻击伤害值
+    [SerializeField] private float _meleeRange = 1.5f; // 近战攻击范围
+    [SerializeField] private LayerMask _whatIsEnemy; // 敌人所在层
+    private float _meleeTimer = 0f; // 近战冷却计时器
+    private bool _meleeOnCooldown = false; // 近战是否在冷却中
 
     [Header("Props Settings")]
     [SerializeField] private LayerMask _whatIsProps; // 设置可拾取道具的图层
+    [SerializeField] private Transform _propPosition; // 道具挂载点
+    private GameObject _currentProp; // 当前持有的道具
+    private PropsBasicAction _currentPropAction; // 当前道具的脚本引用
+    private bool _isPropEquiped = false; // 记录是否已经装备了道具
 
     #endregion
 
@@ -56,8 +61,19 @@ public class PlayerController : MonoBehaviour, ICharacter
         _playerInput = GetComponent<PlayerInput>();
         _controller = GetComponent<CharacterController>();
 
+        // 如果没有指定道具挂载点，尝试查找
+        if (_propPosition == null)
+        {
+            _propPosition = transform.Find("PropPosition");
+            if (_propPosition == null)
+            {
+                Debug.LogWarning("未找到道具挂载点，请手动指定或创建名为'PropPosition'的子物体");
+            }
+        }
+
+        // 获取输入动作
         _moveAction = _playerInput.actions["Move"];
-        _attackAction = _playerInput.actions["Attact"];
+        _attackAction = _playerInput.actions["Attack"];
         _dropAction = _playerInput.actions["Drop"];
         _crouchAction = _playerInput.actions["Crouch"];
         _meleeAction = _playerInput.actions["Melee"];
@@ -65,22 +81,12 @@ public class PlayerController : MonoBehaviour, ICharacter
 
     private void OnEnable()
     {
-        _attackAction.started += OnAttackPressed;
-        _attackAction.canceled += OnAttackReleased;
-        _dropAction.performed += ToggleDrop;
-        _crouchAction.started += ToggleCrouch;
-        _crouchAction.canceled += ToggleCrouch;
-        _meleeAction.performed += ToggleMelee;
+        RegisterInputEvents();
     }
 
     private void OnDisable()
     {
-        _attackAction.started -= OnAttackPressed;
-        _attackAction.canceled -= OnAttackReleased;
-        _dropAction.performed -= ToggleDrop;
-        _crouchAction.started -= ToggleCrouch;
-        _crouchAction.canceled -= ToggleCrouch;
-        _meleeAction.performed -= ToggleMelee;
+        UnregisterInputEvents();
     }
 
     private void Start()
@@ -101,51 +107,45 @@ public class PlayerController : MonoBehaviour, ICharacter
 
         HandleInputs();
         HandleMovement();
-        ApplyGravity();
+        HandleGravity();
+        HandleMeleeCooldown();
 
-        _animator.SetFloat("moveSpeed", _moveInput.magnitude); // 更新动画参数
+        // 更新动画参数
+        UpdateAnimationParameters();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (_currentProp != null)
+        // 检查是否是道具且当前未持有道具
+        if (((1 << other.gameObject.layer) & _whatIsProps) != 0 && _currentProp == null)
         {
-            Debug.Log($"已持有道具 {_currentProp.name}，无法拾取新道具");
-            return; // 如果当前已有道具，直接返回
-        }
-
-        if (((1 << other.gameObject.layer) & _whatIsProps) != 0)
-        {
-            _currentProp = other.gameObject; // 记录当前道具
-            _currentPropAction = _currentProp.GetComponent<PropsBasicAction>(); // 获取道具脚本引用
-            _currentPropAction.PickUpFunction(this.transform.Find("PropPosition").transform);
-            Debug.Log($"拾取道具: {_currentProp.name}");
+            PickupProp(other.gameObject);
         }
     }
 
     #endregion
 
-    #region Methods: Public
+    #region Methods: Input Handling
 
-    /// <summary>
-    /// 重置玩家状态和位置
-    /// /// </summary>
-    /// <param name="respawnPosition">重生位置</param>
-    public void Respawn(Vector3 respawnPosition)
+    private void RegisterInputEvents()
     {
-        // 重置玩家位置和状态
-        transform.position = respawnPosition;
-        SetHealth(_maxHealth); // 重置生命值
-        _isDead = false; // 重置死亡状态
-        _isCrouching = false; // 重置蹲伏状态
-        _controller.enabled = true; // 启用角色控制器
-        _playerInput.enabled = true; // 启用玩家输入
-        _animator.SetBool("isDead", false); // 重置死亡动画状态
+        _attackAction.started += OnAttackPressed;
+        _attackAction.canceled += OnAttackReleased;
+        _dropAction.performed += ToggleDrop;
+        _crouchAction.started += ToggleCrouch;
+        _crouchAction.canceled += ToggleCrouch;
+        _meleeAction.performed += ToggleMelee;
     }
 
-    #endregion
-
-    #region Methods: Private
+    private void UnregisterInputEvents()
+    {
+        _attackAction.started -= OnAttackPressed;
+        _attackAction.canceled -= OnAttackReleased;
+        _dropAction.performed -= ToggleDrop;
+        _crouchAction.started -= ToggleCrouch;
+        _crouchAction.canceled -= ToggleCrouch;
+        _meleeAction.performed -= ToggleMelee;
+    }
 
     /// <summary>
     /// 处理玩家输入
@@ -154,6 +154,80 @@ public class PlayerController : MonoBehaviour, ICharacter
     {
         _moveInput = _moveAction.ReadValue<Vector2>();
     }
+
+    /// <summary>
+    /// 处理攻击按下输入
+    /// </summary>
+    private void OnAttackPressed(InputAction.CallbackContext ctx)
+    {
+        // 如果持有道具，激活道具
+        if (_currentPropAction != null)
+        {
+            Debug.Log($"激活道具: {_currentProp.name}");
+            _currentPropAction.ActivateButtonPressed();
+            _isPropEquiped = true; // 设置为已装备道具
+        }
+    }
+
+    /// <summary>
+    /// 处理攻击释放输入
+    /// </summary>
+    private void OnAttackReleased(InputAction.CallbackContext ctx)
+    {
+        // 只有当攻击开始于持有物体时才执行释放逻辑
+        if (_isPropEquiped && _currentPropAction != null)
+        {
+            Debug.Log($"释放道具: {_currentProp.name}");
+            _currentPropAction.ActivateButtonRelease();
+            _currentProp = null;
+            _currentPropAction = null;
+            _isPropEquiped = false; // 重置标志
+        }
+    }
+
+    /// <summary>
+    /// 丢弃道具
+    /// </summary>
+    private void ToggleDrop(InputAction.CallbackContext ctx)
+    {
+        if (_currentPropAction != null)
+        {
+            Debug.Log($"丢弃道具: {_currentProp.name}");
+            _currentPropAction.DropFunction();
+            _currentProp = null;
+            _currentPropAction = null;
+            _isPropEquiped = false;
+        }
+    }
+
+    /// <summary>
+    /// 切换蹲伏状态
+    /// </summary>
+    private void ToggleCrouch(InputAction.CallbackContext ctx)
+    {
+        _isCrouching = !_isCrouching;
+        _moveSpeed = _isCrouching ? _crouchSpeed : _runSpeed;
+        _animator.SetBool("isCrouching", _isCrouching);
+    }
+
+    /// <summary>
+    /// 执行近战攻击
+    /// </summary>
+    private void ToggleMelee(InputAction.CallbackContext ctx)
+    {
+        // 如果在冷却中，不执行攻击
+        if (_meleeOnCooldown)
+        {
+            Debug.Log($"近战攻击冷却中，剩余 {_meleeTimer:F1} 秒");
+            return;
+        }
+
+        PerformMeleeAttack();
+    }
+
+    #endregion
+
+    #region Methods: Movement & Physics
 
     /// <summary>
     /// 处理玩家移动
@@ -188,79 +262,9 @@ public class PlayerController : MonoBehaviour, ICharacter
     }
 
     /// <summary>
-    /// 处理攻击输入
-    /// / </summary>
-    /// <param name="ctx"></param>
-    private void OnAttackPressed(InputAction.CallbackContext ctx)
-    {
-        // 记录攻击开始时是否持有物体
-        if (_currentPropAction != null)
-        {
-            Debug.Log($"激活道具: {_currentProp.name}");
-            _currentPropAction.ActivateButtonPressed();
-            _isPropEquiped = true; // 设置为已装备道具
-        }
-    }
-
-    /// <summary>
-    /// 处理攻击释放输入
-    /// </summary>
-    /// <param name="ctx"></param>
-    private void OnAttackReleased(InputAction.CallbackContext ctx)
-    {
-        // 只有当攻击开始于持有物体时才执行释放逻辑
-        if (_isPropEquiped)
-        {
-            if (_currentPropAction != null)
-            {
-                Debug.Log($"释放道具: {_currentProp.name}");
-                _currentPropAction.ActivateButtonRelease();
-                _currentProp = null; // 清空当前道具引用
-                _currentPropAction = null; // 清空道具脚本引用
-            }
-            _isPropEquiped = false; // 重置标志
-        }
-    }
-
-    /// <summary>
-    /// 丢弃道具，只有在当前持有道具时才执行丢弃逻辑
-    /// </summary>
-    /// <param name="ctx"></param>
-    private void ToggleDrop(InputAction.CallbackContext ctx)
-    {
-        if (_currentPropAction != null)
-        {
-            Debug.Log($"丢弃道具: {_currentProp.name}");
-            _currentPropAction.DropFunction();
-            _currentProp = null; // 清空当前道具引用
-            _currentPropAction = null; // 清空道具脚本引用
-        }
-        else
-        {
-            Debug.Log("尝试丢弃道具，但当前未持有道具");
-        }
-    }
-
-    /// <summary>
-    /// 切换蹲伏状态
-    /// </summary>
-    private void ToggleCrouch(InputAction.CallbackContext ctx)
-    {
-        _isCrouching = !_isCrouching; // 切换状态
-        _animator.SetBool("isCrouching", _isCrouching); // 更新动画参数
-
-        _moveSpeed = _isCrouching ? _crouchSpeed : _runSpeed; // 设置移动速度
-    }
-
-    private void ToggleMelee(InputAction.CallbackContext ctx)
-    {
-        _animator.SetTrigger("triggerPunch"); // 播放近战攻击动画
-    }
-
-    /// <summary>
     /// 应用重力
     /// </summary>
-    private void ApplyGravity()
+    private void HandleGravity()
     {
         Vector3 gravityVector = new Vector3(0, _gravity, 0);
         _controller.Move(gravityVector * Time.deltaTime);
@@ -273,16 +277,101 @@ public class PlayerController : MonoBehaviour, ICharacter
     }
 
     /// <summary>
+    /// 更新动画参数
+    /// </summary>
+    private void UpdateAnimationParameters()
+    {
+        _animator.SetFloat("moveSpeed", _moveInput.magnitude);
+    }
+
+    #endregion
+
+    #region Methods: Combat & Props
+
+    /// <summary>
+    /// 执行近战攻击
+    /// </summary>
+    private void PerformMeleeAttack()
+    {
+        _animator.SetTrigger("triggerPunch");
+        
+        // 检测前方是否有敌人
+        Collider[] hitEnemies = Physics.OverlapSphere(transform.position + transform.forward * (_meleeRange / 2), _meleeRange / 2, _whatIsEnemy);
+        
+        // 对命中的敌人造成伤害
+        foreach (Collider enemy in hitEnemies)
+        {
+            ICharacter character = enemy.GetComponent<ICharacter>();
+            if (character != null)
+            {
+                character.CauseDamage(_meleeDamage);
+                Debug.Log($"近战攻击命中: {enemy.name}，造成 {_meleeDamage} 点伤害");
+            }
+        }
+        
+        // 启动冷却
+        _meleeOnCooldown = true;
+        _meleeTimer = _meleeCooldown;
+        Debug.Log("近战攻击已执行，进入冷却");
+    }
+
+    /// <summary>
+    /// 处理近战攻击冷却
+    /// </summary>
+    private void HandleMeleeCooldown()
+    {
+        if (_meleeOnCooldown)
+        {
+            _meleeTimer -= Time.deltaTime;
+            if (_meleeTimer <= 0)
+            {
+                _meleeOnCooldown = false;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 拾取道具
+    /// </summary>
+    private void PickupProp(GameObject prop)
+    {
+        _currentProp = prop;
+        _currentPropAction = _currentProp.GetComponent<PropsBasicAction>();
+        
+        if (_currentPropAction != null)
+        {
+            _currentPropAction.PickUpFunction(_propPosition != null ? _propPosition : transform);
+            Debug.Log($"拾取道具: {_currentProp.name}");
+        }
+        else
+        {
+            Debug.LogWarning($"道具 {prop.name} 缺少 PropsBasicAction 组件");
+            _currentProp = null;
+        }
+    }
+
+    #endregion
+
+    #region Methods: Health & Death
+
+    /// <summary>
     /// 设置生命值并触发事件
     /// </summary>
-    /// <param name="health">新的生命值</param>
     private void SetHealth(int health)
     {
+        int oldHealth = _health;
         _health = health;
-        Debug.Log($"玩家 {gameObject.name} 的生命值设置为 {_health}");
-
-        OnHealthChanged?.Invoke(); // 触发生命值改变事件
-        Debug.Log("已触发 OnHealthChanged 事件");
+        
+        OnHealthChanged?.Invoke();
+        
+        if (_health > oldHealth)
+        {
+            OnHealthIncreased?.Invoke();
+        }
+        else if (_health < oldHealth)
+        {
+            OnHealthDecreased?.Invoke();
+        }
     }
 
     /// <summary>
@@ -290,17 +379,43 @@ public class PlayerController : MonoBehaviour, ICharacter
     /// </summary>
     private void HandlePlayerDeath()
     {
-        _isDead = true; // 设置标志位
+        if (_isDead) return; // 防止重复执行死亡逻辑
+        
+        _isDead = true;
         Debug.Log($"玩家 {gameObject.name} 死亡");
 
-        // 触发玩家死亡事件
-        OnCharacterDeath?.Invoke();
-        Debug.Log("已触发 OnCharacterDeath 事件");
-
+        // 设置死亡动画
         _animator.SetBool("isDead", true);
 
-        _controller.enabled = false; // 禁用角色控制器以避免碰撞
-        _playerInput.enabled = false; // 禁用玩家输入
+        // 禁用控制
+        _controller.enabled = false;
+        _playerInput.enabled = false;
+        
+        // 丢弃当前道具
+        if (_currentPropAction != null)
+        {
+            _currentPropAction.DropFunction();
+            _currentProp = null;
+            _currentPropAction = null;
+        }
+
+        // 触发死亡事件
+        OnCharacterDeath?.Invoke();
+    }
+
+    /// <summary>
+    /// 重置玩家状态和位置
+    /// </summary>
+    public void Respawn(Vector3 respawnPosition)
+    {
+        transform.position = respawnPosition;
+        SetHealth(_maxHealth);
+        _isDead = false;
+        _isCrouching = false;
+        _controller.enabled = true;
+        _playerInput.enabled = true;
+        _animator.SetBool("isDead", false);
+        _moveSpeed = _runSpeed;
     }
 
     #endregion
@@ -312,8 +427,14 @@ public class PlayerController : MonoBehaviour, ICharacter
         get { return _maxHealth; }
         set
         {
-            if (value < 0) value = 0; // 确保最大生命值不小于 0
+            if (value < 0) value = 0;
             _maxHealth = value;
+            
+            // 如果当前生命值超过新的最大值，调整当前生命值
+            if (_health > _maxHealth) 
+            {
+                SetHealth(_maxHealth);
+            }
         }
     }
 
@@ -321,48 +442,40 @@ public class PlayerController : MonoBehaviour, ICharacter
 
     public void CauseDamage(int damageAmount)
     {
-        if (_isDead) return; // 如果玩家已死亡，停止处理伤害
+        if (_isDead || damageAmount <= 0) return;
 
-        if (damageAmount > 0)
-        {
-            SetHealth(Math.Max(_health - damageAmount, 0)); // 减少生命值，确保不小于0
-            Debug.Log($"玩家 {gameObject.name} 受到了 {damageAmount} 点伤害");
-            OnHealthDecreased?.Invoke(); // 触发生命值减少事件
-            Debug.Log($"玩家 {gameObject.name} 受到了 {damageAmount} 点伤害");
-        }
-        else
-        {
-            Debug.LogWarning("伤害小于或等于 0，不造成伤害。");
-        }
-
+        SetHealth(Math.Max(_health - damageAmount, 0));
+        Debug.Log($"玩家 {gameObject.name} 受到了 {damageAmount} 点伤害，剩余生命值: {_health}");
+        
         if (_health <= 0)
         {
-            HandlePlayerDeath(); // 调用死亡方法
+            HandlePlayerDeath();
         }
     }
 
     public void Heal(int healAmount)
     {
-        if (_isDead) return; // 如果玩家已死亡，停止处理治疗
+        if (_isDead || healAmount <= 0) return;
 
-        if (healAmount > 0)
-        {
-            SetHealth(Math.Min(_health + healAmount, _maxHealth)); // 增加生命值，确保不超过最大生命值
-            Debug.Log($"玩家 {gameObject.name} 治疗了 {healAmount} 点生命值");
-
-            OnHealthIncreased?.Invoke(); // 触发生命值增加事件
-            Debug.Log("已触发 OnHealthIncreased 事件");
-        }
-        else
-        {
-            Debug.LogWarning("治疗小于或等于 0，不进行治疗。");
-        }
+        SetHealth(Math.Min(_health + healAmount, _maxHealth));
+        Debug.Log($"玩家 {gameObject.name} 恢复了 {healAmount} 点生命值，当前生命值: {_health}");
     }
 
     public event Action OnHealthChanged;
     public event Action OnHealthIncreased;
     public event Action OnHealthDecreased;
     public event Action OnCharacterDeath;
+
+    #endregion
+
+    #region Debug Methods
+
+    private void OnDrawGizmosSelected()
+    {
+        // 绘制近战攻击范围
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position + transform.forward * (_meleeRange / 2), _meleeRange / 2);
+    }
 
     #endregion
 }
