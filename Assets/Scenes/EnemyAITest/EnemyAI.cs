@@ -8,19 +8,19 @@ public class EnemyAI : MonoBehaviour
     [Header("AI Settings")]
     [SerializeField] private float patrolSpeed = 2f;
     [SerializeField] private float chaseSpeed = 5f;
-    [SerializeField] private float sightAngle = 60f;    // ÉÈĞÎÊÓÒ°½Ç¶È
-    [SerializeField] private float sightDistance = 10f;  // ÊÓÒ°¾àÀë
-    [SerializeField] private float detectionRadius = 5f; // ËÄÖÜ¼ì²â°ë¾¶
-    [SerializeField] private float angularSpeed = 120f;  // ×ªÏòËÙ¶È
-    [SerializeField] private float acceleration = 8f;    // ¼ÓËÙ¶È
-    [SerializeField] private float attackDistance = 1f;  // ¹¥»÷¾àÀë
-    [SerializeField] public Transform[] patrolPoints;    // Ñ²ÂßÂ·¾¶µã
+    [SerializeField] private float sightAngle = 60f;    // æ‰‡å½¢è§†é‡è§’åº¦
+    [SerializeField] private float sightDistance = 10f;  // è§†é‡è·ç¦»
+    [SerializeField] private float detectionRadius = 5f; // å››å‘¨æ£€æµ‹åŠå¾„
+    [SerializeField] private float angularSpeed = 120f;  // è½¬å‘é€Ÿåº¦
+    [SerializeField] private float acceleration = 8f;    // åŠ é€Ÿåº¦
+    [SerializeField] private float attackDistance = 1f;  // æ”»å‡»è·ç¦»
+    [SerializeField] public Transform[] patrolPoints;    // å·¡é€»è·¯å¾„ç‚¹
     [SerializeField] private Animator animator;
-    [SerializeField] private float attackDelay = 0.5f; // ¹¥»÷ÑÓ³ÙÊ±¼ä
-    [SerializeField] private LayerMask playerLayer; // Íæ¼Ò²ã
-    [SerializeField] private AudioSource attackAudioSource; // ¹¥»÷ÒôĞ§
+    [SerializeField] private float attackDelay = 0.8f; // æ”»å‡»å»¶è¿Ÿæ—¶é—´
+    [SerializeField] private LayerMask playerLayer; // ç©å®¶å±‚
+    [SerializeField] private AudioSource attackAudioSource; // æ”»å‡»éŸ³æ•ˆ
     [SerializeField] private MusicManager musicManager;
-    public float health = 100f; // µĞÈËÉúÃüÖµ
+    public float health = 100f; // æ•Œäººç”Ÿå‘½å€¼
 
     private NavMeshAgent agent;
     private Transform[] players;
@@ -28,10 +28,10 @@ public class EnemyAI : MonoBehaviour
     private Vector3 lastKnownPosition;
     private int currentPatrolIndex;
 
-    // ÓÃÓÚ¸ú×ÙÊÇ·ñÓĞµĞÈË´¦ÓÚ×·»÷»ò¹¥»÷×´Ì¬µÄ¾²Ì¬±äÁ¿
+    // ç”¨äºè·Ÿè¸ªæ˜¯å¦æœ‰æ•Œäººå¤„äºè¿½å‡»æˆ–æ”»å‡»çŠ¶æ€çš„é™æ€å˜é‡
     private static int chasingEnemiesCount = 0;
 
-    // AI×´Ì¬Ã¶¾Ù
+    // AIçŠ¶æ€æšä¸¾
     private enum AIState { Patrol, Chase, Investigate, Attack, Dead }
     private AIState currentState = AIState.Patrol;
 
@@ -40,7 +40,7 @@ public class EnemyAI : MonoBehaviour
         musicManager = FindObjectOfType<MusicManager>();
         if (musicManager == null)
         {
-            Debug.LogError("MusicManager Î´ÕÒµ½£¡");
+            Debug.LogError("MusicManager æœªæ‰¾åˆ°ï¼");
         }
         agent = GetComponent<NavMeshAgent>();
         currentPatrolIndex = 0;
@@ -81,7 +81,7 @@ public class EnemyAI : MonoBehaviour
                 break;
         }
 
-        // ¸üĞÂ chasingEnemiesCount
+        // æ›´æ–° chasingEnemiesCount
         if ((previousState == AIState.Chase || previousState == AIState.Attack || previousState == AIState.Investigate) &&
             (currentState != AIState.Chase && currentState != AIState.Attack && currentState != AIState.Investigate))
         {
@@ -97,7 +97,7 @@ public class EnemyAI : MonoBehaviour
             chasingEnemiesCount = 0;
         }
 
-        // ¸üĞÂ MusicManager ÖĞµÄ isChasing ±äÁ¿
+        // æ›´æ–° MusicManager ä¸­çš„ isChasing å˜é‡
         musicManager.isChasing = chasingEnemiesCount > 0;
     }
 
@@ -119,12 +119,12 @@ public class EnemyAI : MonoBehaviour
         return closestPlayer;
     }
 
-    // Ñ²ÂßÂß¼­
+    // å·¡é€»é€»è¾‘
     private void PatrolBehavior()
     {
         if (patrolPoints.Length <= 1)
         {
-            Debug.LogWarning("Ñ²ÂßµãÊıÁ¿²»×ã£¬ÎŞ·¨½øĞĞÑ²Âß");
+            Debug.LogWarning("å·¡é€»ç‚¹æ•°é‡ä¸è¶³ï¼Œæ— æ³•è¿›è¡Œå·¡é€»");
             return;
         }
 
@@ -142,7 +142,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // ×·ÖğÂß¼­
+    // è¿½é€é€»è¾‘
     private void ChaseBehavior()
     {
         if (targetPlayer == null)
@@ -171,7 +171,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // ¹¥»÷Âß¼­
+    // æ”»å‡»é€»è¾‘
     private void AttackBehavior()
     {
         if (Vector3.Distance(transform.position, targetPlayer.position) > attackDistance)
@@ -182,7 +182,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // Ö´ĞĞ¹¥»÷ÅĞ¶¨µÄĞ­³Ì
+    // æ‰§è¡Œæ”»å‡»åˆ¤å®šçš„åç¨‹
     private IEnumerator PerformAttack()
     {
         yield return new WaitForSeconds(attackDelay);
@@ -190,7 +190,7 @@ public class EnemyAI : MonoBehaviour
         animator.CrossFade("Running", 0.1f);
     }
 
-    // ¹¥»÷ÃüÖĞÅĞ¶¨
+    // æ”»å‡»å‘½ä¸­åˆ¤å®š
     public void EnemyAttackHit()
     {
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackDistance, playerLayer);
@@ -201,13 +201,14 @@ public class EnemyAI : MonoBehaviour
                 PlayerController playerController = hitCollider.GetComponent<PlayerController>();
                 if (playerController != null)
                 {
-                    playerController.Die();
+                    // playerController.Die();
+                    playerController.CauseDamage(100);
                 }
             }
         }
     }
 
-    // µ÷²é×îºóÎ»ÖÃÂß¼­
+    // è°ƒæŸ¥æœ€åä½ç½®é€»è¾‘
     private void InvestigateBehavior()
     {
         if (agent.remainingDistance < 0.5f && !agent.pathPending)
@@ -226,7 +227,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // ÉÈĞÎÊÓÒ°¼ì²â
+    // æ‰‡å½¢è§†é‡æ£€æµ‹
     private bool IsPlayerInSight()
     {
         if (targetPlayer == null) return false;
@@ -249,7 +250,7 @@ public class EnemyAI : MonoBehaviour
         return false;
     }
 
-    // ËÄÖÜ¼ì²â°ë¾¶
+    // å››å‘¨æ£€æµ‹åŠå¾„
     private bool IsPlayerInDetectionRadius()
     {
         if (targetPlayer == null) return false;
@@ -258,7 +259,7 @@ public class EnemyAI : MonoBehaviour
         return distanceToPlayer < detectionRadius;
     }
 
-    // ÉèÖÃÏÂÒ»¸öÑ²Âßµã
+    // è®¾ç½®ä¸‹ä¸€ä¸ªå·¡é€»ç‚¹
     private void SetNextPatrolPoint()
     {
         if (patrolPoints.Length > 0)
@@ -267,13 +268,13 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // ²¥·Å¹¥»÷ÒôĞ§
+    // æ’­æ”¾æ”»å‡»éŸ³æ•ˆ
     private void PlayAttackSound()
     {
         attackAudioSource.Play();
     }
 
-    // ËÀÍöÂß¼­
+    // æ­»äº¡é€»è¾‘
     private void DeadBehavior()
     {
         chasingEnemiesCount--;
@@ -282,7 +283,7 @@ public class EnemyAI : MonoBehaviour
         Destroy(gameObject, 4f);
     }
 
-    // ¿ÉÊÓ»¯ÉÈĞÎÊÓÒ°£¨µ÷ÊÔÓÃ£©
+    // å¯è§†åŒ–æ‰‡å½¢è§†é‡ï¼ˆè°ƒè¯•ç”¨ï¼‰
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;

@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 /// </summary>
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(CharacterController))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, ICharacter
 {
     #region Fields
 
@@ -28,22 +28,17 @@ public class PlayerController : MonoBehaviour
     private PropsBasicAction _currentPropAction; // 当前道具的脚本引用
     private bool _isPropEquiped = false; // 记录是否已经装备了道具
 
-    // 处理死亡
-    private bool _isDead = false;
 
     [Header("Player Settings")]
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _gravity = -9.81f;
     [SerializeField] private float _rotationSpeed = 10f;
+    [SerializeField] private int _maxHealth = 100;
+    private int _health;
+    private bool _isDead = false;
 
     [Header("Props Settings")]
     [SerializeField] private LayerMask _whatIsProps; // 设置可拾取道具的图层
-
-    #endregion
-
-    #region Properties
-
-
 
     #endregion
 
@@ -64,6 +59,9 @@ public class PlayerController : MonoBehaviour
     {
         // 获取主相机的引用
         _cameraTransform = Camera.main.transform;
+
+        // 初始化生命值
+        _health = _maxHealth;
     }
 
     private void Update()
@@ -73,7 +71,8 @@ public class PlayerController : MonoBehaviour
         HandleInputs();
         HandleMovement();
         ApplyGravity();
-        UpdateAnimator();
+
+        _animator.SetFloat("moveSpeed", _moveInput.magnitude); // 更新动画参数
     }
 
     private void OnTriggerEnter(Collider other)
@@ -89,7 +88,6 @@ public class PlayerController : MonoBehaviour
             _currentProp = other.gameObject; // 记录当前道具
             _currentPropAction = _currentProp.GetComponent<PropsBasicAction>(); // 获取道具脚本引用
             _currentPropAction.PickUpFunction(this.transform.Find("PropPosition").transform);
-            _isPropEquiped = true; // 设置道具已装备标志
             Debug.Log($"拾取道具: {_currentProp.name}");
         }
     }
@@ -99,25 +97,18 @@ public class PlayerController : MonoBehaviour
     #region Methods: Public
 
     /// <summary>
-    /// 处理玩家死亡逻辑
-    /// </summary>
-    public void Die()
+    /// 重置玩家状态和位置
+    /// /// </summary>
+    /// <param name="respawnPosition">重生位置</param>
+    public void Respawn(Vector3 respawnPosition)
     {
-        if (_isDead)
-        {
-            Debug.LogWarning($"玩家 {gameObject.name} 已经死亡，无法再次触发死亡");
-            return; // 如果玩家已死亡，直接返回
-        }
-
-        _isDead = true; // 设置标志位
-        Debug.Log($"玩家 {gameObject.name} 死亡");
-
-        // 触发玩家死亡事件
-        OnPlayerDeath?.Invoke();
-        Debug.Log("已触发OnPlayerDeath事件");
-
-        // 销毁玩家对象
-        Destroy(gameObject);
+        // 重置玩家位置和状态
+        transform.position = respawnPosition;
+        SetHealth(_maxHealth); // 重置生命值
+        _isDead = false; // 重置死亡状态
+        _controller.enabled = true; // 启用角色控制器
+        _playerInput.enabled = true; // 启用玩家输入
+        _animator.SetBool("isDead", false); // 重置死亡动画状态
     }
 
     #endregion
@@ -140,6 +131,7 @@ public class PlayerController : MonoBehaviour
             {
                 Debug.Log($"激活道具: {_currentProp.name}");
                 _currentPropAction.ActivateButtonPressed();
+                _isPropEquiped = true; // 设置为已装备道具
             }
         }
 
@@ -155,8 +147,8 @@ public class PlayerController : MonoBehaviour
                     _currentProp = null; // 清空当前道具引用
                     _currentPropAction = null; // 清空道具脚本引用
                 }
+                _isPropEquiped = false; // 重置标志
             }
-            _isPropEquiped = false; // 重置标志
         }
 
         if (_dropAction.WasPressedThisFrame())
@@ -223,21 +215,96 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// 更新动画参数
+    /// 设置生命值并触发事件
     /// </summary>
-    private void UpdateAnimator()
+    /// <param name="health">新的生命值</param>
+    private void SetHealth(int health)
     {
-        _animator.SetFloat("moveSpeed", _moveInput.magnitude);
+        _health = health;
+        Debug.Log($"玩家 {gameObject.name} 的生命值设置为 {_health}");
+
+        OnHealthChanged?.Invoke(); // 触发生命值改变事件
+        Debug.Log("已触发 OnHealthChanged 事件");
+    }
+
+    /// <summary>
+    /// 处理玩家死亡逻辑
+    /// </summary>
+    private void HandlePlayerDeath()
+    {
+        _isDead = true; // 设置标志位
+        Debug.Log($"玩家 {gameObject.name} 死亡");
+
+        // 触发玩家死亡事件
+        OnCharacterDeath?.Invoke();
+        Debug.Log("已触发 OnCharacterDeath 事件");
+
+        _animator.SetBool("isDead", true);
+
+        _controller.enabled = false; // 禁用角色控制器以避免碰撞
+        _playerInput.enabled = false; // 禁用玩家输入
     }
 
     #endregion
 
-    #region Events
+    #region ICharacter Implementation
 
-    /// <summary>
-    /// 玩家死亡事件，当玩家死亡时触发
-    /// </summary>
-    public static event Action OnPlayerDeath;
+    public int MaxHealth
+    {
+        get { return _maxHealth; }
+        set
+        {
+            if (value < 0) value = 0; // 确保最大生命值不小于 0
+            _maxHealth = value;
+        }
+    }
+
+    public int Health { get { return _health; } }
+
+    public void CauseDamage(int damageAmount)
+    {
+        if (_isDead) return; // 如果玩家已死亡，停止处理伤害
+
+        if (damageAmount > 0)
+        {
+            SetHealth(Math.Max(_health - damageAmount, 0)); // 减少生命值，确保不小于0
+            Debug.Log($"玩家 {gameObject.name} 受到了 {damageAmount} 点伤害");
+            OnHealthDecreased?.Invoke(); // 触发生命值减少事件
+            Debug.Log($"玩家 {gameObject.name} 受到了 {damageAmount} 点伤害");
+        }
+        else
+        {
+            Debug.LogWarning("伤害小于或等于 0，不造成伤害。");
+        }
+
+        if (_health <= 0)
+        {
+            HandlePlayerDeath(); // 调用死亡方法
+        }
+    }
+
+    public void Heal(int healAmount)
+    {
+        if (_isDead) return; // 如果玩家已死亡，停止处理治疗
+
+        if (healAmount > 0)
+        {
+            SetHealth(Math.Min(_health + healAmount, _maxHealth)); // 增加生命值，确保不超过最大生命值
+            Debug.Log($"玩家 {gameObject.name} 治疗了 {healAmount} 点生命值");
+
+            OnHealthIncreased?.Invoke(); // 触发生命值增加事件
+            Debug.Log("已触发 OnHealthIncreased 事件");
+        }
+        else
+        {
+            Debug.LogWarning("治疗小于或等于 0，不进行治疗。");
+        }
+    }
+
+    public event Action OnHealthChanged;
+    public event Action OnHealthIncreased;
+    public event Action OnHealthDecreased;
+    public event Action OnCharacterDeath;
 
     #endregion
 }
