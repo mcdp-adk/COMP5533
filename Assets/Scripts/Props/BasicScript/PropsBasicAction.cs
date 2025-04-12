@@ -288,6 +288,13 @@ public class PropsBasicAction : MonoBehaviour
     /// </summary>
     public void DropFunction()
     {
+        // 判断是否处于激活状态中。如果是则直接激活。
+        if (isButtonPressed == true)
+        {
+            ActivateButtonRelease();
+            return;
+        }
+
         isBound = false;
         //isEnableGrivaty = true;
         bindTargetPoint = null;
