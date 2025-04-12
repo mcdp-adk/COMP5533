@@ -63,6 +63,26 @@ public class PlayerController : MonoBehaviour, ICharacter
         _meleeAction = _playerInput.actions["Melee"];
     }
 
+    private void OnEnable()
+    {
+        _attackAction.started += OnAttackPressed;
+        _attackAction.canceled += OnAttackReleased;
+        _dropAction.performed += ToggleDrop;
+        _crouchAction.started += ToggleCrouch;
+        _crouchAction.canceled += ToggleCrouch;
+        _meleeAction.performed += ToggleMelee;
+    }
+
+    private void OnDisable()
+    {
+        _attackAction.started -= OnAttackPressed;
+        _attackAction.canceled -= OnAttackReleased;
+        _dropAction.performed -= ToggleDrop;
+        _crouchAction.started -= ToggleCrouch;
+        _crouchAction.canceled -= ToggleCrouch;
+        _meleeAction.performed -= ToggleMelee;
+    }
+
     private void Start()
     {
         // 获取主相机的引用
@@ -117,6 +137,7 @@ public class PlayerController : MonoBehaviour, ICharacter
         transform.position = respawnPosition;
         SetHealth(_maxHealth); // 重置生命值
         _isDead = false; // 重置死亡状态
+        _isCrouching = false; // 重置蹲伏状态
         _controller.enabled = true; // 启用角色控制器
         _playerInput.enabled = true; // 启用玩家输入
         _animator.SetBool("isDead", false); // 重置死亡动画状态
@@ -131,56 +152,7 @@ public class PlayerController : MonoBehaviour, ICharacter
     /// </summary>
     private void HandleInputs()
     {
-        // 获取输入值
         _moveInput = _moveAction.ReadValue<Vector2>();
-
-        // 处理攻击和投掷输入
-        if (_attackAction.WasPressedThisFrame())
-        {
-            // 记录攻击开始时是否持有物体
-            if (_currentPropAction != null)
-            {
-                Debug.Log($"激活道具: {_currentProp.name}");
-                _currentPropAction.ActivateButtonPressed();
-                _isPropEquiped = true; // 设置为已装备道具
-            }
-        }
-
-        if (_attackAction.WasReleasedThisFrame())
-        {
-            // 只有当攻击开始于持有物体时才执行释放逻辑
-            if (_isPropEquiped)
-            {
-                if (_currentPropAction != null)
-                {
-                    Debug.Log($"释放道具: {_currentProp.name}");
-                    _currentPropAction.ActivateButtonRelease();
-                    _currentProp = null; // 清空当前道具引用
-                    _currentPropAction = null; // 清空道具脚本引用
-                }
-                _isPropEquiped = false; // 重置标志
-            }
-        }
-
-        if (_dropAction.WasPressedThisFrame())
-        {
-            if (_currentPropAction != null)
-            {
-                Debug.Log($"丢弃道具: {_currentProp.name}");
-                _currentPropAction.DropFunction();
-                _currentProp = null; // 清空当前道具引用
-                _currentPropAction = null; // 清空道具脚本引用
-            }
-            else
-            {
-                Debug.Log("尝试丢弃道具，但当前未持有道具");
-            }
-        }
-
-        if (_crouchAction.WasPressedThisFrame())
-        {
-            ToggleCrouch(); // 切换蹲伏状态
-        }
     }
 
     /// <summary>
@@ -216,14 +188,73 @@ public class PlayerController : MonoBehaviour, ICharacter
     }
 
     /// <summary>
+    /// 处理攻击输入
+    /// / </summary>
+    /// <param name="ctx"></param>
+    private void OnAttackPressed(InputAction.CallbackContext ctx)
+    {
+        // 记录攻击开始时是否持有物体
+        if (_currentPropAction != null)
+        {
+            Debug.Log($"激活道具: {_currentProp.name}");
+            _currentPropAction.ActivateButtonPressed();
+            _isPropEquiped = true; // 设置为已装备道具
+        }
+    }
+
+    /// <summary>
+    /// 处理攻击释放输入
+    /// </summary>
+    /// <param name="ctx"></param>
+    private void OnAttackReleased(InputAction.CallbackContext ctx)
+    {
+        // 只有当攻击开始于持有物体时才执行释放逻辑
+        if (_isPropEquiped)
+        {
+            if (_currentPropAction != null)
+            {
+                Debug.Log($"释放道具: {_currentProp.name}");
+                _currentPropAction.ActivateButtonRelease();
+                _currentProp = null; // 清空当前道具引用
+                _currentPropAction = null; // 清空道具脚本引用
+            }
+            _isPropEquiped = false; // 重置标志
+        }
+    }
+
+    /// <summary>
+    /// 丢弃道具，只有在当前持有道具时才执行丢弃逻辑
+    /// </summary>
+    /// <param name="ctx"></param>
+    private void ToggleDrop(InputAction.CallbackContext ctx)
+    {
+        if (_currentPropAction != null)
+        {
+            Debug.Log($"丢弃道具: {_currentProp.name}");
+            _currentPropAction.DropFunction();
+            _currentProp = null; // 清空当前道具引用
+            _currentPropAction = null; // 清空道具脚本引用
+        }
+        else
+        {
+            Debug.Log("尝试丢弃道具，但当前未持有道具");
+        }
+    }
+
+    /// <summary>
     /// 切换蹲伏状态
     /// </summary>
-    private void ToggleCrouch()
+    private void ToggleCrouch(InputAction.CallbackContext ctx)
     {
         _isCrouching = !_isCrouching; // 切换状态
         _animator.SetBool("isCrouching", _isCrouching); // 更新动画参数
 
         _moveSpeed = _isCrouching ? _crouchSpeed : _runSpeed; // 设置移动速度
+    }
+
+    private void ToggleMelee(InputAction.CallbackContext ctx)
+    {
+        _animator.SetTrigger("triggerPunch"); // 播放近战攻击动画
     }
 
     /// <summary>
