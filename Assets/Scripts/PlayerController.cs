@@ -21,6 +21,8 @@ public class PlayerController : MonoBehaviour, ICharacter
     private InputAction _moveAction;
     private InputAction _attackAction;
     private InputAction _dropAction;
+    private InputAction _crouchAction;
+    private InputAction _meleeAction;
     private Vector2 _moveInput;
 
     // 持有道具
@@ -30,10 +32,14 @@ public class PlayerController : MonoBehaviour, ICharacter
 
 
     [Header("Player Settings")]
-    [SerializeField] private float _moveSpeed = 5f;
-    [SerializeField] private float _gravity = -9.81f;
+    private float _moveSpeed;
+    [SerializeField] private float _runSpeed = 5f;
+    [SerializeField] private float _crouchSpeed = 2f;
     [SerializeField] private float _rotationSpeed = 10f;
+    [SerializeField] private float _gravity = -9.81f;
     [SerializeField] private int _maxHealth = 100;
+
+    private bool _isCrouching = false;
     private int _health;
     private bool _isDead = false;
 
@@ -53,6 +59,8 @@ public class PlayerController : MonoBehaviour, ICharacter
         _moveAction = _playerInput.actions["Move"];
         _attackAction = _playerInput.actions["Attact"];
         _dropAction = _playerInput.actions["Drop"];
+        _crouchAction = _playerInput.actions["Crouch"];
+        _meleeAction = _playerInput.actions["Melee"];
     }
 
     private void Start()
@@ -62,6 +70,9 @@ public class PlayerController : MonoBehaviour, ICharacter
 
         // 初始化生命值
         _health = _maxHealth;
+
+        // 设置初始速度
+        _moveSpeed = _runSpeed;
     }
 
     private void Update()
@@ -165,6 +176,11 @@ public class PlayerController : MonoBehaviour, ICharacter
                 Debug.Log("尝试丢弃道具，但当前未持有道具");
             }
         }
+
+        if (_crouchAction.WasPressedThisFrame())
+        {
+            ToggleCrouch(); // 切换蹲伏状态
+        }
     }
 
     /// <summary>
@@ -197,6 +213,17 @@ public class PlayerController : MonoBehaviour, ICharacter
                 _rotationSpeed * Time.deltaTime
             );
         }
+    }
+
+    /// <summary>
+    /// 切换蹲伏状态
+    /// </summary>
+    private void ToggleCrouch()
+    {
+        _isCrouching = !_isCrouching; // 切换状态
+        _animator.SetBool("isCrouching", _isCrouching); // 更新动画参数
+
+        _moveSpeed = _isCrouching ? _crouchSpeed : _runSpeed; // 设置移动速度
     }
 
     /// <summary>
