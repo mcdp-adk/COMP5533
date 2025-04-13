@@ -37412,6 +37412,10 @@ PrefabInstance:
       propertyPath: duringTriggeredAction.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 5963868490040910854, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
+      propertyPath: explosionDamage
+      value: 49
+      objectReference: {fileID: 0}
     - target: {fileID: 8711698233604956763, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
       propertyPath: randomTorqueRange
       value: 15
