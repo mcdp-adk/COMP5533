@@ -70,7 +70,7 @@ public class PropEndActiveEventHealthCare : MonoBehaviour
                     EnemyAI enemyAI = hitCollider.GetComponent<EnemyAI>();
                     if (enemyAI != null)
                     {
-                        enemyAI.health -= (-1 * explosionHealthCare);
+                        enemyAI.Heal((int)explosionHealthCare);
                         //Debug.Log($"对带有标签 {tag} 的对象 {hitCollider.gameObject.name} 造成 {explosionHealthCare} 点伤害，剩余生命值：{enemyAI.health}");
                     }
 
@@ -101,7 +101,7 @@ public class PropEndActiveEventHealthCare : MonoBehaviour
                 PlayerController playerController = hitCollider.GetComponent<PlayerController>();
                 if (playerController != null)
                 {
-                    playerController.CauseDamage((int)(-1 * explosionHealthCare)); // 对玩家造成伤害
+                    playerController.Heal((int)(explosionHealthCare)); // 对玩家造成伤害
                 }
                 if (healthCareEffectPrefab != null)
                 {
