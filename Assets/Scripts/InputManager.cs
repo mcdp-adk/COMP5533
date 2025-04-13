@@ -28,7 +28,7 @@ public class InputManager : MonoBehaviour
     /// 单例实例
     /// </summary>
     public static InputManager Instance { get; private set; }
-    
+
     /// <summary>
     /// 获取所有玩家的输入组件（直接当 GameObject 使用，比如：对于数组中的某个元素 playerInput，playerInput.transform.position = new Vector3(0, 0, 0)）
     /// </summary>
@@ -87,7 +87,8 @@ public class InputManager : MonoBehaviour
 
         if (!_deviceDetected)
         {
-            Debug.LogWarning("未检测到任何输入设备，请先按下任意键");
+            Debug.LogWarning("未检测到任何输入设备，绑定已结束");
+            CleanupBinding();
             return;
         }
 

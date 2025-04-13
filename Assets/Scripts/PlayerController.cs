@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 /// <summary>
 /// 控制玩家角色的移动、攻击和道具交互
@@ -29,12 +30,16 @@ public class PlayerController : MonoBehaviour, ICharacter
     private Vector2 _moveInput;
 
     [Header("Player Settings")]
+    [SerializeField] private Image _healthBar;
+    [SerializeField] private Gradient _healthBarGradient; // 生命值渐变色
+    [SerializeField] private float _fillSpeed = 0.5f;   // 生命值改变速度
     [SerializeField] private float _runSpeed = 5f;
     [SerializeField] private float _crouchSpeed = 2f;
     [SerializeField] private float _rotationSpeed = 10f;
     [SerializeField] private float _gravity = -9.81f;
     [SerializeField] private int _maxHealth = 100;
     private float _moveSpeed; // 当前移动速度
+    private float _moveRate;
     private int _health;
     private bool _isDead = false;
     private bool _isCrouching = false;
@@ -56,7 +61,7 @@ public class PlayerController : MonoBehaviour, ICharacter
 
     #endregion
 
-    #region Methods: Unity Callbacks
+    #region Unity Callbacks
 
     private void Awake()
     {
@@ -129,13 +134,13 @@ public class PlayerController : MonoBehaviour, ICharacter
 
     #endregion
 
-    #region Methods: Input Handling
+    #region Inputs
 
     private void RegisterInputEvents()
     {
         _attackAction.started += OnAttackPressed;
         _attackAction.canceled += OnAttackReleased;
-        _dropAction.performed += ToggleDrop;
+        _dropAction.canceled += ToggleDrop;
         _crouchAction.started += ToggleCrouch;
         _crouchAction.canceled += ToggleCrouch;
         _meleeAction.performed += ToggleMelee;
@@ -145,7 +150,7 @@ public class PlayerController : MonoBehaviour, ICharacter
     {
         _attackAction.started -= OnAttackPressed;
         _attackAction.canceled -= OnAttackReleased;
-        _dropAction.performed -= ToggleDrop;
+        _dropAction.canceled -= ToggleDrop;
         _crouchAction.started -= ToggleCrouch;
         _crouchAction.canceled -= ToggleCrouch;
         _meleeAction.performed -= ToggleMelee;
@@ -232,7 +237,7 @@ public class PlayerController : MonoBehaviour, ICharacter
 
     #endregion
 
-    #region Methods: Movement & Physics
+    #region Movement
 
     /// <summary>
     /// 处理玩家移动
@@ -252,8 +257,11 @@ public class PlayerController : MonoBehaviour, ICharacter
         // 根据输入和相机方向计算移动向量
         Vector3 moveDirection = forward * _moveInput.y + right * _moveInput.x;
 
+        // 计算持有物体对移动速度的影响
+        _moveRate = _currentPropAction != null ? 1f / _currentPropAction.GetWeight() : 1f;
+
         // 应用移动
-        _controller.Move(moveDirection * _moveSpeed * Time.deltaTime);
+        _controller.Move(moveDirection * _moveSpeed * _moveRate * Time.deltaTime);
 
         // 使角色面向移动方向
         if (moveDirection != Vector3.zero)
@@ -287,22 +295,38 @@ public class PlayerController : MonoBehaviour, ICharacter
     private void UpdateAnimationParameters()
     {
         _animator.SetFloat("moveSpeed", _moveInput.magnitude);
+
+        float healthPercentage = (float)_health / _maxHealth;
+        _healthBar.fillAmount = healthPercentage; // 更新生命值UI
+        _healthBar.color = _healthBarGradient.Evaluate(healthPercentage); // 更新生命值渐变色
     }
 
     #endregion
 
-    #region Methods: Combat & Props
+    #region Combat
 
     /// <summary>
     /// 执行近战攻击
     /// </summary>
     private void PerformMeleeAttack()
     {
+        // 触发拳击动画，实际伤害将由动画事件触发
         _animator.SetTrigger("triggerPunch");
         
+        // 启动冷却
+        _meleeOnCooldown = true;
+        _meleeTimer = _meleeCooldown;
+        Debug.Log("近战攻击已执行，进入冷却");
+    }
+
+    /// <summary>
+    /// 由拳击动画中的事件触发，在动画中的特定时间点造成伤害
+    /// </summary>
+    private void OnPunchTriggered()
+    {
         // 检测前方是否有敌人
         Collider[] hitEnemies = Physics.OverlapSphere(transform.position + transform.forward * (_meleeRange / 2), _meleeRange / 2, _whatIsEnemy);
-        
+
         // 对命中的敌人造成伤害
         foreach (Collider enemy in hitEnemies)
         {
@@ -313,11 +337,6 @@ public class PlayerController : MonoBehaviour, ICharacter
                 Debug.Log($"近战攻击命中: {enemy.name}，造成 {_meleeDamage} 点伤害");
             }
         }
-        
-        // 启动冷却
-        _meleeOnCooldown = true;
-        _meleeTimer = _meleeCooldown;
-        Debug.Log("近战攻击已执行，进入冷却");
     }
 
     /// <summary>
@@ -335,6 +354,10 @@ public class PlayerController : MonoBehaviour, ICharacter
         }
     }
 
+    #endregion
+
+    #region Props
+
     /// <summary>
     /// 拾取道具
     /// </summary>
@@ -342,7 +365,7 @@ public class PlayerController : MonoBehaviour, ICharacter
     {
         _currentProp = prop;
         _currentPropAction = _currentProp.GetComponent<PropsBasicAction>();
-        
+
         if (_currentPropAction != null)
         {
             _currentPropAction.PickUpFunction(_propPosition != null ? _propPosition : transform);
@@ -357,7 +380,7 @@ public class PlayerController : MonoBehaviour, ICharacter
 
     #endregion
 
-    #region Methods: Health & Death
+    #region Health
 
     /// <summary>
     /// 设置生命值并触发事件
@@ -366,9 +389,9 @@ public class PlayerController : MonoBehaviour, ICharacter
     {
         int oldHealth = _health;
         _health = health;
-        
+
         OnHealthChanged?.Invoke();
-        
+
         if (_health > oldHealth)
         {
             OnHealthIncreased?.Invoke();
@@ -385,7 +408,7 @@ public class PlayerController : MonoBehaviour, ICharacter
     private void HandlePlayerDeath()
     {
         if (_isDead) return; // 防止重复执行死亡逻辑
-        
+
         _isDead = true;
         Debug.Log($"玩家 {gameObject.name} 死亡");
 
@@ -395,7 +418,7 @@ public class PlayerController : MonoBehaviour, ICharacter
         // 禁用控制
         _controller.enabled = false;
         _playerInput.enabled = false;
-        
+
         // 丢弃当前道具
         if (_currentPropAction != null)
         {
@@ -425,7 +448,7 @@ public class PlayerController : MonoBehaviour, ICharacter
 
     #endregion
 
-    #region ICharacter Implementation
+    #region ICharacter
 
     public int MaxHealth
     {
@@ -434,9 +457,9 @@ public class PlayerController : MonoBehaviour, ICharacter
         {
             if (value < 0) value = 0;
             _maxHealth = value;
-            
+
             // 如果当前生命值超过新的最大值，调整当前生命值
-            if (_health > _maxHealth) 
+            if (_health > _maxHealth)
             {
                 SetHealth(_maxHealth);
             }
@@ -451,7 +474,7 @@ public class PlayerController : MonoBehaviour, ICharacter
 
         SetHealth(Math.Max(_health - damageAmount, 0));
         Debug.Log($"玩家 {gameObject.name} 受到了 {damageAmount} 点伤害，剩余生命值: {_health}");
-        
+
         if (_health <= 0)
         {
             HandlePlayerDeath();
@@ -473,7 +496,7 @@ public class PlayerController : MonoBehaviour, ICharacter
 
     #endregion
 
-    #region Debug Methods
+    #region Debug
 
     private void OnDrawGizmosSelected()
     {

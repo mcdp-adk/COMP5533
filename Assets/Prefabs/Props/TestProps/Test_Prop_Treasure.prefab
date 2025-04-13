@@ -188,8 +188,7 @@ MonoBehaviour:
   - {fileID: 5145033582398575202}
   isEnableGrivaty: 1
   isTouchTriggerLayer: 0
-  propTag: 
-  weight: 1
+  weight: 2
   value: 1
   minReActiveTime: 0.5
   maxReActiveTime: 5
