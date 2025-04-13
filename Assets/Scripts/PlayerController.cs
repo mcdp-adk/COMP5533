@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 /// <summary>
 /// 控制玩家角色的移动、攻击和道具交互
@@ -29,6 +30,9 @@ public class PlayerController : MonoBehaviour, ICharacter
     private Vector2 _moveInput;
 
     [Header("Player Settings")]
+    [SerializeField] private Image _healthBar;
+    [SerializeField] private Gradient _healthBarGradient; // 生命值渐变色
+    [SerializeField] private float _fillSpeed = 0.5f;   // 生命值改变速度
     [SerializeField] private float _runSpeed = 5f;
     [SerializeField] private float _crouchSpeed = 2f;
     [SerializeField] private float _rotationSpeed = 10f;
@@ -291,6 +295,10 @@ public class PlayerController : MonoBehaviour, ICharacter
     private void UpdateAnimationParameters()
     {
         _animator.SetFloat("moveSpeed", _moveInput.magnitude);
+
+        float healthPercentage = (float)_health / _maxHealth;
+        _healthBar.fillAmount = healthPercentage; // 更新生命值UI
+        _healthBar.color = _healthBarGradient.Evaluate(healthPercentage); // 更新生命值渐变色
     }
 
     #endregion
