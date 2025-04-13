@@ -12,7 +12,8 @@ public class PropsBasicAction : MonoBehaviour
 
     [Header("Situation")]
     [SerializeField] private bool isEnableGrivaty = true;
-    [SerializeField] private bool isTouchTriggerLayer = false;
+    [SerializeField] private bool isTouchNormalTriggerLayer = false;
+    [SerializeField] private bool isTouchSpecialTriggerLayer = false;
 
     [Header("Setting")]
     [SerializeField] private string propTag;
@@ -23,11 +24,13 @@ public class PropsBasicAction : MonoBehaviour
     [SerializeField] private float maxActiveDurationTime = 3f;  // 最长蓄力时间
 
     [Header("Parameters")]
-    [SerializeField] private LayerMask whatIsTriggerLayer; // 设置触发图层
+    [SerializeField] private LayerMask whatIsNormalTriggerLayer; // 设置触发图层
+    [SerializeField] private LayerMask whatIsSpecialTriggerLayer; // 设置触发图层
     [SerializeField] private Collider activeCheckCollider; // 外部传入的碰撞器
     [SerializeField] private UnityEvent<float> duringTriggeredAction; // 允许传入按键持续时间
     [SerializeField] private UnityEvent<float> onTriggeredAction; // 允许传入按键持续时间
-    [SerializeField] private UnityEvent endTriggeredAction; // 允许传入按键持续时间
+    [SerializeField] private UnityEvent endTriggeredNormalAction; // 允许传入按键持续时间
+    [SerializeField] private UnityEvent endTriggeredSpecialAction; // 允许传入按键持续时间
 
     [Header("BindWithCharacter")]
     private Transform bindTargetPoint;
@@ -76,19 +79,29 @@ public class PropsBasicAction : MonoBehaviour
     /// </summary>
     private void OnTriggerEnter(Collider other)
     {
-        if (((1 << other.gameObject.layer) & whatIsTriggerLayer) != 0)  // 检查是否属于指定图层
+        if (((1 << other.gameObject.layer) & whatIsNormalTriggerLayer) != 0)  // 检查是否属于指定图层
         {
-            isTouchTriggerLayer = true;  // 设置标志
-            Debug.Log("物体碰到了指定图层: " + whatIsTriggerLayer);
+            isTouchNormalTriggerLayer = true;  // 设置标志
+            Debug.Log("物体碰到了指定图层: " + whatIsNormalTriggerLayer);
+        }
+        else if (((1 << other.gameObject.layer) & whatIsSpecialTriggerLayer) != 0)  // 检查是否属于指定图层
+        {
+            isTouchSpecialTriggerLayer = true;  // 设置标志
+            Debug.Log("物体碰到了指定图层: " + whatIsSpecialTriggerLayer);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (((1 << other.gameObject.layer) & whatIsTriggerLayer) != 0)  // 检查是否属于指定图层
+        if (((1 << other.gameObject.layer) & whatIsNormalTriggerLayer) != 0)  // 检查是否属于指定图层
         {
-            isTouchTriggerLayer = false;  // 设置标志
-            Debug.Log("物体离开了指定图层: " + whatIsTriggerLayer);
+            isTouchNormalTriggerLayer = false;  // 设置标志
+            Debug.Log("物体离开了指定图层: " + whatIsNormalTriggerLayer);
+        }
+        else if (((1 << other.gameObject.layer) & whatIsSpecialTriggerLayer) != 0)  // 检查是否属于指定图层
+        {
+            isTouchSpecialTriggerLayer = false;  // 设置标志
+            Debug.Log("物体离开了指定图层: " + whatIsSpecialTriggerLayer);
         }
     }
 
@@ -178,9 +191,14 @@ public class PropsBasicAction : MonoBehaviour
         {
             if (Time.time - activeStartTime > minReActiveTime)  // 碰到指定图层退出
             {
-                if (isTouchTriggerLayer)
+                if (isTouchNormalTriggerLayer)
                 {
-                    endTriggeredAction?.Invoke();  // 触发既定脚本
+                    endTriggeredNormalAction?.Invoke();  // 触发既定脚本
+                    isActived = false;
+                }
+                else if (isTouchSpecialTriggerLayer)
+                {
+                    endTriggeredSpecialAction?.Invoke();  // 触发既定脚本
                     isActived = false;
                 }
             }

@@ -55,16 +55,20 @@ MonoBehaviour:
   componentCollidersBox:
   - {fileID: 5592743063501747791}
   isEnableGrivaty: 1
-  isTouchTriggerLayer: 0
+  isTouchNormalTriggerLayer: 0
+  isTouchSpecialTriggerLayer: 0
   propTag: BasicProp
   weight: 1
   value: 1
   minReActiveTime: 0.5
   maxReActiveTime: 5
   maxActiveDurationTime: 1
-  whatIsTriggerLayer:
+  whatIsNormalTriggerLayer:
     serializedVersion: 2
     m_Bits: 1024
+  whatIsSpecialTriggerLayer:
+    serializedVersion: 2
+    m_Bits: 0
   activeCheckCollider: {fileID: 6930190724533489864}
   duringTriggeredAction:
     m_PersistentCalls:
@@ -108,7 +112,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 1
-  endTriggeredAction:
+  endTriggeredNormalAction:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7242977271216677204}
@@ -134,7 +138,10 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 1
+        m_CallState: 2
+  endTriggeredSpecialAction:
+    m_PersistentCalls:
+      m_Calls: []
   isBlocked: 0
   isActived: 0
   isBound: 0
