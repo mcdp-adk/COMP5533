@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour, ICharacter
 
     #endregion
 
-    #region Methods: Unity Callbacks
+    #region Unity Callbacks
 
     private void Awake()
     {
@@ -130,13 +130,13 @@ public class PlayerController : MonoBehaviour, ICharacter
 
     #endregion
 
-    #region Methods: Input Handling
+    #region Inputs
 
     private void RegisterInputEvents()
     {
         _attackAction.started += OnAttackPressed;
         _attackAction.canceled += OnAttackReleased;
-        _dropAction.performed += ToggleDrop;
+        _dropAction.canceled += ToggleDrop;
         _crouchAction.started += ToggleCrouch;
         _crouchAction.canceled += ToggleCrouch;
         _meleeAction.performed += ToggleMelee;
@@ -146,7 +146,7 @@ public class PlayerController : MonoBehaviour, ICharacter
     {
         _attackAction.started -= OnAttackPressed;
         _attackAction.canceled -= OnAttackReleased;
-        _dropAction.performed -= ToggleDrop;
+        _dropAction.canceled -= ToggleDrop;
         _crouchAction.started -= ToggleCrouch;
         _crouchAction.canceled -= ToggleCrouch;
         _meleeAction.performed -= ToggleMelee;
@@ -233,7 +233,7 @@ public class PlayerController : MonoBehaviour, ICharacter
 
     #endregion
 
-    #region Methods: Movement & Physics
+    #region Movement
 
     /// <summary>
     /// 处理玩家移动
@@ -295,15 +295,27 @@ public class PlayerController : MonoBehaviour, ICharacter
 
     #endregion
 
-    #region Methods: Combat & Props
+    #region Combat
 
     /// <summary>
     /// 执行近战攻击
     /// </summary>
     private void PerformMeleeAttack()
     {
+        // 触发拳击动画，实际伤害将由动画事件触发
         _animator.SetTrigger("triggerPunch");
+        
+        // 启动冷却
+        _meleeOnCooldown = true;
+        _meleeTimer = _meleeCooldown;
+        Debug.Log("近战攻击已执行，进入冷却");
+    }
 
+    /// <summary>
+    /// 由拳击动画中的事件触发，在动画中的特定时间点造成伤害
+    /// </summary>
+    private void OnPunchTriggered()
+    {
         // 检测前方是否有敌人
         Collider[] hitEnemies = Physics.OverlapSphere(transform.position + transform.forward * (_meleeRange / 2), _meleeRange / 2, _whatIsEnemy);
 
@@ -317,11 +329,6 @@ public class PlayerController : MonoBehaviour, ICharacter
                 Debug.Log($"近战攻击命中: {enemy.name}，造成 {_meleeDamage} 点伤害");
             }
         }
-
-        // 启动冷却
-        _meleeOnCooldown = true;
-        _meleeTimer = _meleeCooldown;
-        Debug.Log("近战攻击已执行，进入冷却");
     }
 
     /// <summary>
@@ -338,6 +345,10 @@ public class PlayerController : MonoBehaviour, ICharacter
             }
         }
     }
+
+    #endregion
+
+    #region Props
 
     /// <summary>
     /// 拾取道具
@@ -361,7 +372,7 @@ public class PlayerController : MonoBehaviour, ICharacter
 
     #endregion
 
-    #region Methods: Health & Death
+    #region Health
 
     /// <summary>
     /// 设置生命值并触发事件
@@ -429,7 +440,7 @@ public class PlayerController : MonoBehaviour, ICharacter
 
     #endregion
 
-    #region ICharacter Implementation
+    #region ICharacter
 
     public int MaxHealth
     {
@@ -477,7 +488,7 @@ public class PlayerController : MonoBehaviour, ICharacter
 
     #endregion
 
-    #region Debug Methods
+    #region Debug
 
     private void OnDrawGizmosSelected()
     {
