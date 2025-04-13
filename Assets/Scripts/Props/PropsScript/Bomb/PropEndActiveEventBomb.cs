@@ -11,14 +11,13 @@ public class PropEndActiveEventBomb : MonoBehaviour
     [SerializeField] private float explosionDuration = 3f;    // 爆炸效果持续时间
     [SerializeField] private float explosionRange = 5f;  // 爆炸范围
     [SerializeField] private float explosionDamage = 100f;  // 爆炸伤害
-    [SerializeField] private string[] targetTags;// 爆炸范围内目标对象的标签数组
+    [SerializeField] private string[] targetTags; // 爆炸范围内目标对象的标签数组
 
     /// <summary>
     /// 爆炸触发函数
     /// </summary>
     public void BombExplosion()
     {
-
         Debug.Log("进入爆炸效果，检测预制件的结果为：" + (explosionEffectPrefab != null));
 
         // 播放爆炸音效
@@ -64,15 +63,26 @@ public class PropEndActiveEventBomb : MonoBehaviour
             // 检查对象是否匹配任意一个目标标签
             foreach (string tag in targetTags)
             {
-                
                 if (hitCollider.CompareTag(tag))
                 {
-                    
                     // 获取EnemyAI组件并修改health属性
                     EnemyAI enemyAI = hitCollider.GetComponent<EnemyAI>();
-                    enemyAI.health -= explosionDamage;
-                    //Debug.Log($"对带有标签 {tag} 的对象 {hitCollider.gameObject.name} 造成 {explosionDamage} 点伤害，剩余生命值：{enemyAI.health}");
+                    if (enemyAI != null)
+                    {
+                        enemyAI.health -= explosionDamage;
+                        //Debug.Log($"对带有标签 {tag} 的对象 {hitCollider.gameObject.name} 造成 {explosionDamage} 点伤害，剩余生命值：{enemyAI.health}");
+                    }
                     break; // 防止重复处理同一个对象
+                }
+            }
+
+            // 检查是否是玩家
+            if (hitCollider.CompareTag("Player"))
+            {
+                PlayerController playerController = hitCollider.GetComponent<PlayerController>();
+                if (playerController != null)
+                {
+                    playerController.CauseDamage((int)explosionDamage); // 对玩家造成伤害
                 }
             }
         }
