@@ -167,7 +167,7 @@ MonoBehaviour:
   value: 1
   minReActiveTime: 0.5
   maxReActiveTime: 5
-  maxActiveDurationTime: 3
+  maxActiveDurationTime: 1
   whatIsTriggerLayer:
     serializedVersion: 2
     m_Bits: 1024

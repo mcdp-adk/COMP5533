@@ -294,17 +294,17 @@ MonoBehaviour:
   chaseSpeed: 5
   sightAngle: 120
   sightDistance: 15
-  detectionRadius: 3
+  detectionRadius: 5
   angularSpeed: 360
   acceleration: 20
-  attackDistance: 2
+  attackDistance: 3
   patrolPoints:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   animator: {fileID: 8210687832501084406}
-  attackDelay: 1
+  attackDelay: 1.2
   playerLayer:
     serializedVersion: 2
     m_Bits: 8
