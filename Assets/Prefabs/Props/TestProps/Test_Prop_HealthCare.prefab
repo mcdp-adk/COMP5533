@@ -448,7 +448,7 @@ MonoBehaviour:
   explosionDuration: 3
   explosionRange: 5
   explosionHealthCare: 100
-  healthCareEffectOffset: {x: 0, y: 1.5, z: 0}
+  healthCareEffectOffset: {x: 0, y: 1.2, z: 0}
   targetTags: []
 --- !u!114 &2769115865455453179
 MonoBehaviour:
