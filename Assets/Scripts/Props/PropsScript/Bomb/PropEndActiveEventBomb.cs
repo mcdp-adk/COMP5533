@@ -70,7 +70,7 @@ public class PropEndActiveEventBomb : MonoBehaviour
                     if (enemyAI != null)
                     {
                         enemyAI.health -= explosionDamage;
-                        //Debug.Log($"对带有标签 {tag} 的对象 {hitCollider.gameObject.name} 造成 {explosionDamage} 点伤害，剩余生命值：{enemyAI.health}");
+                        //Debug.Log($"对带有标签 {tag} 的对象 {hitCollider.gameObject.name} 造成 {explosionHealthCare} 点伤害，剩余生命值：{enemyAI.health}");
                     }
                     break; // 防止重复处理同一个对象
                 }
