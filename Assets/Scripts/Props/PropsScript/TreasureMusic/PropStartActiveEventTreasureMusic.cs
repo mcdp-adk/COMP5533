@@ -2,34 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PropEndActiveEventTreasure : MonoBehaviour
+public class PropStartActiveEventTreasureMusic : MonoBehaviour
 {
+    // Start is called before the first frame update
     [Header("TreasureSetting")]
-    [SerializeField] private int scoreToAdd = 1; // 每次增加的得分量
     [SerializeField] private AudioSource treasureSound; // 音效文件
-    [SerializeField] private float fadeDuration = 5f; // 声音渐大持续时间
-
-    public void TreasureInSafeHouse()
-    {
-        SendMsgToGameMaster();
-
-    }
-
-    private void SendMsgToGameMaster()
-    {
-        // 检查 GameManager 是否存在并调用其方法增加得分
-        if (PropGameManager.Instance != null)
-        {
-            PropGameManager.Instance.AddScore(scoreToAdd); // 确保 GameManager 有一个 AddScore(int score) 方法
-            Debug.Log("宝藏已进入安全屋，得分已增加！");
-        }
-        else
-        {
-            Debug.LogWarning("GameManager 未找到，无法增加得分！");
-        }
-    }
-
-    private void TreasurePlayMusic()
+    [SerializeField] private float fadeDuration = 2f; // 声音渐大持续时间
+    public void TreasurePlayMusic()
     {
         if (treasureSound != null)
         {
