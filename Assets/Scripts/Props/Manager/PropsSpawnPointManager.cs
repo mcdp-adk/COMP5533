@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,7 +6,13 @@ public class PropsSpawnPointManager : MonoBehaviour
 {
     [Header("Spawn Settings")]
     [SerializeField] private List<Transform> spawnPoints = new List<Transform>(); // 可生成道具的点位列表
-    [SerializeField] private GameObject[] propPrefabs; // 可生成的预制件道具数组
+    [System.Serializable]
+    public class PropPrefabWithWeight
+    {
+        public GameObject prefab;  // 道具预制体
+        public int weight = 1;         // 道具生成的权重
+    }
+    [SerializeField] private List<PropPrefabWithWeight> propPrefabsWithWeights; // 带有权重的道具列表
     [SerializeField] private int maxTotalProps = 2; // 控制道具的总生成数量
     [SerializeField] private float spawnWaitingTime = 0.3f; // 控制道具的总生成数量
 
@@ -67,23 +72,45 @@ public class PropsSpawnPointManager : MonoBehaviour
             // 仅在空闲或道具被销毁的点位生成新的道具
             if (status.IsPropDestroyed)
             {
-                int randomIndex = Random.Range(0, propPrefabs.Length);
-                GameObject prop = Instantiate(propPrefabs[randomIndex], status.point.position, Quaternion.identity);
+                GameObject prop = SelectPropByWeight(); // 根据权重选择道具
+                if (prop == null) continue;
+
+                GameObject spawnedProp = Instantiate(prop, status.point.position, Quaternion.identity);
 
                 // 绑定销毁事件监听
-                var propAction = prop.GetComponent<PropsBasicAction>();
+                var propAction = spawnedProp.GetComponent<PropsBasicAction>();
                 if (propAction != null)
                 {
                     propAction.OnDestroyed += HandlePropDestroyed; // 注册销毁事件
                 }
 
                 // 更新点位状态
-                status.generatedProp = prop;
+                status.generatedProp = spawnedProp;
                 currentTotalProps++; // 增加当前道具数量
             }
         }
     }
 
+    /// <summary>
+    /// 根据权重选择道具
+    /// </summary>
+    private GameObject SelectPropByWeight()
+    {
+        int totalWeight = propPrefabsWithWeights.Sum(prop => prop.weight); // 计算总权重
+        int randomValue = Random.Range(0, totalWeight); // 获取0到总权重之间的随机值
+        int currentWeightSum = 0;
+
+        foreach (var prop in propPrefabsWithWeights)
+        {
+            currentWeightSum += prop.weight;
+            if (randomValue < currentWeightSum)
+            {
+                return prop.prefab; // 返回选中的道具
+            }
+        }
+
+        return null; // 如果权重列表为空，返回null
+    }
 
     /// <summary>
     /// 处理道具销毁事件
@@ -108,14 +135,13 @@ public class PropsSpawnPointManager : MonoBehaviour
         }
 
         // 使用延迟调用生成逻辑，避免在OnDestroy中直接生成
-        Invoke(nameof(SpawnProps), spawnWaitingTime); // 延迟0.1秒调用SpawnProps
+        Invoke(nameof(SpawnProps), spawnWaitingTime); // 延迟调用SpawnProps
     }
-
 
     void OnDisable()
     {
         // 取消所有挂起的生成调用
         CancelInvoke(nameof(SpawnProps));
     }
-
 }
+

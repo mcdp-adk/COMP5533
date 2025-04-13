@@ -495,8 +495,11 @@ MonoBehaviour:
   - {fileID: 1720323097}
   - {fileID: 529341201}
   - {fileID: 890276845}
-  propPrefabs:
-  - {fileID: 9051312900075423998, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
+  propPrefabsWithWeights:
+  - prefab: {fileID: 9051312900075423998, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
+    weight: 1
+  - prefab: {fileID: 4130269434971578914, guid: a9bc36714fbb94e4daa19603854c440c, type: 3}
+    weight: 1
   maxTotalProps: 2
   spawnWaitingTime: 0.3
 --- !u!1001 &276004465
