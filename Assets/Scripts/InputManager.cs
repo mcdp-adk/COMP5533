@@ -145,6 +145,7 @@ public class InputManager : MonoBehaviour
 
             _playerInputManager.playerPrefab = _playerPrefabs[i];
             _playerInputs[i] = _playerInputManager.JoinPlayer(i, -1, null, _boundDevices[i]);
+            _playerInputs[i].gameObject.SetActive(false);
             Debug.Log($"玩家 {i} 已加入游戏，使用设备: {_boundDevices[i].displayName} (ID: {_boundDevices[i].deviceId})");
         }
     }
