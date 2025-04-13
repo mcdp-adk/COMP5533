@@ -17,8 +17,8 @@ public class MinigunBase : MonoBehaviour
 
     [Header("Parm")]
     private float _time;
-    private Transform currentTarget; // 当前被检测到的目标
-    private Queue<Transform> targetQueue = new Queue<Transform>(); // 存储目标的队列
+    [SerializeField] private Transform currentTarget; // 当前被检测到的目标
+    [SerializeField] private Queue<Transform> targetQueue = new Queue<Transform>(); // 存储目标的队列
 
     private void LateUpdate()
     {
@@ -57,6 +57,7 @@ public class MinigunBase : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log($"检测到新目标: {other.tag}");
         // 检测触发的物体是否具有指定的 Tag
         foreach (var tag in targetTags)
         {
