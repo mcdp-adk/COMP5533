@@ -56,36 +56,53 @@ public class PropEndActiveEventBomb : MonoBehaviour
             Debug.LogWarning("爆炸效果预制体未设置！");
         }
 
-        // 检测爆炸范围内的目标对象并直接销毁符合标签的对象
+        // 检测爆炸范围内的目标对象并确保每个物体只被处理一次
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, explosionRange);
+        HashSet<GameObject> processedObjects = new HashSet<GameObject>();
+
         foreach (Collider hitCollider in hitColliders)
         {
+            GameObject hitObject = hitCollider.gameObject;
+
+            // 如果物体已经被处理过，跳过它
+            if (processedObjects.Contains(hitObject))
+            {
+                continue;
+            }
+
+            // 将物体加入已处理集合
+            processedObjects.Add(hitObject);
+
+            Debug.Log($"正在检测伤害对象: {hitObject}");
+
             // 检查对象是否匹配任意一个目标标签
             foreach (string tag in targetTags)
             {
-                if (hitCollider.CompareTag(tag))
+                if (hitObject.CompareTag(tag))
                 {
                     // 获取EnemyAI组件并修改health属性
-                    EnemyAI enemyAI = hitCollider.GetComponent<EnemyAI>();
+                    EnemyAI enemyAI = hitObject.GetComponent<EnemyAI>();
                     if (enemyAI != null)
                     {
                         enemyAI.health -= explosionDamage;
-                        //Debug.Log($"对带有标签 {tag} 的对象 {hitCollider.gameObject.name} 造成 {explosionHealthCare} 点伤害，剩余生命值：{enemyAI.health}");
+                        Debug.Log($"对带有标签 {tag} 的对象 {hitObject.name} 造成 {explosionDamage} 点伤害，剩余生命值：{enemyAI.health}");
                     }
-                    break; // 防止重复处理同一个对象
+                    break; // 防止重复处理同一个标签
                 }
             }
 
             // 检查是否是玩家
-            if (hitCollider.CompareTag("Player"))
+            if (hitObject.CompareTag("Player"))
             {
-                PlayerController playerController = hitCollider.GetComponent<PlayerController>();
+                PlayerController playerController = hitObject.GetComponent<PlayerController>();
                 if (playerController != null)
                 {
                     playerController.CauseDamage((int)explosionDamage); // 对玩家造成伤害
+                    Debug.Log("爆炸正在给与玩家伤害！");
                 }
             }
         }
+
         Debug.Log("删除自身");
         // 删除自身物体
         Destroy(gameObject);
