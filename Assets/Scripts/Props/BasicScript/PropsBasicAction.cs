@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -14,6 +15,7 @@ public class PropsBasicAction : MonoBehaviour
     [SerializeField] private bool isTouchTriggerLayer = false;
 
     [Header("Setting")]
+    [SerializeField] private string propTag;
     [SerializeField] private float weight = 1.0f;
     [SerializeField] private float value = 1.0f;
     [SerializeField] private float minReActiveTime = 0.5f;  // 最小重置时间
@@ -58,6 +60,7 @@ public class PropsBasicAction : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        propTag = gameObject.tag;
     }
 
     void Update()
@@ -311,6 +314,11 @@ public class PropsBasicAction : MonoBehaviour
     public float GetWeight()
     {
         return weight;
+    }
+
+    public string GetTag()
+    {
+        return propTag;
     }
     #endregion
 

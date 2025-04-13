@@ -6540,6 +6540,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Test_Prop_WaterBottle
       objectReference: {fileID: 0}
+    - target: {fileID: 5867245993968201304, guid: a9bc36714fbb94e4daa19603854c440c, type: 3}
+      propertyPath: maxActiveDurationTime
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7168923584119200599, guid: a9bc36714fbb94e4daa19603854c440c, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10
@@ -6886,7 +6890,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3642151732287100131, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
       propertyPath: maxActiveDurationTime
-      value: 10
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3642151732287100131, guid: 438058c19d72a8d4d886a66ccc664f32, type: 3}
       propertyPath: whatIsTriggerLayer.m_Bits
