@@ -3,7 +3,7 @@ using UnityEngine.AI;
 using System.Collections;
 using System.Linq;
 
-public class EnemyAI : MonoBehaviour
+public class EnemyAI : MonoBehaviour, ICharacter
 {
     [Header("AI Settings")]
     [SerializeField] private float patrolSpeed = 2f;
@@ -34,6 +34,11 @@ public class EnemyAI : MonoBehaviour
     // AI状态枚举
     private enum AIState { Patrol, Chase, Investigate, Attack, Dead }
     private AIState currentState = AIState.Patrol;
+
+    public event System.Action OnCharacterDeath;
+    public event System.Action OnHealthChanged;
+    public event System.Action OnHealthIncreased;
+    public event System.Action OnHealthDecreased;
 
     void Start()
     {
@@ -293,5 +298,38 @@ public class EnemyAI : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, attackDistance);
+    }
+    public int MaxHealth
+    {
+        get { return 100; }
+        set { }
+    }
+
+    public int Health { get { return (int)health; } }
+
+    public void CauseDamage(int damageAmount)
+    {
+        if (health <= 0) return;
+
+        health -= damageAmount;
+        OnHealthChanged?.Invoke();
+        if (health <= 0)
+        {
+            currentState = AIState.Dead;
+            OnCharacterDeath?.Invoke();
+        }
+    }
+
+    public void Heal(int healAmount)
+    {
+        if (health <= 0) return;
+
+        health += healAmount;
+        if (health > MaxHealth)
+        {
+            health = MaxHealth;
+        }
+        OnHealthChanged?.Invoke();
+        OnHealthIncreased?.Invoke();
     }
 }
