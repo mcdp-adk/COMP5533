@@ -187,10 +187,15 @@ MonoBehaviour:
   componentCollidersBox:
   - {fileID: 5145033582398575202}
   isEnableGrivaty: 1
+<<<<<<< HEAD
   isTouchNormalTriggerLayer: 0
   isTouchSpecialTriggerLayer: 0
   propTag: 
   weight: 1
+=======
+  isTouchTriggerLayer: 0
+  weight: 2
+>>>>>>> 1a24fd4509a38af5a743c2c0f3e2baba4c625916
   value: 1
   minReActiveTime: 0.5
   maxReActiveTime: 5
