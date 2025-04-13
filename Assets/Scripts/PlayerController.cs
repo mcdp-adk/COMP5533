@@ -6,7 +6,9 @@ using UnityEngine.InputSystem;
 /// 控制玩家角色的移动、攻击和道具交互
 /// </summary>
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(BoxCollider))]
 public class PlayerController : MonoBehaviour, ICharacter
 {
     #region Fields
@@ -16,6 +18,7 @@ public class PlayerController : MonoBehaviour, ICharacter
     private Animator _animator;
     private PlayerInput _playerInput;
     private CharacterController _controller;
+    private Collider _collider;
 
     // 玩家输入
     private InputAction _moveAction;
@@ -60,6 +63,7 @@ public class PlayerController : MonoBehaviour, ICharacter
         _animator = GetComponent<Animator>();
         _playerInput = GetComponent<PlayerInput>();
         _controller = GetComponent<CharacterController>();
+        _collider = GetComponent<BoxCollider>();
 
         // 如果没有指定道具挂载点，尝试查找
         if (_propPosition == null)
@@ -206,6 +210,7 @@ public class PlayerController : MonoBehaviour, ICharacter
     private void ToggleCrouch(InputAction.CallbackContext ctx)
     {
         _isCrouching = !_isCrouching;
+        _collider.enabled = !_isCrouching;
         _moveSpeed = _isCrouching ? _crouchSpeed : _runSpeed;
         _animator.SetBool("isCrouching", _isCrouching);
     }
