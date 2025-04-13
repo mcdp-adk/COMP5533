@@ -207,7 +207,7 @@ MonoBehaviour:
   - {fileID: 4287599231081058572}
   isEnableGrivaty: 1
   isTouchTriggerLayer: 0
-  weight: 1
+  weight: 2
   value: 1
   minReActiveTime: 0.5
   maxReActiveTime: 5

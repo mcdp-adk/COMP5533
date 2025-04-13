@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour, ICharacter
     [SerializeField] private float _gravity = -9.81f;
     [SerializeField] private int _maxHealth = 100;
     private float _moveSpeed; // 当前移动速度
+    private float _moveRate;
     private int _health;
     private bool _isDead = false;
     private bool _isCrouching = false;
@@ -252,8 +253,11 @@ public class PlayerController : MonoBehaviour, ICharacter
         // 根据输入和相机方向计算移动向量
         Vector3 moveDirection = forward * _moveInput.y + right * _moveInput.x;
 
+        // 计算持有物体对移动速度的影响
+        _moveRate = _currentPropAction != null ? 1f / _currentPropAction.GetWeight() : 1f;
+
         // 应用移动
-        _controller.Move(moveDirection * _moveSpeed * Time.deltaTime);
+        _controller.Move(moveDirection * _moveSpeed * _moveRate * Time.deltaTime);
 
         // 使角色面向移动方向
         if (moveDirection != Vector3.zero)
@@ -299,10 +303,10 @@ public class PlayerController : MonoBehaviour, ICharacter
     private void PerformMeleeAttack()
     {
         _animator.SetTrigger("triggerPunch");
-        
+
         // 检测前方是否有敌人
         Collider[] hitEnemies = Physics.OverlapSphere(transform.position + transform.forward * (_meleeRange / 2), _meleeRange / 2, _whatIsEnemy);
-        
+
         // 对命中的敌人造成伤害
         foreach (Collider enemy in hitEnemies)
         {
@@ -313,7 +317,7 @@ public class PlayerController : MonoBehaviour, ICharacter
                 Debug.Log($"近战攻击命中: {enemy.name}，造成 {_meleeDamage} 点伤害");
             }
         }
-        
+
         // 启动冷却
         _meleeOnCooldown = true;
         _meleeTimer = _meleeCooldown;
@@ -342,7 +346,7 @@ public class PlayerController : MonoBehaviour, ICharacter
     {
         _currentProp = prop;
         _currentPropAction = _currentProp.GetComponent<PropsBasicAction>();
-        
+
         if (_currentPropAction != null)
         {
             _currentPropAction.PickUpFunction(_propPosition != null ? _propPosition : transform);
@@ -366,9 +370,9 @@ public class PlayerController : MonoBehaviour, ICharacter
     {
         int oldHealth = _health;
         _health = health;
-        
+
         OnHealthChanged?.Invoke();
-        
+
         if (_health > oldHealth)
         {
             OnHealthIncreased?.Invoke();
@@ -385,7 +389,7 @@ public class PlayerController : MonoBehaviour, ICharacter
     private void HandlePlayerDeath()
     {
         if (_isDead) return; // 防止重复执行死亡逻辑
-        
+
         _isDead = true;
         Debug.Log($"玩家 {gameObject.name} 死亡");
 
@@ -395,7 +399,7 @@ public class PlayerController : MonoBehaviour, ICharacter
         // 禁用控制
         _controller.enabled = false;
         _playerInput.enabled = false;
-        
+
         // 丢弃当前道具
         if (_currentPropAction != null)
         {
@@ -434,9 +438,9 @@ public class PlayerController : MonoBehaviour, ICharacter
         {
             if (value < 0) value = 0;
             _maxHealth = value;
-            
+
             // 如果当前生命值超过新的最大值，调整当前生命值
-            if (_health > _maxHealth) 
+            if (_health > _maxHealth)
             {
                 SetHealth(_maxHealth);
             }
@@ -451,7 +455,7 @@ public class PlayerController : MonoBehaviour, ICharacter
 
         SetHealth(Math.Max(_health - damageAmount, 0));
         Debug.Log($"玩家 {gameObject.name} 受到了 {damageAmount} 点伤害，剩余生命值: {_health}");
-        
+
         if (_health <= 0)
         {
             HandlePlayerDeath();
