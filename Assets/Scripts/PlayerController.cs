@@ -112,12 +112,13 @@ public class PlayerController : MonoBehaviour, ICharacter
 
     private void Update()
     {
-        if (_isDead) return; // 如果玩家已死亡，停止更新
-
-        HandleInputs();
-        HandleMovement();
-        HandleGravity();
-        HandleMeleeCooldown();
+        if (!_isDead)
+        {
+            HandleInputs();
+            HandleMovement();
+            HandleGravity();
+            HandleMeleeCooldown();
+        }
 
         // 更新动画参数
         UpdateAnimationParameters();
@@ -312,7 +313,7 @@ public class PlayerController : MonoBehaviour, ICharacter
     {
         // 触发拳击动画，实际伤害将由动画事件触发
         _animator.SetTrigger("triggerPunch");
-        
+
         // 启动冷却
         _meleeOnCooldown = true;
         _meleeTimer = _meleeCooldown;
