@@ -1,11 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Spawn Point")]
+    [SerializeField] private GameObject[] _spawnPoints = new GameObject[4]; // ç”Ÿæˆç‚¹æ•°ç»„
+
+    [Header("Input Manager")]
+    private PlayerInput[] _playerInputs; // ç©å®¶è¾“å…¥ç»„ä»¶æ•°ç»„
+
+    [Header("Game Manager")]
     public GameObject spawnBox;
     public GameObject modesMenu;
     public GameObject textContinue;
@@ -17,36 +23,34 @@ public class GameManager : MonoBehaviour
     public Button player3;
     public Button player4;
 
-    public TextMeshProUGUI countdownText; // °ó¶¨µ¹¼ÆÊ±ÎÄ±¾¿ò
-    public float countdownTime = 5.0f; // µ¹¼ÆÊ±×ÜÊ±¼ä
-    private float remainingTime; // Ê£ÓàÊ±¼ä
-    private bool isCountingDown = false; // ÊÇ·ñÔÚµ¹¼ÆÊ±
+    public TextMeshProUGUI countdownText; // ç»‘å®šå€’è®¡æ—¶æ–‡æœ¬æ¡†
+    public float countdownTime = 5.0f; // å€’è®¡æ—¶æ€»æ—¶é—´
+    private float remainingTime; // å‰©ä½™æ—¶é—´
+    private bool isCountingDown = false; // æ˜¯å¦åœ¨å€’è®¡æ—¶
 
-    // Start is called before the first frame update
     void Start()
     {
         Time.timeScale = 0f;
 
-        player1.onClick.AddListener(OnStartButtonClicked);
-        player2.onClick.AddListener(OnStartButtonClicked);
-        player3.onClick.AddListener(OnStartButtonClicked);
-        player4.onClick.AddListener(OnStartButtonClicked);
+        // player1.onClick.AddListener(OnStartButtonClicked);
+        // player2.onClick.AddListener(OnStartButtonClicked);
+        // player3.onClick.AddListener(OnStartButtonClicked);
+        // player4.onClick.AddListener(OnStartButtonClicked);
 
         remainingTime = countdownTime;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (waitingForKeyPress)
         {
-            // ¼ì²âÊÇ·ñ°´ÏÂÈÎÒâ¼ü£¨°üÀ¨Êó±ê£©
+            // æ£€æµ‹æ˜¯å¦æŒ‰ä¸‹ä»»æ„é”®ï¼ˆåŒ…æ‹¬é¼ æ ‡ï¼‰
             if (Input.anyKeyDown)
             {
-                // ¼ì²âÊÇ·ñ°´ÏÂÊó±ê¼ü£¨0¡¢1¡¢2 ·Ö±ğ¶ÔÓ¦Êó±ê×ó¼ü¡¢ÓÒ¼ü¡¢ÖĞ¼ü£©
+                // æ£€æµ‹æ˜¯å¦æŒ‰ä¸‹é¼ æ ‡é”®ï¼ˆ0ã€1ã€2 åˆ†åˆ«å¯¹åº”é¼ æ ‡å·¦é”®ã€å³é”®ã€ä¸­é”®ï¼‰
                 if (!Input.GetMouseButtonDown(0) && !Input.GetMouseButtonDown(1) && !Input.GetMouseButtonDown(2))
                 {
-                    waitingForKeyPress = false; // Í£Ö¹µÈ´ı°´¼ü
+                    waitingForKeyPress = false; // åœæ­¢ç­‰å¾…æŒ‰é”®
                     textContinue.SetActive(false);
                     InputManager.Instance.StopBinding();
                     Grounding.SetActive(true);
@@ -56,15 +60,15 @@ public class GameManager : MonoBehaviour
 
         if (isCountingDown && remainingTime > 0)
         {
-            remainingTime -= Time.deltaTime; // Ã¿Ö¡¼õÉÙÊ±¼ä
-            int seconds = Mathf.CeilToInt(remainingTime); // »ñÈ¡Ê£ÓàÃëÊı£¬ÏòÉÏÈ¡Õû
-            countdownText.text = seconds.ToString(); // ¸üĞÂÎÄ±¾ÄÚÈİ
+            remainingTime -= Time.deltaTime; // æ¯å¸§å‡å°‘æ—¶é—´
+            int seconds = Mathf.CeilToInt(remainingTime); // è·å–å‰©ä½™ç§’æ•°ï¼Œå‘ä¸Šå–æ•´
+            countdownText.text = seconds.ToString(); // æ›´æ–°æ–‡æœ¬å†…å®¹
         }
         else if (remainingTime <= 0)
         {
-            countdownText.gameObject.SetActive(false); // µ¹¼ÆÊ±½áÊø£¬Òş²ØÎÄ±¾¿ò
-            spawnBox.SetActive(false); // Òş²ØÉú³É¿ò
-            isCountingDown = false; // ÖØÖÃµ¹¼ÆÊ±×´Ì¬
+            countdownText.gameObject.SetActive(false); // å€’è®¡æ—¶ç»“æŸï¼Œéšè—æ–‡æœ¬æ¡†
+            spawnBox.SetActive(false); // éšè—ç”Ÿæˆæ¡†
+            isCountingDown = false; // é‡ç½®å€’è®¡æ—¶çŠ¶æ€
         }
     }
 
@@ -73,24 +77,13 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
         modesMenu.SetActive(false);
 
-        // »ñÈ¡ËùÓĞÍæ¼Ò¶ÔÏó²¢½«ËüÃÇÒÆ¶¯µ½ spawnBox ÖĞ²¢¼¤»îËüÃÇ
-        foreach (var playerInput in InputManager.Instance.PlayerInputs)
-        {
-            if (playerInput == null) continue;
-
-            GameObject player = playerInput.gameObject;
-            if (player != null)
-            {
-                player.transform.position = spawnBox.transform.position;
-                player.SetActive(true);
-            }
-        }
+        HandleSpawnPlayer();
     }
 
     public void OnStartButtonClicked()
     {
-        waitingForKeyPress = true; // ¿ªÊ¼µÈ´ı°´¼ü
-        textContinue.SetActive(true); // ÏÔÊ¾ÌáÊ¾ÎÄ±¾
+        waitingForKeyPress = true; // å¼€å§‹ç­‰å¾…æŒ‰é”®
+        textContinue.SetActive(true); // æ˜¾ç¤ºæç¤ºæ–‡æœ¬
     }
 
     public void groundingDisapp()
@@ -100,9 +93,52 @@ public class GameManager : MonoBehaviour
 
     public void StartCountdown()
     {
-        countdownText.gameObject.SetActive(true); // ÏÔÊ¾ÎÄ±¾¿ò
-        countdownText.text = countdownTime.ToString(); // ³õÊ¼»¯ÎÄ±¾ÄÚÈİ
-        remainingTime = countdownTime; // ³õÊ¼»¯Ê£ÓàÊ±¼ä
-        isCountingDown = true; // ¿ªÊ¼µ¹¼ÆÊ±
+        countdownText.gameObject.SetActive(true); // æ˜¾ç¤ºæ–‡æœ¬æ¡†
+        countdownText.text = countdownTime.ToString(); // åˆå§‹åŒ–æ–‡æœ¬å†…å®¹
+        remainingTime = countdownTime; // åˆå§‹åŒ–å‰©ä½™æ—¶é—´
+        isCountingDown = true; // å¼€å§‹å€’è®¡æ—¶
     }
+
+    // #region Handle Players
+
+    // private void HandlePlayerDeath(PlayerController player, Vector3 respawnPosition)
+    // {
+    //     player.Respawn(respawnPosition);
+    // }
+
+    // #endregion
+
+    #region Handle Input Manager
+
+    public void HandleStartBinding(int playerIndex)
+    {
+        InputManager.Instance.StartBinding(playerIndex);
+    }
+
+    public void HandleStopBinding()
+    {
+        InputManager.Instance.StopBinding();
+    }
+
+    public void HandleCancelBinding(int playerIndex)
+    {
+        InputManager.Instance.CancelBinding(playerIndex);
+    }
+
+    public void HandleSpawnPlayer()
+    {
+        _playerInputs = InputManager.Instance.SpawnPlayer();
+        for (int i = 0; i < _playerInputs.Length; ++i)
+        {
+            if (_playerInputs[i] != null)
+            {
+                // è®¾ç½®ç©å®¶çš„ç”Ÿæˆç‚¹
+                _playerInputs[i].gameObject.transform.position = _spawnPoints[i].transform.position;
+                _playerInputs[i].gameObject.transform.rotation = _spawnPoints[i].transform.rotation;
+                Debug.Log($"ç©å®¶ {i} ç”Ÿæˆåœ¨ {_spawnPoints[i].name} ä½ç½®");
+            }
+        }
+    }
+
+    #endregion
 }
