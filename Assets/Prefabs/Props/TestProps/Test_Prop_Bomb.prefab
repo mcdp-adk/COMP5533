@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 1031744672035901755}
   - component: {fileID: 184677205768988097}
   - component: {fileID: 3089097232319672889}
-  m_Layer: 11
+  m_Layer: 14
   m_Name: popcorn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -256,6 +256,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   componentCollidersBox:
   - {fileID: 3089097232319672889}
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  transformedLayer:
+    serializedVersion: 2
+    m_Bits: 0
   isEnableGrivaty: 1
   isTouchNormalTriggerLayer: 0
   isTouchSpecialTriggerLayer: 0

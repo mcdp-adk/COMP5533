@@ -12,6 +12,7 @@ public class PropEnvironmentAction : MonoBehaviour
     [SerializeField] private GameObject[] effects; // Array to store effects
     [SerializeField] private float triggerProbability = 0.5f; // Probability of triggering an effect
     [SerializeField] private float effectRadius = 10f; // Radius of effect generation
+    [SerializeField] private float verticalAngle = 45f; // Angle from vertical direction for effects
 
     private float timer = 0f; // Timer to track time since last trigger
     [SerializeField] private float currentInterval; // Variable to store the dynamic interval
@@ -58,11 +59,11 @@ public class PropEnvironmentAction : MonoBehaviour
             {
                 GameObject randomEffect = effects[Random.Range(0, effects.Length)];
 
-                // Generate a random rotation angle
-                Quaternion randomRotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
+                // Generate rotation with vertical angle adjustment
+                Quaternion adjustedRotation = Quaternion.Euler(verticalAngle, Random.Range(0f, 360f), 0);
 
-                // Instantiate the effect at the position with random rotation
-                Instantiate(randomEffect, randomPosition, randomRotation);
+                // Instantiate the effect at the position with adjusted rotation
+                Instantiate(randomEffect, randomPosition, adjustedRotation);
             }
         }
     }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4131791164046342629}
   - component: {fileID: 8589557501299998670}
   - component: {fileID: 4287599231081058572}
-  m_Layer: 11
+  m_Layer: 14
   m_Name: egypt-amphora-simple
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,8 +121,7 @@ GameObject:
   - component: {fileID: 3718130262879923607}
   - component: {fileID: 566131506686662651}
   - component: {fileID: 2682532109156396339}
-  - component: {fileID: 5091672426814583948}
-  - component: {fileID: 7059865869422703795}
+  - component: {fileID: -1589787999748544929}
   m_Layer: 11
   m_Name: Test_Prop_Treasure_Music
   m_TagString: Treasure
@@ -192,7 +191,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
+  m_Radius: 0.7
   m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!114 &4741641405294083091
 MonoBehaviour:
@@ -226,19 +225,7 @@ MonoBehaviour:
   activeCheckCollider: {fileID: 499006506565494216}
   duringTriggeredAction:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5091672426814583948}
-        m_TargetAssemblyTypeName: PropDuringTriggerEventRay, Assembly-CSharp
-        m_MethodName: DrawTrajectory
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
   onTriggeredAction:
     m_PersistentCalls:
       m_Calls:
@@ -246,30 +233,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: PropStartActiveEventTreasureMusic, Assembly-CSharp
         m_MethodName: TreasurePlayMusic
         m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
-      - m_Target: {fileID: 5091672426814583948}
-        m_TargetAssemblyTypeName: PropDuringTriggerEventRay, Assembly-CSharp
-        m_MethodName: ClearTrajectory
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
-      - m_Target: {fileID: 7059865869422703795}
-        m_TargetAssemblyTypeName: PropTriggerEventThrow, Assembly-CSharp
-        m_MethodName: ThrowOut
-        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -296,6 +259,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 1
+      - m_Target: {fileID: -1589787999748544929}
+        m_TargetAssemblyTypeName: PropEndActiveEventEffect, Assembly-CSharp
+        m_MethodName: ShowEffect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   isBlocked: 0
   isActived: 0
   isBound: 0
@@ -427,7 +402,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &5091672426814583948
+--- !u!114 &-1589787999748544929
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -436,30 +411,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6636084786892711412}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7889e5fd8541d8940b9b8dd2c0008e33, type: 3}
+  m_Script: {fileID: 11500000, guid: 3d89b2be8e0dd4c45811ff9e9a824556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseThrowForce: 1000
-  throwDirectionRatioUp: 4
-  throwDirectionRatioForward: 3
-  resolution: 30
-  gravity: -9.8
-  rayColor: {r: 1, g: 0, b: 0, a: 1}
-  StartLineWidth: 0.05
-  EndLineWidth: 0.00001
---- !u!114 &7059865869422703795
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6636084786892711412}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 711dc9c1a41a59c4c91f99cd16ddc2fa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  baseThrowForce: 1000
-  randomTorqueRange: 15
-  throwDirectionRatioUp: 4
-  throwDirectionRatioForward: 3
+  effectPrefab: {fileID: 3291191149493654499, guid: d19532c0fa81d6142bd3c6969864014a, type: 3}
+  soundPrefab: {fileID: 0}
+  effectDuration: 0

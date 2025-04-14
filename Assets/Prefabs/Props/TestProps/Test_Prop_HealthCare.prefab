@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4178378047178996744}
   - component: {fileID: 4168364558586226422}
   - component: {fileID: 4137995888842302280}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: honey
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -254,6 +254,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   componentCollidersBox:
   - {fileID: 4137995888842302280}
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  transformedLayer:
+    serializedVersion: 2
+    m_Bits: 0
   isEnableGrivaty: 1
   isTouchNormalTriggerLayer: 0
   isTouchSpecialTriggerLayer: 0
