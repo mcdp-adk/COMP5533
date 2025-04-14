@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 using System.Collections;
 using System.Linq;
+using DG.Tweening;
 
 public class EnemyAI : MonoBehaviour, ICharacter
 {
@@ -22,6 +24,11 @@ public class EnemyAI : MonoBehaviour, ICharacter
     [SerializeField] private AudioSource attackAudioSource; // 攻击音效
     [SerializeField] private MusicManager musicManager;
     public float health = 100f; // 敌人生命值
+
+    [Header("Player Settings")]
+    [SerializeField] private Image _healthBar;
+    [SerializeField] private Gradient _healthBarGradient; // 生命值渐变色
+    [SerializeField] private float _fillSpeed = 0.5f;   // 生命值改变速度
 
     private NavMeshAgent agent;
     private Transform[] players;
@@ -106,6 +113,10 @@ public class EnemyAI : MonoBehaviour, ICharacter
 
         // 更新 MusicManager 中的 isChasing 变量
         musicManager.isChasing = chasingEnemiesCount > 0;
+
+        float healthPercentage = (float)Health / MaxHealth;
+        _healthBar.DOFillAmount(healthPercentage, _fillSpeed); // 使用 DOTween 平滑过渡生命值UI
+        _healthBar.DOColor(_healthBarGradient.Evaluate(healthPercentage), _fillSpeed); // 使用 DOTween 平滑过渡颜色
     }
 
     private Transform GetClosestPlayer()
@@ -206,7 +217,8 @@ public class EnemyAI : MonoBehaviour, ICharacter
     // 攻击命中判定
     public void EnemyAttackHit()
     {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackDistance, playerLayer);
+        Vector3 attackPosition = transform.position + transform.forward * attackDistance / 2;
+        Collider[] hitColliders = Physics.OverlapSphere(attackPosition, attackDistance / 2, playerLayer);
         foreach (var hitCollider in hitColliders)
         {
             if (hitCollider.CompareTag("Player"))
