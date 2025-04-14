@@ -8,6 +8,7 @@ public class PropEndActiveEventTreasure : MonoBehaviour
     [SerializeField] private int scoreToAdd = 1; // 每次增加的得分量
     [SerializeField] private AudioSource treasureSound; // 音效文件
     [SerializeField] private float fadeDuration = 5f; // 声音渐大持续时间
+    [SerializeField] private bool isTriggerable = true;
 
     public void TreasureInSafeHouse()
     {
@@ -18,9 +19,10 @@ public class PropEndActiveEventTreasure : MonoBehaviour
     private void SendMsgToGameMaster()
     {
         // 检查 GameManager 是否存在并调用其方法增加得分
-        if (PropGameManager.Instance != null)
+        if (PropGameManager.Instance != null & isTriggerable)
         {
             PropGameManager.Instance.AddScore(scoreToAdd); // 确保 GameManager 有一个 AddScore(int score) 方法
+            isTriggerable = false;
             Debug.Log("宝藏已进入安全屋，得分已增加！");
         }
         else
