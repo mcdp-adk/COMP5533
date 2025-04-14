@@ -35,7 +35,7 @@ public class EnemyAI : MonoBehaviour, ICharacter
     private enum AIState { Patrol, Chase, Investigate, Attack, Dead }
     private AIState currentState = AIState.Patrol;
 
-    public event System.Action OnCharacterDeath;
+    public event System.Action<ICharacter> OnCharacterDeath;
     public event System.Action OnHealthChanged;
     public event System.Action OnHealthIncreased;
     public event System.Action OnHealthDecreased;
@@ -97,8 +97,8 @@ public class EnemyAI : MonoBehaviour, ICharacter
         {
             chasingEnemiesCount++;
         }
-        else if(chasingEnemiesCount < 0)
-            {
+        else if (chasingEnemiesCount < 0)
+        {
             chasingEnemiesCount = 0;
         }
 
@@ -316,7 +316,7 @@ public class EnemyAI : MonoBehaviour, ICharacter
         if (health <= 0)
         {
             currentState = AIState.Dead;
-            OnCharacterDeath?.Invoke();
+            OnCharacterDeath?.Invoke(this);
         }
     }
 
@@ -331,5 +331,10 @@ public class EnemyAI : MonoBehaviour, ICharacter
         }
         OnHealthChanged?.Invoke();
         OnHealthIncreased?.Invoke();
+    }
+
+    public void Respawn(Vector3 position)
+    {
+        return;
     }
 }

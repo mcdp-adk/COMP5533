@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -5,8 +6,11 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("Spawn Point")]
-    [SerializeField] private GameObject[] _spawnPoints = new GameObject[4]; // 生成点数组
+    [Header("Spawn Manager")]
+    [Tooltip("玩家生成点")]
+    [SerializeField] private GameObject[] _spawnPoints = new GameObject[4];
+    [Tooltip("重生等待时间")]
+    [SerializeField] private float _spawnDelay = 5f;
 
     [Header("Input Manager")]
     private PlayerInput[] _playerInputs; // 玩家输入组件数组
@@ -99,32 +103,66 @@ public class GameManager : MonoBehaviour
         isCountingDown = true; // 开始倒计时
     }
 
-    // #region Handle Players
+    #region Handle Players
 
-    // private void HandlePlayerDeath(PlayerController player, Vector3 respawnPosition)
-    // {
-    //     player.Respawn(respawnPosition);
-    // }
+    /// <summary>
+    /// 处理玩家死亡事件
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="respawnPosition"></param>
+    private void HandlePlayerDeath(ICharacter player)
+    {
+        StartCoroutine(HandlePlayerRespawn(player, _spawnPoints[0].transform.position)); // 启动协程处理玩家重生
+    }
 
-    // #endregion
+    /// <summary>
+    /// 该协程会在玩家死亡后等待一段时间，然后将玩家重生到指定位置
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="respawnPosition"></param>
+    /// <returns></returns>
+    private IEnumerator HandlePlayerRespawn(ICharacter player, Vector3 respawnPosition)
+    {
+        Debug.Log($"玩家 {player} 死亡，等待 {_spawnDelay} 秒后重生");
+        yield return new WaitForSeconds(_spawnDelay);
+
+        player.Respawn(respawnPosition); // 重生玩家
+        Debug.Log($"玩家 {player} 重生在 {respawnPosition} 位置");
+    }
+
+    #endregion
 
     #region Handle Input Manager
 
+    /// <summary>
+    /// 开始绑定输入设备
+    /// </summary>
+    /// <param name="playerIndex"></param>
     public void HandleStartBinding(int playerIndex)
     {
         InputManager.Instance.StartBinding(playerIndex);
     }
 
+    /// <summary>
+    /// 停止绑定输入设备
+    /// </summary>
     public void HandleStopBinding()
     {
         InputManager.Instance.StopBinding();
     }
 
+    /// <summary>
+    /// 取消绑定输入设备
+    /// </summary>
+    /// <param name="playerIndex"></param>
     public void HandleCancelBinding(int playerIndex)
     {
         InputManager.Instance.CancelBinding(playerIndex);
     }
 
+    /// <summary>
+    /// 处理玩家生成
+    /// </summary>
     public void HandleSpawnPlayer()
     {
         _playerInputs = InputManager.Instance.SpawnPlayer();
@@ -136,6 +174,9 @@ public class GameManager : MonoBehaviour
                 _playerInputs[i].gameObject.transform.position = _spawnPoints[i].transform.position;
                 _playerInputs[i].gameObject.transform.rotation = _spawnPoints[i].transform.rotation;
                 Debug.Log($"玩家 {i} 生成在 {_spawnPoints[i].name} 位置");
+
+                // 设置玩家的死亡事件
+                _playerInputs[i].gameObject.GetComponent<ICharacter>().OnCharacterDeath += HandlePlayerDeath;
             }
         }
     }

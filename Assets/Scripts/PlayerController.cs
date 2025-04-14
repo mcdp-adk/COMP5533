@@ -418,7 +418,6 @@ public class PlayerController : MonoBehaviour, ICharacter
 
         // 禁用控制
         _controller.enabled = false;
-        _playerInput.enabled = false;
 
         // 丢弃当前道具
         if (_currentPropAction != null)
@@ -429,7 +428,7 @@ public class PlayerController : MonoBehaviour, ICharacter
         }
 
         // 触发死亡事件
-        OnCharacterDeath?.Invoke();
+        OnCharacterDeath?.Invoke(this);
     }
 
     /// <summary>
@@ -442,7 +441,6 @@ public class PlayerController : MonoBehaviour, ICharacter
         _isDead = false;
         _isCrouching = false;
         _controller.enabled = true;
-        _playerInput.enabled = true;
         _animator.SetBool("isDead", false);
         _moveSpeed = _runSpeed;
     }
@@ -493,7 +491,7 @@ public class PlayerController : MonoBehaviour, ICharacter
     public event Action OnHealthChanged;
     public event Action OnHealthIncreased;
     public event Action OnHealthDecreased;
-    public event Action OnCharacterDeath;
+    public event Action<ICharacter> OnCharacterDeath;
 
     #endregion
 
