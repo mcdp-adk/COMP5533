@@ -7,6 +7,7 @@ TagManager:
   - enemy
   - Treasure
   - BasicProp
+  - Light
   layers:
   - Default
   - TransparentFX
@@ -15,7 +16,7 @@ TagManager:
   - Water
   - UI
   - Enemy
-  - 
+  - Light
   - 
   - Final Safe House Layer
   - Activation Layer
