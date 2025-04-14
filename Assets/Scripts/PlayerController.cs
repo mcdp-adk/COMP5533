@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using DG.Tweening;
 
 /// <summary>
 /// 控制玩家角色的移动、攻击和道具交互
@@ -298,8 +299,8 @@ public class PlayerController : MonoBehaviour, ICharacter
         _animator.SetFloat("moveSpeed", _moveInput.magnitude);
 
         float healthPercentage = (float)_health / _maxHealth;
-        _healthBar.fillAmount = healthPercentage; // 更新生命值UI
-        _healthBar.color = _healthBarGradient.Evaluate(healthPercentage); // 更新生命值渐变色
+        _healthBar.DOFillAmount(healthPercentage, _fillSpeed); // 使用 DOTween 平滑过渡生命值UI
+        _healthBar.DOColor(_healthBarGradient.Evaluate(healthPercentage), _fillSpeed); // 使用 DOTween 平滑过渡颜色
     }
 
     #endregion
