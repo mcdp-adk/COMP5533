@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using DG.Tweening;
 
 /// <summary>
 /// 控制玩家角色的移动、攻击和道具交互
@@ -298,8 +299,8 @@ public class PlayerController : MonoBehaviour, ICharacter
         _animator.SetFloat("moveSpeed", _moveInput.magnitude);
 
         float healthPercentage = (float)_health / _maxHealth;
-        _healthBar.fillAmount = healthPercentage; // 更新生命值UI
-        _healthBar.color = _healthBarGradient.Evaluate(healthPercentage); // 更新生命值渐变色
+        _healthBar.DOFillAmount(healthPercentage, _fillSpeed); // 使用 DOTween 平滑过渡生命值UI
+        _healthBar.DOColor(_healthBarGradient.Evaluate(healthPercentage), _fillSpeed); // 使用 DOTween 平滑过渡颜色
     }
 
     #endregion
@@ -418,7 +419,6 @@ public class PlayerController : MonoBehaviour, ICharacter
 
         // 禁用控制
         _controller.enabled = false;
-        _playerInput.enabled = false;
 
         // 丢弃当前道具
         if (_currentPropAction != null)
@@ -429,7 +429,7 @@ public class PlayerController : MonoBehaviour, ICharacter
         }
 
         // 触发死亡事件
-        OnCharacterDeath?.Invoke();
+        OnCharacterDeath?.Invoke(this);
     }
 
     /// <summary>
@@ -442,7 +442,6 @@ public class PlayerController : MonoBehaviour, ICharacter
         _isDead = false;
         _isCrouching = false;
         _controller.enabled = true;
-        _playerInput.enabled = true;
         _animator.SetBool("isDead", false);
         _moveSpeed = _runSpeed;
     }
@@ -493,7 +492,7 @@ public class PlayerController : MonoBehaviour, ICharacter
     public event Action OnHealthChanged;
     public event Action OnHealthIncreased;
     public event Action OnHealthDecreased;
-    public event Action OnCharacterDeath;
+    public event Action<ICharacter> OnCharacterDeath;
 
     #endregion
 

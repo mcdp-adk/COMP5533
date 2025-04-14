@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 public interface ICharacter
 {
@@ -17,6 +18,12 @@ public interface ICharacter
     #endregion
 
     #region Methods
+
+    /// <summary>
+    /// 角色重生的方法
+    /// </summary>
+    /// <param name="respawnPosition">重生位置</param>
+    void Respawn(Vector3 respawnPosition);
 
     /// <summary>
     /// 对角色造成伤害
@@ -52,7 +59,7 @@ public interface ICharacter
     /// <summary>
     /// 角色死亡时触发
     /// </summary>
-    event Action OnCharacterDeath;
+    event Action<ICharacter> OnCharacterDeath;
 
     #endregion
 }
