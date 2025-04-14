@@ -207,7 +207,7 @@ public class EnemyAI : MonoBehaviour, ICharacter
                 if (playerController != null)
                 {
                     // playerController.Die();
-                    playerController.CauseDamage(100);
+                    playerController.CauseDamage(20);
                 }
             }
         }

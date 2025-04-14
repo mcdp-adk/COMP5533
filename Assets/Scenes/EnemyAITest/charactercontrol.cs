@@ -74,7 +74,7 @@ public class CharactersControl : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(30f);
 
             int currentEnemyCount = GameObject.FindGameObjectsWithTag("enemy").Length;
             if (currentEnemyCount < numberOfEnemies)
