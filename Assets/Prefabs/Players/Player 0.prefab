@@ -187,9 +187,9 @@ MonoBehaviour:
   _rotationSpeed: 10
   _gravity: -9.81
   _maxHealth: 100
-  _meleeCooldown: 1.5
-  _meleeDamage: 100
-  _meleeRange: 1.5
+  _meleeCooldown: 1
+  _meleeDamage: 50
+  _meleeRange: 2.5
   _whatIsEnemy:
     serializedVersion: 2
     m_Bits: 64

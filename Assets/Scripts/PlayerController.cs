@@ -46,9 +46,9 @@ public class PlayerController : MonoBehaviour, ICharacter
     private bool _isCrouching = false;
 
     [Header("Melee Settings")]
-    [SerializeField] private float _meleeCooldown = 1.5f; // 近战攻击冷却时间(秒)
-    [SerializeField] private int _meleeDamage = 100; // 近战攻击伤害值
-    [SerializeField] private float _meleeRange = 1.5f; // 近战攻击范围
+    [SerializeField] private float _meleeCooldown = 1f; // 近战攻击冷却时间(秒)
+    [SerializeField] private int _meleeDamage = 50; // 近战攻击伤害值
+    [SerializeField] private float _meleeRange = 2.5f; // 近战攻击范围
     [SerializeField] private LayerMask _whatIsEnemy; // 敌人所在层
     private float _meleeTimer = 0f; // 近战冷却计时器
     private bool _meleeOnCooldown = false; // 近战是否在冷却中
