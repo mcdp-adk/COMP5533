@@ -313,7 +313,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
   endTriggeredNormalAction:
     m_PersistentCalls:
       m_Calls:
@@ -331,7 +331,19 @@ MonoBehaviour:
         m_CallState: 1
   endTriggeredSpecialAction:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5963868490040910854}
+        m_TargetAssemblyTypeName: PropEndActiveEventBomb, Assembly-CSharp
+        m_MethodName: BombExplosion
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   isBlocked: 0
   isActived: 0
   isBound: 0
