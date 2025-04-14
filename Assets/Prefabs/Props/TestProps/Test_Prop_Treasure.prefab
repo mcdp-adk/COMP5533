@@ -210,7 +210,7 @@ MonoBehaviour:
   isTouchNormalTriggerLayer: 0
   isTouchSpecialTriggerLayer: 0
   propTag: 
-  weight: 1
+  weight: 1.5
   value: 1
   minReActiveTime: 0.5
   maxReActiveTime: 5
@@ -266,6 +266,7 @@ MonoBehaviour:
   scoreToAdd: 1
   treasureSound: {fileID: 1766798437526599639}
   fadeDuration: 5
+  isTriggerable: 1
 --- !u!82 &1766798437526599639
 AudioSource:
   m_ObjectHideFlags: 0

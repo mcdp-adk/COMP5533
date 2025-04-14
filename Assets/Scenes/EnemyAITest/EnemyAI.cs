@@ -205,10 +205,6 @@ public class EnemyAI : MonoBehaviour, ICharacter
     {
         isAttacking = true;
         yield return new WaitForSeconds(attackDelay);
-        if (targetPlayer != null)
-        {
-            EnemyAttackHit();
-        }
         isAttacking = false;
         currentState = AIState.Chase;
         animator.CrossFade("Running", 0.1f);
@@ -226,7 +222,6 @@ public class EnemyAI : MonoBehaviour, ICharacter
                 PlayerController playerController = hitCollider.GetComponent<PlayerController>();
                 if (playerController != null)
                 {
-                    // playerController.Die();
                     playerController.CauseDamage(attackDamage);
                     break;
                 }
