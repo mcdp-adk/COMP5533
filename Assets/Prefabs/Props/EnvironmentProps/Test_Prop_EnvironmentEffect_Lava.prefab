@@ -190,14 +190,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c77bd8ba2f6ea74890ff8727ba06a89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerInterval: 0.3
-  minTriggerInterval: 0.3
-  maxTriggerInterval: 2
+  triggerInterval: 2
+  minTriggerInterval: 1
+  maxTriggerInterval: 3
   effects:
   - {fileID: 3451711060939751254, guid: 8bf40f247b1a6084fac830884262bb0c, type: 3}
-  triggerProbability: 0.5
-  effectRadius: 3
-  verticalAngle: 5
+  triggerProbability: 0.8
+  effectRadius: 2
+  verticalAngle: 3
   currentInterval: 0
 --- !u!1 &4930959402302420506
 GameObject:

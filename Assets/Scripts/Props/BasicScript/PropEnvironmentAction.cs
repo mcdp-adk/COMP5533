@@ -63,7 +63,10 @@ public class PropEnvironmentAction : MonoBehaviour
                 Quaternion adjustedRotation = Quaternion.Euler(verticalAngle, Random.Range(0f, 360f), 0);
 
                 // Instantiate the effect at the position with adjusted rotation
-                Instantiate(randomEffect, randomPosition, adjustedRotation);
+                GameObject instantiatedEffect = Instantiate(randomEffect, randomPosition, adjustedRotation);
+
+                // Destroy the effect after the specified lifetime
+                Destroy(instantiatedEffect, triggerInterval);
             }
         }
     }
