@@ -196,7 +196,7 @@ MonoBehaviour:
   _whatIsProps:
     serializedVersion: 2
     m_Bits: 2048
-  _propPosition: {fileID: 2620389334997420801, guid: ee9d5a86b623ecc46ae6278eb759e742, type: 3}
+  _propPosition: {fileID: 2620389334997420801}
 --- !u!1 &312236787592653259
 GameObject:
   m_ObjectHideFlags: 0
