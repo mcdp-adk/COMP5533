@@ -220,7 +220,7 @@ GameObject:
   - component: {fileID: 7162865603213951717}
   m_Layer: 11
   m_Name: Test_Prop_Bomb
-  m_TagString: Untagged
+  m_TagString: BasicProp
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -256,12 +256,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   componentCollidersBox:
   - {fileID: 3089097232319672889}
-  targetLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  transformedLayer:
-    serializedVersion: 2
-    m_Bits: 0
   isEnableGrivaty: 1
   isTouchNormalTriggerLayer: 0
   isTouchSpecialTriggerLayer: 0
