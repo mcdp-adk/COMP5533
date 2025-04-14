@@ -32,6 +32,23 @@ public class GameManager : MonoBehaviour
     private float remainingTime; // 剩余时间
     private bool isCountingDown = false; // 是否在倒计时
 
+
+    public TextMeshProUGUI gameCountdownText; // 倒计时文本框
+    public TextMeshProUGUI gameScoreText;     // 分数文本框
+    public PropGameManager gameManager; // 引用PropGameManager脚本
+
+    private float gameTimeRemaining = 305; // 5分钟倒计时（300秒）
+    private bool isGameCountingDown = true;
+
+    public GameObject UIScore;
+
+    public GameObject miniMap;
+
+    // 新增变量
+    public GameObject victoryScreen; // 游戏胜利的结算画面
+    [SerializeField]
+    public int victoryScoreThreshold = 1000; // 胜利所需的分数阈值
+
     void Start()
     {
         Time.timeScale = 0f;
@@ -73,7 +90,24 @@ public class GameManager : MonoBehaviour
             countdownText.gameObject.SetActive(false); // 倒计时结束，隐藏文本框
             spawnBox.SetActive(false); // 隐藏生成框
             isCountingDown = false; // 重置倒计时状态
+            UIScore.SetActive(true);
+            gameCountdownText.gameObject.SetActive(true); // 显示游戏倒计时文本框
+            miniMap.SetActive(true);
         }
+
+
+        if (isGameCountingDown)
+        {
+            gameTimeRemaining -= Time.deltaTime;
+            if (gameTimeRemaining <= 0)
+            {
+                gameTimeRemaining = 0;
+                isGameCountingDown = false;
+            }
+            UpdateCountdownText();
+        }
+
+        UpdateScoreText();
     }
 
     public void GameBegin()
@@ -182,4 +216,35 @@ public class GameManager : MonoBehaviour
     }
 
     #endregion
+
+    private void UpdateCountdownText()
+    {
+        int minutes = Mathf.FloorToInt(gameTimeRemaining / 60);
+        int seconds = Mathf.FloorToInt(gameTimeRemaining % 60);
+        gameCountdownText.text = string.Format("Time remaining: " + "{0:00}:{1:00}", minutes, seconds);
+    }
+
+    private void UpdateScoreText()
+    {
+        gameScoreText.text = "Score: " + gameManager.GetScore().ToString();
+    }
+
+    // 检查胜利条件
+    private void CheckVictoryCondition()
+    {
+        if (gameManager.GetScore() >= victoryScoreThreshold && !victoryScreen.activeSelf)
+        {
+            ShowVictoryScreen();
+        }
+    }
+
+    // 显示胜利画面
+    private void ShowVictoryScreen()
+    {
+        Time.timeScale = 0f; // 暂停游戏
+        victoryScreen.SetActive(true); // 显示胜利画面
+        // 结算
+    }
+
+
 }

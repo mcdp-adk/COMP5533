@@ -18,4 +18,9 @@ public class PropGameManager : MonoBehaviour
         score += scoreToAdd;
         Debug.Log($"当前得分: {score}");
     }
+
+    public int GetScore()
+    {
+        return score;
+    }
 }
