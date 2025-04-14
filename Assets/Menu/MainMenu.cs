@@ -17,8 +17,5 @@ public class MainMenu : MonoBehaviour
         Application.Quit();
     }
 
-    public void SetVolume(float volume)
-    {
-        Debug.Log(volume);
-    }
+    
 }
