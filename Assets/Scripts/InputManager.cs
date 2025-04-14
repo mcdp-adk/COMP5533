@@ -131,16 +131,23 @@ public class InputManager : MonoBehaviour
     /// <summary>
     /// 为所有已绑定设备的玩家生成角色
     /// </summary>
-    public void SpawnPlayer()
+    /// <returns>返回所有玩家的 PlayerInput 组件</returns>
+    // public void SpawnPlayer()
+    public PlayerInput[] SpawnPlayer()
     {
         if (_isBindingInProgress)
         {
             Debug.LogWarning("请先完成当前绑定过程");
-            return;
+            // return;
+            return null;
         }
 
         for (int i = 0; i < _playerInputs.Length; i++)
         {
+            if (_playerInputs[i] != null)
+            {
+                Destroy(_playerInputs[i].gameObject); // 销毁之前的 PlayerInput 组件
+            }
             if (_boundDevices[i] == null) continue;
 
             _playerInputManager.playerPrefab = _playerPrefabs[i];
@@ -148,6 +155,9 @@ public class InputManager : MonoBehaviour
             _playerInputs[i].gameObject.SetActive(false);
             Debug.Log($"玩家 {i} 已加入游戏，使用设备: {_boundDevices[i].displayName} (ID: {_boundDevices[i].deviceId})");
         }
+
+        // return;
+        return _playerInputs;
     }
 
     #endregion
