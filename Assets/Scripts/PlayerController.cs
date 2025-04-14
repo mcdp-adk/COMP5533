@@ -423,7 +423,8 @@ public class PlayerController : MonoBehaviour, ICharacter
         // 丢弃当前道具
         if (_currentPropAction != null)
         {
-            _currentPropAction.DropFunction();
+            _currentPropAction.ActivateButtonPressed();
+            _currentPropAction.ActivateButtonRelease();
             _currentProp = null;
             _currentPropAction = null;
         }
