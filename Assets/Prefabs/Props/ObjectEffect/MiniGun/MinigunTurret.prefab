@@ -5750,6 +5750,7 @@ GameObject:
   - component: {fileID: 4211741780341064119}
   - component: {fileID: 6271952380173650638}
   - component: {fileID: 8752452293075821923}
+  - component: {fileID: 6489767863270682278}
   m_Layer: 0
   m_Name: GO_Minigun
   m_TagString: Untagged
@@ -5773,6 +5774,7 @@ Transform:
   - {fileID: 3705820067572507476}
   - {fileID: 7502417801381130056}
   - {fileID: 3240298347100670676}
+  - {fileID: 989379705082494047}
   m_Father: {fileID: 7827820973213083739}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!114 &6910403930942368876
@@ -5935,11 +5937,32 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &6489767863270682278
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878486651100823372}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.4, y: 0.5, z: 3}
+  m_Center: {x: 0, y: 1.4, z: 0}
 --- !u!1 &1879476272355850891
 GameObject:
   m_ObjectHideFlags: 0
@@ -21760,6 +21783,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7827820973213083739}
+  - component: {fileID: 736986279134054363}
   m_Layer: 0
   m_Name: MinigunTurret
   m_TagString: Untagged
@@ -21781,9 +21805,22 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7961883808300372871}
-  - {fileID: 989379705082494047}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &736986279134054363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4654601756758395223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1459ec95f025704fb2705f3959e668e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectPrefab: {fileID: 3267730041454383077, guid: a57f2f5bebac75046b94ad85a3f82257, type: 3}
+  effectLifetime: 1
 --- !u!1 &4796958991401605848
 GameObject:
   m_ObjectHideFlags: 0
@@ -21795,6 +21832,7 @@ GameObject:
   - component: {fileID: 989379705082494047}
   - component: {fileID: 6839570677036766548}
   - component: {fileID: 6217220798389309746}
+  - component: {fileID: 5602646368536638490}
   m_Layer: 0
   m_Name: MinigunBase
   m_TagString: Untagged
@@ -21812,10 +21850,10 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.24000002, y: 0.24000001, z: 0.24000002}
+  m_LocalScale: {x: 0.8, y: 0.79999995, z: 0.8}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 7827820973213083739}
+  m_Father: {fileID: 7961883808300372871}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6839570677036766548
 MeshFilter:
@@ -21870,6 +21908,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &5602646368536638490
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4796958991401605848}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: add7bae6c51f74786932dba748cc71cd, type: 3}
 --- !u!1 &4984517590180184878
 GameObject:
   m_ObjectHideFlags: 0

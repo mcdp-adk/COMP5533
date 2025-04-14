@@ -261,7 +261,7 @@ MonoBehaviour:
   targetTag: Player
   targetLayer: Player
   duringTime: 10
-  quaternionAngle: 25
+  quaternionAngle: 0
   decoyPerfab: {fileID: 4654601756758395223, guid: 235ee6df3cfc01f4e9aca25c2b8cf5c4, type: 3}
 --- !u!114 &1294934037204633423
 MonoBehaviour:
