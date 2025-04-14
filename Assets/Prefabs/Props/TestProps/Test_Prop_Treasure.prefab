@@ -118,6 +118,8 @@ GameObject:
   - component: {fileID: 6475731780100785785}
   - component: {fileID: 1658806385732765378}
   - component: {fileID: 6226597569063467909}
+  - component: {fileID: 797641576097237776}
+  - component: {fileID: 5337295521643034259}
   - component: {fileID: 8859153596138825352}
   - component: {fileID: 1766798437526599639}
   m_Layer: 11
@@ -215,7 +217,7 @@ MonoBehaviour:
   value: 1
   minReActiveTime: 0.5
   maxReActiveTime: 5
-  maxActiveDurationTime: 3
+  maxActiveDurationTime: 0.01
   whatIsNormalTriggerLayer:
     serializedVersion: 2
     m_Bits: 1024
@@ -225,10 +227,46 @@ MonoBehaviour:
   activeCheckCollider: {fileID: 1658806385732765378}
   duringTriggeredAction:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5337295521643034259}
+        m_TargetAssemblyTypeName: PropDuringTriggerEventRay, Assembly-CSharp
+        m_MethodName: DrawTrajectory
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   onTriggeredAction:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5337295521643034259}
+        m_TargetAssemblyTypeName: PropDuringTriggerEventRay, Assembly-CSharp
+        m_MethodName: ClearTrajectory
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+      - m_Target: {fileID: 797641576097237776}
+        m_TargetAssemblyTypeName: PropTriggerEventThrow, Assembly-CSharp
+        m_MethodName: ThrowOut
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   endTriggeredNormalAction:
     m_PersistentCalls:
       m_Calls: []
@@ -252,6 +290,42 @@ MonoBehaviour:
   isBound: 0
   currentState: 0
   lastState: 0
+--- !u!114 &797641576097237776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1046413414830209517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 711dc9c1a41a59c4c91f99cd16ddc2fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseThrowForce: 1000
+  randomTorqueRange: 15
+  throwDirectionRatioUp: 4
+  throwDirectionRatioForward: 3
+--- !u!114 &5337295521643034259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1046413414830209517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7889e5fd8541d8940b9b8dd2c0008e33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseThrowForce: 1000
+  throwDirectionRatioUp: 4
+  throwDirectionRatioForward: 3
+  resolution: 30
+  gravity: -9.8
+  rayColor: {r: 1, g: 0, b: 0, a: 1}
+  StartLineWidth: 0.05
+  EndLineWidth: 0.00001
 --- !u!114 &8859153596138825352
 MonoBehaviour:
   m_ObjectHideFlags: 0

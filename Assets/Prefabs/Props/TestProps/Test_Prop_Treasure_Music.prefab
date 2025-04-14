@@ -121,6 +121,8 @@ GameObject:
   - component: {fileID: 3718130262879923607}
   - component: {fileID: 566131506686662651}
   - component: {fileID: 2682532109156396339}
+  - component: {fileID: 5091672426814583948}
+  - component: {fileID: 7059865869422703795}
   m_Layer: 11
   m_Name: Test_Prop_Treasure_Music
   m_TagString: Treasure
@@ -214,7 +216,7 @@ MonoBehaviour:
   value: 1
   minReActiveTime: 0.5
   maxReActiveTime: 5
-  maxActiveDurationTime: 3
+  maxActiveDurationTime: 0.01
   whatIsNormalTriggerLayer:
     serializedVersion: 2
     m_Bits: 1024
@@ -224,7 +226,19 @@ MonoBehaviour:
   activeCheckCollider: {fileID: 499006506565494216}
   duringTriggeredAction:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5091672426814583948}
+        m_TargetAssemblyTypeName: PropDuringTriggerEventRay, Assembly-CSharp
+        m_MethodName: DrawTrajectory
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   onTriggeredAction:
     m_PersistentCalls:
       m_Calls:
@@ -232,6 +246,30 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: PropStartActiveEventTreasureMusic, Assembly-CSharp
         m_MethodName: TreasurePlayMusic
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+      - m_Target: {fileID: 5091672426814583948}
+        m_TargetAssemblyTypeName: PropDuringTriggerEventRay, Assembly-CSharp
+        m_MethodName: ClearTrajectory
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+      - m_Target: {fileID: 7059865869422703795}
+        m_TargetAssemblyTypeName: PropTriggerEventThrow, Assembly-CSharp
+        m_MethodName: ThrowOut
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -389,3 +427,39 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5091672426814583948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6636084786892711412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7889e5fd8541d8940b9b8dd2c0008e33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseThrowForce: 1000
+  throwDirectionRatioUp: 4
+  throwDirectionRatioForward: 3
+  resolution: 30
+  gravity: -9.8
+  rayColor: {r: 1, g: 0, b: 0, a: 1}
+  StartLineWidth: 0.05
+  EndLineWidth: 0.00001
+--- !u!114 &7059865869422703795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6636084786892711412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 711dc9c1a41a59c4c91f99cd16ddc2fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseThrowForce: 1000
+  randomTorqueRange: 15
+  throwDirectionRatioUp: 4
+  throwDirectionRatioForward: 3

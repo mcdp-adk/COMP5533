@@ -286,6 +286,7 @@ public class PropsBasicAction : MonoBehaviour
         pressDurationTimeClosing = pressDuration;
         //currentState = PropState.Activated; // 切换到“被激活”状态
         isActived = true;
+        Debug.Log($"物品{gameObject}被激活，时间是：" + pressDuration + " 时间戳：" + Time.time);
     }
     #endregion
 
@@ -299,6 +300,7 @@ public class PropsBasicAction : MonoBehaviour
         {
             bindTargetPoint = target;
             isBound = true;
+            Debug.Log($"物品{gameObject}被拾起：" + target + " 时间戳：" + Time.time);
             //isEnableGrivaty = false;
             //currentState = PropState.Held; // 切换到“被持有”状态
         }
