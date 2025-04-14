@@ -28,7 +28,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d65e486e4de6e5448a8fbb43dc8756a0, type: 3}
   m_Name: Grain
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   enabled:
     overrideState: 1
     value: 1
@@ -74,13 +74,13 @@ MonoBehaviour:
     value: 65472
   diffusion:
     overrideState: 1
-    value: 3.84
+    value: 4.9
   anamorphicRatio:
     overrideState: 1
     value: -0.47
   color:
     overrideState: 1
-    value: {r: 1.5157166, g: 1.5157166, b: 1.5157166, a: 1}
+    value: {r: 1, g: 0.2358489, b: 0.2358489, a: 1}
   fastMode:
     overrideState: 1
     value: 0
