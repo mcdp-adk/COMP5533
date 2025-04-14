@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI gameScoreText;     // 分数文本框
     public PropGameManager gameManager; // 引用PropGameManager脚本
 
-    private float gameTimeRemaining = 305; // 5分钟倒计时（300秒）
+    private float gameTimeRemaining = 605; // 5分钟倒计时（300秒）
     private bool isGameCountingDown = true;
 
     public GameObject UIScore;
@@ -109,6 +109,8 @@ public class GameManager : MonoBehaviour
         }
 
         UpdateScoreText();
+
+        CheckVictoryCondition(); // 检查胜利条件
     }
 
     public void GameBegin()
