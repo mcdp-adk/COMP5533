@@ -145,10 +145,20 @@ public class GameManager : MonoBehaviour
     /// 处理玩家死亡事件
     /// </summary>
     /// <param name="player"></param>
-    /// <param name="respawnPosition"></param>
     private void HandlePlayerDeath(ICharacter player)
     {
-        StartCoroutine(HandlePlayerRespawn(player, _spawnPoints[0].transform.position)); // 启动协程处理玩家重生
+        // 获取玩家的MonoBehaviour组件以访问transform
+        MonoBehaviour playerBehaviour = player as MonoBehaviour;
+        if (playerBehaviour != null)
+        {
+            Vector3 deathPosition = playerBehaviour.transform.position;
+            StartCoroutine(HandlePlayerRespawn(player, deathPosition)); // 在死亡位置重生
+        }
+        else
+        {
+            // 备用逻辑，如果无法获取位置则使用默认重生点
+            StartCoroutine(HandlePlayerRespawn(player, _spawnPoints[0].transform.position));
+        }
     }
 
     /// <summary>
@@ -159,11 +169,11 @@ public class GameManager : MonoBehaviour
     /// <returns></returns>
     private IEnumerator HandlePlayerRespawn(ICharacter player, Vector3 respawnPosition)
     {
-        Debug.Log($"玩家 {player} 死亡，等待 {_spawnDelay} 秒后重生");
+        Debug.Log($"玩家 {player} 将在 {_spawnDelay} 秒后原地重生");
         yield return new WaitForSeconds(_spawnDelay);
 
         player.Respawn(respawnPosition); // 重生玩家
-        Debug.Log($"玩家 {player} 重生在 {respawnPosition} 位置");
+        Debug.Log($"玩家 {player} 重生在原位置 {respawnPosition}");
     }
 
     #endregion
