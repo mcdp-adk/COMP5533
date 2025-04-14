@@ -53,10 +53,10 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0f;
 
-        // player1.onClick.AddListener(OnStartButtonClicked);
-        // player2.onClick.AddListener(OnStartButtonClicked);
-        // player3.onClick.AddListener(OnStartButtonClicked);
-        // player4.onClick.AddListener(OnStartButtonClicked);
+        player1.onClick.AddListener(OnStartButtonClicked);
+        player2.onClick.AddListener(OnStartButtonClicked);
+        player3.onClick.AddListener(OnStartButtonClicked);
+        player4.onClick.AddListener(OnStartButtonClicked);
 
         remainingTime = countdownTime;
     }
@@ -73,7 +73,8 @@ public class GameManager : MonoBehaviour
                 {
                     waitingForKeyPress = false; // 停止等待按键
                     textContinue.SetActive(false);
-                    InputManager.Instance.StopBinding();
+                    //InputManager.Instance.StopBinding();
+                    HandleStopBinding();
                     Grounding.SetActive(true);
                 }
             }
@@ -120,6 +121,7 @@ public class GameManager : MonoBehaviour
 
     public void OnStartButtonClicked()
     {
+        Grounding.SetActive(false); // 隐藏提示文本
         waitingForKeyPress = true; // 开始等待按键
         textContinue.SetActive(true); // 显示提示文本
     }
