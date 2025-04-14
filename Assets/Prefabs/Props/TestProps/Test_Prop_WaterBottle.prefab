@@ -68,7 +68,7 @@ MonoBehaviour:
     m_Bits: 1024
   whatIsSpecialTriggerLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   activeCheckCollider: {fileID: 6448368171689065974}
   duringTriggeredAction:
     m_PersistentCalls:
