@@ -72,6 +72,19 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         modesMenu.SetActive(false);
+
+        // 获取所有玩家对象并将它们移动到 spawnBox 中并激活它们
+        foreach (var playerInput in InputManager.Instance.PlayerInputs)
+        {
+            if (playerInput == null) continue;
+
+            GameObject player = playerInput.gameObject;
+            if (player != null)
+            {
+                player.transform.position = spawnBox.transform.position;
+                player.SetActive(true);
+            }
+        }
     }
 
     public void OnStartButtonClicked()
