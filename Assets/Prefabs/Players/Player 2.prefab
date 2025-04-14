@@ -181,7 +181,7 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
-  _fillSpeed: 0.5
+  _fillSpeed: 0.25
   _runSpeed: 5
   _crouchSpeed: 2
   _rotationSpeed: 10
