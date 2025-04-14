@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -46,6 +47,8 @@ public class GameManager : MonoBehaviour
 
     // 新增变量
     public GameObject victoryScreen; // 游戏胜利的结算画面
+    public GameObject failureScreen; //游戏失败结算画面
+
     [SerializeField]
     public int victoryScoreThreshold = 1000; // 胜利所需的分数阈值
 
@@ -104,6 +107,7 @@ public class GameManager : MonoBehaviour
             {
                 gameTimeRemaining = 0;
                 isGameCountingDown = false;
+                ShowFailureScreen();
             }
             UpdateCountdownText();
         }
@@ -111,6 +115,7 @@ public class GameManager : MonoBehaviour
         UpdateScoreText();
 
         CheckVictoryCondition(); // 检查胜利条件
+
     }
 
     public void GameBegin()
@@ -257,6 +262,13 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0f; // 暂停游戏
         victoryScreen.SetActive(true); // 显示胜利画面
+        // 结算
+    }
+    
+    private void ShowFailureScreen()
+    {
+        Time.timeScale = 0f; // 暂停游戏
+        failureScreen.SetActive(true); // 显示失败画面
         // 结算
     }
 
