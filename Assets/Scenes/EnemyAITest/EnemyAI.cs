@@ -14,6 +14,7 @@ public class EnemyAI : MonoBehaviour, ICharacter
     [SerializeField] private float angularSpeed = 120f;  // 转向速度
     [SerializeField] private float acceleration = 8f;    // 加速度
     [SerializeField] private float attackDistance = 1f;  // 攻击距离
+    [SerializeField] private int attackDamage = 20;   // 攻击伤害
     [SerializeField] public Transform[] patrolPoints;    // 巡逻路径点
     [SerializeField] private Animator animator;
     [SerializeField] private float attackDelay = 0.8f; // 攻击延迟时间
@@ -207,7 +208,8 @@ public class EnemyAI : MonoBehaviour, ICharacter
                 if (playerController != null)
                 {
                     // playerController.Die();
-                    playerController.CauseDamage(20);
+                    playerController.CauseDamage(attackDamage);
+                    break;
                 }
             }
         }
