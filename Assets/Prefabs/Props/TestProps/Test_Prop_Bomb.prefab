@@ -321,7 +321,7 @@ MonoBehaviour:
   explosionEffectPrefab: {fileID: 2180942408231431528, guid: d8ac56ff692d64f43952ca1885aa0df0, type: 3}
   explosionSoundPrefab: {fileID: 8730458372604718283, guid: fbc7e8570436d4f47b74291b3d0a9cf7, type: 3}
   explosionDuration: 3
-  explosionRange: 8
+  explosionRange: 5
   explosionDamage: 100
   targetTags:
   - enemy

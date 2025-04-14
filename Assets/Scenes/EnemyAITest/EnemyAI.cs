@@ -28,6 +28,7 @@ public class EnemyAI : MonoBehaviour, ICharacter
     private Transform targetPlayer;
     private Vector3 lastKnownPosition;
     private int currentPatrolIndex;
+    private bool isAttacking = false; // 新增的标志位
 
     // 用于跟踪是否有敌人处于追击或攻击状态的静态变量
     private static int chasingEnemiesCount = 0;
@@ -163,7 +164,7 @@ public class EnemyAI : MonoBehaviour, ICharacter
         agent.SetDestination(targetPlayer.position);
         lastKnownPosition = targetPlayer.position;
 
-        if (Vector3.Distance(transform.position, targetPlayer.position) < attackDistance)
+        if (Vector3.Distance(transform.position, targetPlayer.position) < attackDistance && !isAttacking)
         {
             currentState = AIState.Attack;
             animator.CrossFade("Standing Melee Attack Downward", 0.1f);
@@ -180,7 +181,7 @@ public class EnemyAI : MonoBehaviour, ICharacter
     // 攻击逻辑
     private void AttackBehavior()
     {
-        if (Vector3.Distance(transform.position, targetPlayer.position) > attackDistance)
+        if (targetPlayer == null || Vector3.Distance(transform.position, targetPlayer.position) > attackDistance)
         {
             currentState = AIState.Chase;
             animator.CrossFade("Running", 0.1f);
@@ -191,7 +192,13 @@ public class EnemyAI : MonoBehaviour, ICharacter
     // 执行攻击判定的协程
     private IEnumerator PerformAttack()
     {
+        isAttacking = true;
         yield return new WaitForSeconds(attackDelay);
+        if (targetPlayer != null)
+        {
+            EnemyAttackHit();
+        }
+        isAttacking = false;
         currentState = AIState.Chase;
         animator.CrossFade("Running", 0.1f);
     }
