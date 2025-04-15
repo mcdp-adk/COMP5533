@@ -4,10 +4,16 @@ using UnityEngine;
 public class MusicManager : MonoBehaviour
 {
     [SerializeField] private AudioSource chaseMusicAudioSource;
+    [SerializeField] private AudioSource surroundingMusicAudioSource;
     [SerializeField] private float fadeDuration = 1f; // 音量淡入/淡出持续时间
     public bool isChasing = false; // 是否处于追逐状态
 
     private Coroutine currentFadeCoroutine = null; // 用于跟踪当前正在运行的协程
+
+    private void Start()
+    {
+        surroundingMusicAudioSource.Play();
+    }
 
     private void Update()
     {

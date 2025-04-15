@@ -219,6 +219,11 @@ public class GameManager : MonoBehaviour
     public void HandleSpawnPlayer()
     {
         _playerInputs = InputManager.Instance.SpawnPlayer();
+        if (_playerInputs.Length == 0)
+        {
+            return;
+        }
+
         for (int i = 0; i < _playerInputs.Length; ++i)
         {
             if (_playerInputs[i] != null)
