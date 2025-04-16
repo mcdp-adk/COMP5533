@@ -8,6 +8,8 @@ public class PropsBasicAction : MonoBehaviour
 {
     [Header("Reference")]
     [SerializeField] private List<Collider> componentCollidersBox; // 储存需要启用或禁用的碰撞箱
+    private LayerMask targetLayer; // 目标图层
+    private LayerMask transformedLayer; // 转变后图层
     private Rigidbody rb;
 
     [Header("Situation")]
@@ -64,6 +66,8 @@ public class PropsBasicAction : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         propTag = gameObject.tag;
+        targetLayer = gameObject.layer;
+        transformedLayer = LayerMask.NameToLayer("ActivatedProps");
     }
 
     void Update()
@@ -175,6 +179,10 @@ public class PropsBasicAction : MonoBehaviour
             {
                 SwitchCollidersState(true);  // 禁用碰撞箱
             }
+            else if (lastState == PropState.Activated)
+            {
+                SetLayerRecursively(gameObject, targetLayer);
+            }
         }
 
         lastState = currentState;  // 保存状态用于更改状态时触发
@@ -244,6 +252,13 @@ public class PropsBasicAction : MonoBehaviour
             collider.enabled = target;
         }
     }
+
+    private void SetLayerRecursively(GameObject obj, int layer)
+    {
+        Debug.Log($"正在将物体{obj},的图层{obj.layer}转换为{layer}");
+        obj.layer = layer;
+    }
+
     #endregion
 
     #region ActiveButton
@@ -255,6 +270,7 @@ public class PropsBasicAction : MonoBehaviour
         buttonPressStartTime = Time.time;  // 记录当前时间
         pressDurationTimeMidterm = 0f;
         isButtonPressed = true;
+        SetLayerRecursively(gameObject, transformedLayer);
     }
 
     /// <summary>

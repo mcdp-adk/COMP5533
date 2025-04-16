@@ -22,8 +22,8 @@ TagManager:
   - Activation Layer
   - Props
   - PropsSpawnPoint
-  - 
-  - 
+  - ActivatedProps
+  - SomeInProps
   - 
   - 
   - 

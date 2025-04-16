@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PropEndActiveEventEffect : MonoBehaviour
@@ -42,11 +43,17 @@ public class PropEndActiveEventEffect : MonoBehaviour
         }
 
         // 显示爆炸效果
-        if (effectPrefab != null)
+        if (effectPrefab != null && effectDuration != 0)
         {
             GameObject explosionEffect = Instantiate(effectPrefab, transform.position, Quaternion.identity);
             Destroy(explosionEffect, effectDuration); // 在爆炸效果持续时间后销毁
             Debug.Log("爆炸效果结束！");
+        }
+        else if (effectPrefab != null && effectDuration == 0)
+        {
+            GameObject explosionEffect = Instantiate(effectPrefab, transform.position, Quaternion.identity);
+            Debug.Log("生成效果结束！");
+            Destroy(gameObject);
         }
         else
         {
